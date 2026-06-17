@@ -307,6 +307,9 @@
                     <span class="hero-badge" style="background:rgba(22,163,74,.25);border-color:rgba(22,163,74,.4);color:#4ade80;">
                         <i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>Fase 5 completada
                     </span>
+                    <span class="hero-badge" style="background:rgba(56,189,248,.2);border-color:rgba(56,189,248,.4);color:#7dd3fc;">
+                        <i class="bi bi-phone-fill me-1"></i>Mobile First aplicado
+                    </span>
                 </div>
                 <h1 class="fw-bold mb-1" style="font-size:1.9rem;">BarberApp</h1>
                 <p style="opacity:.65;margin:0;">Sistema Web para la Gestión Inteligente de Barberías</p>
@@ -315,7 +318,7 @@
                 <a href="https://github.com/DaniHND/BarberApp" target="_blank" class="repo-link">
                     <i class="bi bi-github me-2"></i>DaniHND/BarberApp
                 </a>
-                <small style="opacity:.45;">Última actualización: 17 jun 2026 — Sistema completado ✓</small>
+                <small style="opacity:.45;">Última actualización: 17 jun 2026 — Mobile First aplicado</small>
             </div>
         </div>
 
@@ -697,11 +700,95 @@
                 </div>
             </div>
 
+            <!-- Mobile First -->
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center gap-2 py-3 px-4">
+                    <i class="bi bi-phone-fill" style="color:var(--dorado);"></i>
+                    Optimización Mobile First
+                </div>
+                <div class="card-body p-4">
+                    <div class="plain-box">
+                        <strong>Diseñado para el teléfono del barbero</strong>
+                        El barbero administra su negocio desde el teléfono mientras atiende. Por eso cada pantalla del panel administrativo fue optimizada para uso táctil: navegación con el pulgar, botones grandes, información clara y sin necesidad de hacer zoom o pellizcar la pantalla.
+                    </div>
+
+                    <div class="row g-3 mt-2">
+
+                        <div class="col-md-6">
+                            <div class="modulo-item hecho">
+                                <div class="modulo-icono"><i class="bi bi-layout-sidebar-reverse"></i></div>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Bottom Navigation</div>
+                                    <div class="text-muted" style="font-size:.78rem;">Barra fija inferior con 5 ítems: Inicio, Citas, Espera, Clientes, Reportes. Solo visible en móvil — en desktop/tablet sigue el sidebar lateral. Compatible con el notch de iPhone.</div>
+                                </div>
+                                <span class="badge-estado badge-hecho ms-auto">✓</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="modulo-item hecho">
+                                <div class="modulo-icono"><i class="bi bi-hand-index-thumb"></i></div>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Botones táctiles</div>
+                                    <div class="text-muted" style="font-size:.78rem;">Los botones de acción en Agenda (Llegó, Atendido, No vino) y Lista de Espera superan el mínimo de 44px de área táctil recomendado por Apple y Google.</div>
+                                </div>
+                                <span class="badge-estado badge-hecho ms-auto">✓</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="modulo-item hecho">
+                                <div class="modulo-icono"><i class="bi bi-calendar-x"></i></div>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Agenda sin calendario en móvil</div>
+                                    <div class="text-muted" style="font-size:.78rem;">El FullCalendar se oculta en teléfonos. Se muestra solo la lista de citas del día, que es más fácil de operar con un dedo. El calendario vuelve a aparecer en tablet y desktop.</div>
+                                </div>
+                                <span class="badge-estado badge-hecho ms-auto">✓</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="modulo-item hecho">
+                                <div class="modulo-icono"><i class="bi bi-card-list"></i></div>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Cards en vez de tablas (móvil)</div>
+                                    <div class="text-muted" style="font-size:.78rem;">La pantalla de Clientes Frecuentes muestra tarjetas apiladas en móvil con el nombre, visitas y servicio favorito bien visibles. En desktop aparece la tabla completa con todas las columnas.</div>
+                                </div>
+                                <span class="badge-estado badge-hecho ms-auto">✓</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="modulo-item hecho">
+                                <div class="modulo-icono"><i class="bi bi-clock-fill"></i></div>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Slots de hora táctiles</div>
+                                    <div class="text-muted" style="font-size:.78rem;">En la página pública de reserva, cada horario disponible muestra la hora de inicio Y la hora de fin apiladas, con altura suficiente para seleccionar con el dedo sin equivocarse de slot.</div>
+                                </div>
+                                <span class="badge-estado badge-hecho ms-auto">✓</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="modulo-item hecho">
+                                <div class="modulo-icono"><i class="bi bi-input-cursor-text"></i></div>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Formularios para teclado móvil</div>
+                                    <div class="text-muted" style="font-size:.78rem;">Los campos de nombre y teléfono en la reserva pública usan font-size base 16px (evita el zoom automático en iOS) y altura de 3.5rem para facilitar el toque preciso.</div>
+                                </div>
+                                <span class="badge-estado badge-hecho ms-auto">✓</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <!-- Estructura de archivos (planificada) -->
             <div class="card">
                 <div class="card-header d-flex align-items-center gap-2 py-3 px-4">
                     <i class="bi bi-folder-fill" style="color:var(--dorado);"></i>
-                    Estructura del proyecto (planificada)
+                    Estructura del proyecto
                 </div>
                 <div class="card-body p-4">
                     <div class="plain-box">

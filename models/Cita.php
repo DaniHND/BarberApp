@@ -136,4 +136,69 @@ class Cita extends BaseModel {
         $st->execute();
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // ── Fase 4: Agenda admin ──────────────────────────────
+
+    public function getAgendaFecha(string $fecha): array {
+        $st = $this->db->prepare(
+            "SELECT c.*, s.nombre AS servicio_nombre, s.precio, s.duracion_minutos
+             FROM citas c
+             JOIN servicios s ON s.id = c.servicio_id
+             WHERE c.fecha = ? AND c.estado != 'cancelado'
+             ORDER BY c.hora_inicio"
+        );
+        $st->execute([$fecha]);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function cambiarEstado(int $id, string $estado): bool {
+        $permitidos = ['reservado','confirmado','atendido','no_presentado','en_espera','cancelado'];
+        if (!in_array($estado, $permitidos, true)) return false;
+        $st = $this->db->prepare('UPDATE citas SET estado = ? WHERE id = ?');
+        $st->execute([$estado, $id]);
+        return $st->rowCount() > 0;
+    }
+
+    // Marca como no_presentado las citas reservadas cuya hora ya pasó
+    public function autoLiberarExpirados(): int {
+        $st = $this->db->prepare(
+            "UPDATE citas SET estado = 'no_presentado'
+             WHERE estado = 'reservado'
+             AND fecha = CURDATE()
+             AND CONCAT(fecha, ' ', hora_inicio) < NOW()"
+        );
+        $st->execute();
+        return $st->rowCount();
+    }
+
+    // Eventos para FullCalendar (JSON)
+    public function getEventosFC(string $fecha): array {
+        $colores = [
+            'reservado'      => '#3b82f6',
+            'confirmado'     => '#22c55e',
+            'atendido'       => '#10b981',
+            'no_presentado'  => '#ef4444',
+            'en_espera'      => '#a855f7',
+            'cancelado'      => '#9ca3af',
+        ];
+        $eventos = [];
+        foreach ($this->getAgendaFecha($fecha) as $c) {
+            $color = $colores[$c['estado']] ?? '#6b7280';
+            $eventos[] = [
+                'id'              => $c['id'],
+                'title'           => $c['nombre_cliente'] . ' · ' . $c['servicio_nombre'],
+                'start'           => $c['fecha'] . 'T' . $c['hora_inicio'],
+                'end'             => $c['fecha'] . 'T' . $c['hora_fin'],
+                'backgroundColor' => $color,
+                'borderColor'     => $color,
+                'extendedProps'   => [
+                    'estado'   => $c['estado'],
+                    'cliente'  => $c['nombre_cliente'],
+                    'servicio' => $c['servicio_nombre'],
+                    'precio'   => $c['precio'],
+                ],
+            ];
+        }
+        return $eventos;
+    }
 }

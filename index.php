@@ -45,6 +45,8 @@ $routes = [
         'reservar'            => ['ReservaController',   'mostrar'],
         'reservar/horarios'   => ['ReservaController',   'horarios'],
         'reservar/gestionar'  => ['ReservaController',   'gestionar'],
+        'citas'               => ['CitaController',       'index'],
+        'espera'              => ['EsperaController',     'index'],
     ],
     'POST' => [
         'login'                 => ['AuthController',     'login'],
@@ -55,6 +57,10 @@ $routes = [
         'reservar/guardar'      => ['ReservaController',  'guardar'],
         'reservar/cancelar'     => ['ReservaController',  'cancelar'],
         'reservar/reprogramar'  => ['ReservaController',  'reprogramar'],
+        'citas/estado'          => ['CitaController',     'cambiarEstado'],
+        'espera/agregar'        => ['EsperaController',   'agregar'],
+        'espera/atender'        => ['EsperaController',   'atender'],
+        'espera/cancelar'       => ['EsperaController',   'cancelar'],
     ],
 ];
 

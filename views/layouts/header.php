@@ -117,7 +117,6 @@
                   <?= ($activeNav ?? '') === 'clientes' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="heart-handshake" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Clientes Frecuentes</span>
-            <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F5</span>
         </a>
 
         <!-- Sección: Análisis -->
@@ -130,7 +129,6 @@
                   <?= ($activeNav ?? '') === 'reportes' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="bar-chart-3" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Reportes</span>
-            <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F5</span>
         </a>
 
     </nav>

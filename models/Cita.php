@@ -124,6 +124,16 @@ class Cita extends BaseModel {
         return $st->rowCount() > 0;
     }
 
+    public function findById(int $id): array|false {
+        $st = $this->db->prepare(
+            'SELECT c.*, s.precio, s.nombre AS servicio_nombre
+             FROM citas c JOIN servicios s ON s.id = c.servicio_id
+             WHERE c.id = ?'
+        );
+        $st->execute([$id]);
+        return $st->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Para el dashboard Fase 2 — horas de citas de hoy
     public function getHoy(): array {
         $st = $this->db->prepare(

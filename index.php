@@ -47,6 +47,9 @@ $routes = [
         'reservar/gestionar'  => ['ReservaController',   'gestionar'],
         'citas'               => ['CitaController',       'index'],
         'espera'              => ['EsperaController',     'index'],
+        'clientes'            => ['ClienteController',    'index'],
+        'clientes/historial'  => ['ClienteController',    'historial'],
+        'reportes'            => ['ReporteController',    'index'],
     ],
     'POST' => [
         'login'                 => ['AuthController',     'login'],

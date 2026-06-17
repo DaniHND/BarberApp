@@ -1,12 +1,16 @@
 <?php
 class CitaController extends BaseController {
 
-    private Cita          $citaModel;
-    private Configuracion $configModel;
+    private Cita            $citaModel;
+    private Configuracion   $configModel;
+    private HistorialVisita $historialModel;
+    private Ingreso         $ingresoModel;
 
     public function __construct() {
-        $this->citaModel   = new Cita();
-        $this->configModel = new Configuracion();
+        $this->citaModel      = new Cita();
+        $this->configModel    = new Configuracion();
+        $this->historialModel = new HistorialVisita();
+        $this->ingresoModel   = new Ingreso();
     }
 
     // GET /citas
@@ -50,6 +54,28 @@ class CitaController extends BaseController {
         $id     = (int) ($_POST['id']    ?? 0);
         $estado = $_POST['estado']        ?? '';
         $fecha  = $_POST['fecha']         ?? date('Y-m-d');
+
+        // Registrar historial e ingreso cuando la cita pasa a atendido
+        if ($estado === 'atendido') {
+            $cita = $this->citaModel->findById($id);
+            if ($cita) {
+                if (!empty($cita['cliente_id'])) {
+                    $this->historialModel->registrar(
+                        (int)   $cita['cliente_id'],
+                        $id,
+                        (int)   $cita['servicio_id'],
+                        (float) $cita['precio'],
+                                $cita['fecha']
+                    );
+                }
+                $this->ingresoModel->registrar(
+                    $id,
+                    (int)   $cita['servicio_id'],
+                    (float) $cita['precio'],
+                            $cita['fecha']
+                );
+            }
+        }
 
         $this->citaModel->cambiarEstado($id, $estado);
         $this->redirect('citas?fecha=' . $fecha);

@@ -31,4 +31,20 @@ class Cliente extends BaseModel {
         $st->execute([$id]);
         return $st->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getAll(): array {
+        $st = $this->db->query(
+            "SELECT c.*,
+                (SELECT s.nombre FROM historial_visitas hv
+                 JOIN servicios s ON s.id = hv.servicio_id
+                 WHERE hv.cliente_id = c.id
+                 GROUP BY hv.servicio_id
+                 ORDER BY COUNT(*) DESC
+                 LIMIT 1) AS servicio_favorito
+             FROM clientes c
+             WHERE c.total_visitas > 0
+             ORDER BY c.total_visitas DESC, c.ultima_visita DESC"
+        );
+        return $st->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

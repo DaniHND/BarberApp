@@ -84,8 +84,8 @@ $acciones = [
     <?php endforeach; ?>
 </div>
 
-<!-- FullCalendar -->
-<div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden mb-5">
+<!-- FullCalendar — solo tablet/desktop -->
+<div class="hidden md:block bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden mb-5">
     <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
         <i data-lucide="calendar-range" class="w-4 h-4 text-amber-500"></i>
         <h3 class="text-sm font-semibold text-zinc-800">Vista de agenda</h3>
@@ -119,14 +119,14 @@ $acciones = [
     </div>
     <?php else: ?>
 
-    <div class="divide-y divide-stone-50">
+    <div class="divide-y divide-stone-100 md:divide-stone-50">
         <?php foreach ($citas as $c):
             $ec = $estadoConfig[$c['estado']] ?? $estadoConfig['reservado'];
             $ac = $acciones[$c['estado']] ?? [];
             $hInicio = substr($c['hora_inicio'], 0, 5);
             $hFin    = substr($c['hora_fin'],    0, 5);
         ?>
-        <div class="flex items-start gap-4 px-5 py-4 hover:bg-stone-50/50 transition-colors">
+        <div class="flex items-start gap-4 px-4 md:px-5 py-4 hover:bg-stone-50/50 transition-colors">
 
             <!-- Hora -->
             <div class="text-center w-14 flex-shrink-0 pt-0.5">
@@ -164,9 +164,9 @@ $acciones = [
                     </span>
                 </div>
 
-                <!-- Botones de acción -->
+                <!-- Botones de acción — tamaño táctil para móvil -->
                 <?php if (!empty($ac)): ?>
-                <div class="flex items-center gap-2 mt-2.5 flex-wrap">
+                <div class="flex items-center gap-2 mt-3 flex-wrap">
                     <?php foreach ($ac as $btn): ?>
                     <form method="POST" action="<?= url('citas/estado') ?>">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
@@ -174,7 +174,7 @@ $acciones = [
                         <input type="hidden" name="fecha"      value="<?= htmlspecialchars($fecha) ?>">
                         <input type="hidden" name="estado"     value="<?= $btn['estado'] ?>">
                         <button type="submit"
-                                class="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors <?= $btn['class'] ?>">
+                                class="text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm <?= $btn['class'] ?>">
                             <?= $btn['label'] ?>
                         </button>
                     </form>

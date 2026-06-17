@@ -139,14 +139,14 @@
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                             <input type="hidden" name="id"         value="<?= (int)$p['id'] ?>">
                             <button type="submit"
-                                    class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5
-                                           bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors">
-                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                    class="flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5
+                                           bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-colors shadow-sm">
+                                <i data-lucide="check" class="w-4 h-4"></i>
                                 Atendido
                             </button>
                         </form>
 
-                        <!-- Cancelar -->
+                        <!-- Quitar -->
                         <form method="POST" action="<?= url('espera/cancelar') ?>"
                               x-data
                               @submit.prevent="
@@ -162,7 +162,7 @@
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                             <input type="hidden" name="id"         value="<?= (int)$p['id'] ?>">
                             <button type="submit"
-                                    class="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                                    class="p-2.5 rounded-xl text-zinc-400 hover:text-red-500 hover:bg-red-50 transition-colors border border-stone-200"
                                     title="Quitar de la espera">
                                 <i data-lucide="x" class="w-4 h-4"></i>
                             </button>

@@ -20,7 +20,7 @@ foreach ($servicios as $s) {
 }
 ?>
 
-<div class="max-w-lg mx-auto px-4 py-6">
+<div class="max-w-lg mx-auto px-4 py-6 pb-10">
 
     <!-- Título de página -->
     <div class="text-center mb-6">
@@ -67,28 +67,28 @@ foreach ($servicios as $s) {
             <p class="text-sm text-zinc-500 mb-4">Elige un servicio para continuar</p>
 
             <?php if (empty($servicios)): ?>
-            <div class="bg-white rounded-xl border border-stone-200 p-8 text-center">
+            <div class="bg-white rounded-2xl border border-stone-200 p-8 text-center">
                 <i data-lucide="scissors" class="w-8 h-8 text-zinc-300 mx-auto mb-2"></i>
                 <p class="text-sm text-zinc-500">No hay servicios disponibles.</p>
             </div>
             <?php else: ?>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 gap-3">
                 <?php foreach ($servicios as $s): ?>
                 <button type="button"
                         @click="seleccionarServicio(<?= (int)$s['id'] ?>, '<?= addslashes(htmlspecialchars($s['nombre'])) ?>', <?= (float)$s['precio'] ?>, <?= (int)$s['duracion_minutos'] ?>)"
-                        class="slot-btn w-full p-4 rounded-xl border-2 text-left"
+                        class="slot-btn w-full p-5 rounded-2xl border-2 text-left transition-all active:scale-[.98]"
                         :class="servicioId === <?= (int)$s['id'] ?>
-                            ? 'border-amber-500 bg-amber-50 shadow-sm'
-                            : 'border-stone-200 bg-white hover:border-amber-300'">
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="min-w-0">
-                            <div class="font-semibold text-zinc-800 text-sm"><?= htmlspecialchars($s['nombre']) ?></div>
+                            ? 'border-amber-500 bg-amber-50 shadow-md'
+                            : 'border-stone-200 bg-white hover:border-amber-300 hover:shadow-sm'">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-zinc-800"><?= htmlspecialchars($s['nombre']) ?></div>
                             <?php if ($s['descripcion']): ?>
-                            <div class="text-xs text-zinc-500 mt-0.5 truncate"><?= htmlspecialchars($s['descripcion']) ?></div>
+                            <div class="text-sm text-zinc-500 mt-0.5"><?= htmlspecialchars($s['descripcion']) ?></div>
                             <?php endif; ?>
                         </div>
-                        <div class="text-right flex-shrink-0 ml-2">
-                            <div class="text-sm font-bold text-amber-600"><?= moneda((float)$s['precio']) ?></div>
+                        <div class="text-right flex-shrink-0">
+                            <div class="text-lg font-black text-amber-600"><?= moneda((float)$s['precio']) ?></div>
                             <div class="text-xs text-zinc-400"><?= duracionFmt((int)$s['duracion_minutos']) ?></div>
                         </div>
                     </div>
@@ -157,18 +157,20 @@ foreach ($servicios as $s) {
 
                 <!-- Grid de slots -->
                 <div x-show="slots.length > 0 && !cargando"
-                     class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                     class="grid grid-cols-3 gap-2.5">
                     <template x-for="slot in slots" :key="slot.hora_inicio">
                         <button type="button"
                                 @click="seleccionarSlot(slot)"
                                 :disabled="!slot.disponible"
-                                class="slot-btn py-2.5 px-1 rounded-xl border-2 text-center text-sm font-medium"
+                                class="slot-btn py-4 px-2 rounded-2xl border-2 text-center flex flex-col items-center gap-0.5 transition-all active:scale-[.97]"
                                 :class="horaInicio === slot.hora_inicio
-                                    ? 'border-amber-500 bg-amber-500 text-white shadow-sm'
+                                    ? 'border-amber-500 bg-amber-500 text-white shadow-md'
                                     : slot.disponible
-                                        ? 'border-stone-200 bg-white hover:border-amber-400 text-zinc-700'
-                                        : 'border-stone-100 bg-stone-50 text-zinc-300 cursor-not-allowed line-through'">
-                            <span x-text="slot.hora_inicio"></span>
+                                        ? 'border-stone-200 bg-white hover:border-amber-400 hover:shadow-sm text-zinc-700'
+                                        : 'border-stone-100 bg-stone-50 text-zinc-300 cursor-not-allowed'">
+                            <span class="text-base font-black leading-none" x-text="slot.hora_inicio"></span>
+                            <span class="text-[10px] font-normal opacity-70 leading-none" x-text="slot.hora_fin"
+                                  :class="!slot.disponible ? 'line-through' : ''"></span>
                         </button>
                     </template>
                 </div>
@@ -194,9 +196,9 @@ foreach ($servicios as $s) {
             <button type="button"
                     @click="avanzarPaso3()"
                     :disabled="!horaInicio"
-                    class="slot-btn w-full py-3 rounded-xl font-semibold text-sm transition-all"
+                    class="slot-btn w-full py-4 rounded-2xl font-bold text-base transition-all active:scale-[.98]"
                     :class="horaInicio
-                        ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-sm'
+                        ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-md'
                         : 'bg-stone-200 text-zinc-400 cursor-not-allowed'">
                 <span x-text="horaInicio ? 'Continuar · ' + slotLabel : 'Selecciona una hora'"></span>
             </button>
@@ -249,7 +251,7 @@ foreach ($servicios as $s) {
                         <input type="text" name="nombre" x-model="nombre"
                                value="<?= $preNombre ?>"
                                placeholder="¿Cómo te llamamos?"
-                               class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
+                               class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
                                       focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                                autofocus required>
                     </div>
@@ -262,15 +264,15 @@ foreach ($servicios as $s) {
                         <input type="tel" name="telefono" x-model="telefono"
                                value="<?= $preTelefono ?>"
                                placeholder="Para recordatorios"
-                               class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
+                               class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
                                       focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
                     </div>
                 </div>
 
                 <!-- Confirmar -->
                 <button type="submit"
-                        class="slot-btn w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5
-                               rounded-xl shadow-sm text-sm flex items-center justify-center gap-2">
+                        class="slot-btn w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4
+                               rounded-2xl shadow-md text-base flex items-center justify-center gap-2 active:scale-[.98] transition-all">
                     <i data-lucide="calendar-check" class="w-4 h-4"></i>
                     Confirmar reserva
                 </button>

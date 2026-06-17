@@ -178,5 +178,5 @@
         </span>
     </header>
 
-    <!-- Contenido de la página -->
-    <main class="flex-1 p-4 md:p-6">
+    <!-- Contenido de la página (pb-24 en móvil = espacio para bottom nav) -->
+    <main class="flex-1 px-4 pt-4 pb-24 md:p-6">

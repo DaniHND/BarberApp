@@ -3,12 +3,17 @@ abstract class BaseController {
 
     // ── Renderizar vista con layout ──────────────────────
     protected function render(string $view, array $data = [], bool $withLayout = true): void {
+        // Extraer flash de sesión y añadirlo automáticamente al scope
+        if (!array_key_exists('flash', $data) && !empty($_SESSION['flash'])) {
+            $data['flash'] = $_SESSION['flash'];
+            unset($_SESSION['flash']);
+        }
+
         extract($data, EXTR_SKIP);
 
         if ($withLayout) {
-            $viewFile = BASE_PATH . '/views/' . $view . '.php';
             require BASE_PATH . '/views/layouts/header.php';
-            require $viewFile;
+            require BASE_PATH . '/views/' . $view . '.php';
             require BASE_PATH . '/views/layouts/footer.php';
         } else {
             require BASE_PATH . '/views/' . $view . '.php';

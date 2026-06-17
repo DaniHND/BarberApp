@@ -295,8 +295,11 @@
                     <span class="hero-badge" style="background:rgba(22,163,74,.25);border-color:rgba(22,163,74,.4);color:#4ade80;">
                         <i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>Fase 1 completada
                     </span>
+                    <span class="hero-badge" style="background:rgba(22,163,74,.25);border-color:rgba(22,163,74,.4);color:#4ade80;">
+                        <i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>Fase 2 completada
+                    </span>
                     <span class="hero-badge pendiente">
-                        <i class="bi bi-circle me-1" style="font-size:.5rem;"></i>Iniciando Fase 2
+                        <i class="bi bi-circle me-1" style="font-size:.5rem;"></i>Iniciando Fase 3
                     </span>
                 </div>
                 <h1 class="fw-bold mb-1" style="font-size:1.9rem;">BarberApp</h1>
@@ -306,7 +309,7 @@
                 <a href="https://github.com/DaniHND/BarberApp" target="_blank" class="repo-link">
                     <i class="bi bi-github me-2"></i>DaniHND/BarberApp
                 </a>
-                <small style="opacity:.45;">Última actualización: 17 jun 2026 — Proyecto iniciado</small>
+                <small style="opacity:.45;">Última actualización: 17 jun 2026 — Fase 2 completada</small>
             </div>
         </div>
 
@@ -314,16 +317,16 @@
         <div class="mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,.1);">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <small style="opacity:.65;font-weight:600;">Progreso general del desarrollo</small>
-                <small style="opacity:.65;">0 de 5 fases completadas</small>
+                <small style="opacity:.65;">2 de 5 fases completadas</small>
             </div>
             <div class="progress" style="height:8px;background:rgba(255,255,255,.12);border-radius:4px;">
                 <div class="progress-bar" role="progressbar"
-                     style="width:20%;background:linear-gradient(90deg,var(--dorado-lt),var(--dorado));border-radius:4px;">
+                     style="width:40%;background:linear-gradient(90deg,var(--dorado-lt),var(--dorado));border-radius:4px;">
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-1">
-                <small style="opacity:.4;">Fase 1 completa · 1 de 5 fases</small>
-                <small style="opacity:.4;font-weight:700;">20%</small>
+                <small style="opacity:.4;">Fases 1 y 2 completas · 2 de 5</small>
+                <small style="opacity:.4;font-weight:700;">40%</small>
             </div>
         </div>
     </div>
@@ -418,7 +421,7 @@
             <div class="row g-3 mb-4">
                 <div class="col-6 col-sm-3">
                     <div class="stat-box">
-                        <div class="stat-num" style="color:var(--verde);">1</div>
+                        <div class="stat-num" style="color:var(--verde);">2</div>
                         <div class="stat-label">Fases completadas</div>
                     </div>
                 </div>
@@ -476,13 +479,13 @@
                         </div>
 
                         <!-- Fase 2 -->
-                        <div class="fase-card pendiente p-3">
+                        <div class="fase-card completa p-3">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="fase-numero">2</div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                                        <h6 class="fw-bold mb-0 text-muted">Dashboard + Gestión de Servicios</h6>
-                                        <span class="badge-estado badge-pendiente">Pendiente</span>
+                                        <h6 class="fw-bold mb-0 text-success">Dashboard + Gestión de Servicios</h6>
+                                        <span class="badge-estado badge-hecho"><i class="bi bi-check-circle-fill me-1"></i>Completada</span>
                                     </div>
                                     <div class="plain-box mt-2">
                                         <strong>Qué se construirá</strong>
@@ -621,22 +624,22 @@
                         <div class="col-md-6 ps-md-2 mt-3 mt-md-0">
                             <div class="section-title">Área del administrador (privada)</div>
 
-                            <div class="modulo-item pendiente">
+                            <div class="modulo-item hecho">
                                 <div class="modulo-icono"><i class="bi bi-speedometer2"></i></div>
                                 <div>
                                     <div class="fw-semibold" style="font-size:.88rem;">Dashboard</div>
                                     <div class="text-muted" style="font-size:.78rem;">Citas del día, espera, ingresos y servicios top</div>
                                 </div>
-                                <span class="badge-estado badge-pendiente ms-auto">F2</span>
+                                <span class="badge-estado badge-hecho ms-auto">F2 ✓</span>
                             </div>
 
-                            <div class="modulo-item pendiente">
+                            <div class="modulo-item hecho">
                                 <div class="modulo-icono"><i class="bi bi-scissors"></i></div>
                                 <div>
                                     <div class="fw-semibold" style="font-size:.88rem;">Gestión de Servicios</div>
                                     <div class="text-muted" style="font-size:.78rem;">Nombre, descripción, precio y duración de cada servicio</div>
                                 </div>
-                                <span class="badge-estado badge-pendiente ms-auto">F2</span>
+                                <span class="badge-estado badge-hecho ms-auto">F2 ✓</span>
                             </div>
 
                             <div class="modulo-item pendiente">
@@ -892,14 +895,15 @@
                             <div class="text-muted" style="font-size:.78rem;">Arquitectura MVC, 8 tablas SQL, login/logout admin, sidebar Tailwind + Alpine.js, dashboard base.</div>
                         </div>
                         <div class="tl-item">
-                            <div class="tl-dot pendiente"></div>
-                            <div class="fw-semibold text-muted" style="font-size:.88rem;">Fase 2 — Dashboard + Servicios</div>
-                            <div class="text-muted" style="font-size:.78rem;">Próxima fase</div>
+                            <div class="tl-dot"></div>
+                            <div class="fw-semibold" style="font-size:.88rem;">Fase 2 completada</div>
+                            <div class="text-muted" style="font-size:.78rem;">17 jun 2026</div>
+                            <div class="text-muted" style="font-size:.78rem;">Dashboard con KPIs reales, gráfica Chart.js últimos 7 días, top servicios. CRUD Servicios completo con soft delete, toggle activo y CSRF.</div>
                         </div>
                         <div class="tl-item">
                             <div class="tl-dot pendiente"></div>
                             <div class="fw-semibold text-muted" style="font-size:.88rem;">Fase 3 — Reserva pública</div>
-                            <div class="text-muted" style="font-size:.78rem;">Pendiente</div>
+                            <div class="text-muted" style="font-size:.78rem;">Próxima fase</div>
                         </div>
                         <div class="tl-item">
                             <div class="tl-dot pendiente"></div>

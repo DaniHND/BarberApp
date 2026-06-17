@@ -35,13 +35,20 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 $routes = [
     'GET' => [
-        ''          => ['DashboardController', 'index'],
-        'dashboard' => ['DashboardController', 'index'],
-        'login'     => ['AuthController',      'showLogin'],
-        'logout'    => ['AuthController',      'logout'],
+        ''                  => ['DashboardController', 'index'],
+        'dashboard'         => ['DashboardController', 'index'],
+        'login'             => ['AuthController',      'showLogin'],
+        'logout'            => ['AuthController',      'logout'],
+        'servicios'         => ['ServicioController',  'index'],
+        'servicios/crear'   => ['ServicioController',  'crear'],
+        'servicios/editar'  => ['ServicioController',  'editar'],
     ],
     'POST' => [
-        'login'     => ['AuthController',      'login'],
+        'login'                 => ['AuthController',     'login'],
+        'servicios/guardar'     => ['ServicioController', 'guardar'],
+        'servicios/actualizar'  => ['ServicioController', 'actualizar'],
+        'servicios/eliminar'    => ['ServicioController', 'eliminar'],
+        'servicios/toggle'      => ['ServicioController', 'toggle'],
     ],
 ];
 

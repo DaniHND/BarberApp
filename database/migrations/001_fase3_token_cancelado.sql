@@ -10,4 +10,4 @@ ALTER TABLE citas
 ALTER TABLE citas
     ADD COLUMN token VARCHAR(64) DEFAULT NULL UNIQUE AFTER nombre_cliente;
 
-CREATE INDEX IF NOT EXISTS idx_token ON citas(token);
+ALTER TABLE citas ADD INDEX idx_token (token);

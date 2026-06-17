@@ -101,7 +101,45 @@
 
     </div>
 
-    <p class="text-center text-zinc-600 text-xs mt-4">
+    <!-- Credenciales de prueba -->
+    <div class="mt-4 rounded-xl border border-zinc-700/60 bg-zinc-800/60 px-4 py-3"
+         x-data="{ mostrar: false }">
+        <button type="button" @click="mostrar = !mostrar"
+                class="w-full flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-200 transition-colors">
+            <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Credenciales de prueba
+            </span>
+            <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="mostrar ? 'rotate-180' : ''"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+            </svg>
+        </button>
+
+        <div x-show="mostrar" x-transition class="mt-3 space-y-1.5" style="display:none;">
+            <div class="flex items-center justify-between text-xs">
+                <span class="text-zinc-500">Usuario</span>
+                <button type="button"
+                        onclick="document.getElementById('usuario').value='admin'"
+                        class="font-mono text-amber-400 hover:text-amber-300 transition-colors cursor-pointer">
+                    admin
+                </button>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+                <span class="text-zinc-500">Contraseña</span>
+                <button type="button"
+                        onclick="document.getElementById('password').value='Admin123'"
+                        class="font-mono text-amber-400 hover:text-amber-300 transition-colors cursor-pointer">
+                    Admin123
+                </button>
+            </div>
+            <p class="text-zinc-600 text-xs pt-1">Clic en cada valor para autocompletar</p>
+        </div>
+    </div>
+
+    <p class="text-center text-zinc-600 text-xs mt-3">
         BarberApp v<?= APP_VERSION ?> &nbsp;·&nbsp; Sistema de Gestión de Barberías
     </p>
 </div>

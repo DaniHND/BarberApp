@@ -1,0 +1,59 @@
+<?php
+// ── Bootstrap ─────────────────────────────────────────────
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
+
+// ── Sesión ────────────────────────────────────────────────
+session_set_cookie_params([
+    'lifetime' => SESSION_LIFETIME,
+    'path'     => BASE_URL_PATH ?: '/',
+    'secure'   => false,
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+session_start();
+
+// ── Autoload ──────────────────────────────────────────────
+spl_autoload_register(function (string $class): void {
+    $dirs = [
+        BASE_PATH . '/models/',
+        BASE_PATH . '/controllers/',
+    ];
+    foreach ($dirs as $dir) {
+        $file = $dir . $class . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+});
+
+// ── Router ────────────────────────────────────────────────
+$uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri    = trim(str_replace(BASE_URL_PATH, '', $uri), '/');
+$method = $_SERVER['REQUEST_METHOD'];
+
+$routes = [
+    'GET' => [
+        ''          => ['DashboardController', 'index'],
+        'dashboard' => ['DashboardController', 'index'],
+        'login'     => ['AuthController',      'showLogin'],
+        'logout'    => ['AuthController',      'logout'],
+    ],
+    'POST' => [
+        'login'     => ['AuthController',      'login'],
+    ],
+];
+
+$route = $routes[$method][$uri] ?? null;
+
+if ($route) {
+    [$controllerName, $action] = $route;
+    $controller = new $controllerName();
+    $controller->$action();
+} else {
+    // Ruta no encontrada → redirigir a dashboard (o login si no hay sesión)
+    $target = empty($_SESSION['admin_id']) ? 'login' : 'dashboard';
+    header('Location: ' . url($target));
+    exit;
+}

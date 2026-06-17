@@ -81,10 +81,12 @@ CREATE TABLE IF NOT EXISTS citas (
                             'confirmado',
                             'atendido',
                             'no_presentado',
-                            'en_espera'
+                            'en_espera',
+                            'cancelado'
                         )               NOT NULL DEFAULT 'reservado',
     nombre_cliente      VARCHAR(100)    NOT NULL,
     telefono_cliente    VARCHAR(20)     DEFAULT NULL,
+    token               VARCHAR(64)     DEFAULT NULL UNIQUE,
     notas               TEXT            DEFAULT NULL,
     created_at          TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -92,7 +94,8 @@ CREATE TABLE IF NOT EXISTS citas (
     FOREIGN KEY (servicio_id)   REFERENCES servicios(id) ON DELETE RESTRICT,
     INDEX idx_fecha         (fecha),
     INDEX idx_estado        (estado),
-    INDEX idx_fecha_hora    (fecha, hora_inicio)
+    INDEX idx_fecha_hora    (fecha, hora_inicio),
+    INDEX idx_token         (token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ──────────────────────────────────────────────────────────

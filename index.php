@@ -35,13 +35,16 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 $routes = [
     'GET' => [
-        ''                  => ['DashboardController', 'index'],
-        'dashboard'         => ['DashboardController', 'index'],
-        'login'             => ['AuthController',      'showLogin'],
-        'logout'            => ['AuthController',      'logout'],
-        'servicios'         => ['ServicioController',  'index'],
-        'servicios/crear'   => ['ServicioController',  'crear'],
-        'servicios/editar'  => ['ServicioController',  'editar'],
+        ''                    => ['DashboardController', 'index'],
+        'dashboard'           => ['DashboardController', 'index'],
+        'login'               => ['AuthController',      'showLogin'],
+        'logout'              => ['AuthController',      'logout'],
+        'servicios'           => ['ServicioController',  'index'],
+        'servicios/crear'     => ['ServicioController',  'crear'],
+        'servicios/editar'    => ['ServicioController',  'editar'],
+        'reservar'            => ['ReservaController',   'mostrar'],
+        'reservar/horarios'   => ['ReservaController',   'horarios'],
+        'reservar/gestionar'  => ['ReservaController',   'gestionar'],
     ],
     'POST' => [
         'login'                 => ['AuthController',     'login'],
@@ -49,6 +52,9 @@ $routes = [
         'servicios/actualizar'  => ['ServicioController', 'actualizar'],
         'servicios/eliminar'    => ['ServicioController', 'eliminar'],
         'servicios/toggle'      => ['ServicioController', 'toggle'],
+        'reservar/guardar'      => ['ReservaController',  'guardar'],
+        'reservar/cancelar'     => ['ReservaController',  'cancelar'],
+        'reservar/reprogramar'  => ['ReservaController',  'reprogramar'],
     ],
 ];
 

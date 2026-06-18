@@ -14,10 +14,12 @@ class Cita extends BaseModel {
         // Domingos: sin servicio
         if (date('N', strtotime($fecha)) === '7') return [];
 
-        $duracion  = (int) $svc['duracion_minutos'];
-        $tInicio   = strtotime($fecha . ' ' . ($cfg['horario_inicio'] ?? '08:00'));
-        $tFin      = strtotime($fecha . ' ' . ($cfg['horario_fin']    ?? '19:00'));
-        $intervalo = (int) ($cfg['intervalo_citas'] ?? 30) * 60;
+        $duracion     = (int) $svc['duracion_minutos'];
+        $tInicio      = strtotime($fecha . ' ' . ($cfg['horario_inicio'] ?? '08:00'));
+        $tFin         = strtotime($fecha . ' ' . ($cfg['horario_fin']    ?? '19:00'));
+        $intervalo    = (int) ($cfg['intervalo_citas'] ?? 30) * 60;
+        $ahora        = time();
+        $esMismaFecha = ($fecha === date('Y-m-d'));
 
         // Citas activas del día (excluyendo la que se reprograma)
         $sql = "SELECT hora_inicio, hora_fin FROM citas WHERE fecha = ? AND estado IN ('reservado','confirmado')";
@@ -29,12 +31,14 @@ class Cita extends BaseModel {
 
         $slots = [];
         for ($t = $tInicio; $t + $duracion * 60 <= $tFin; $t += $intervalo) {
+            // Omitir slots cuya hora ya pasó cuando el cliente reserva para hoy
+            if ($esMismaFecha && $t < $ahora) continue;
+
             $sInicio = date('H:i', $t);
             $sFin    = date('H:i', $t + $duracion * 60);
 
             $libre = true;
             foreach ($ocupados as $o) {
-                // Solapamiento: slot empieza antes de que termine ocupado Y termina después de que empiece
                 if ($sInicio < $o['hora_fin'] && $sFin > $o['hora_inicio']) {
                     $libre = false;
                     break;
@@ -42,9 +46,11 @@ class Cita extends BaseModel {
             }
 
             $slots[] = [
-                'hora_inicio' => $sInicio,
-                'hora_fin'    => $sFin,
-                'disponible'  => $libre,
+                'hora_inicio'     => $sInicio,
+                'hora_fin'        => $sFin,
+                'hora_inicio_fmt' => date('g:i A', $t),
+                'hora_fin_fmt'    => date('g:i A', $t + $duracion * 60),
+                'disponible'      => $libre,
             ];
         }
         return $slots;

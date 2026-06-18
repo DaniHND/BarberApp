@@ -4,12 +4,14 @@ $maxFecha = date('Y-m-d', strtotime('+30 days'));
 $datos    = $datos ?? [];
 
 // Pre-fill from POST (error case)
-$preServicioId  = (int) ($datos['servicio_id']  ?? 0);
-$preFecha       = htmlspecialchars($datos['fecha']       ?? '', ENT_QUOTES);
-$preHoraInicio  = htmlspecialchars($datos['hora_inicio'] ?? '', ENT_QUOTES);
-$preHoraFin     = htmlspecialchars($datos['hora_fin']    ?? '', ENT_QUOTES);
-$preNombre      = htmlspecialchars($datos['nombre']      ?? '', ENT_QUOTES);
-$preTelefono    = htmlspecialchars($datos['telefono']    ?? '', ENT_QUOTES);
+$preServicioId    = (int) ($datos['servicio_id']  ?? 0);
+$preFecha         = htmlspecialchars($datos['fecha']       ?? '', ENT_QUOTES);
+$preHoraInicio    = htmlspecialchars($datos['hora_inicio'] ?? '', ENT_QUOTES);
+$preHoraFin       = htmlspecialchars($datos['hora_fin']    ?? '', ENT_QUOTES);
+$preNombre        = htmlspecialchars($datos['nombre']      ?? '', ENT_QUOTES);
+$preTelefono      = htmlspecialchars($datos['telefono']    ?? '', ENT_QUOTES);
+$preHoraInicioFmt = $preHoraInicio ? date('g:i A', strtotime($preHoraInicio)) : '';
+$preHoraFinFmt    = $preHoraFin    ? date('g:i A', strtotime($preHoraFin))    : '';
 
 $pasoInicial = !empty($errores) ? 3 : 1;
 
@@ -168,8 +170,8 @@ foreach ($servicios as $s) {
                                     : slot.disponible
                                         ? 'border-stone-200 bg-white hover:border-blue-400 hover:shadow-sm text-zinc-700'
                                         : 'border-stone-100 bg-stone-50 text-zinc-300 cursor-not-allowed'">
-                            <span class="text-base font-black leading-none" x-text="slot.hora_inicio"></span>
-                            <span class="text-[10px] font-normal opacity-70 leading-none" x-text="slot.hora_fin"
+                            <span class="text-base font-black leading-none" x-text="slot.hora_inicio_fmt"></span>
+                            <span class="text-[10px] font-normal opacity-70 leading-none" x-text="slot.hora_fin_fmt"
                                   :class="!slot.disponible ? 'line-through' : ''"></span>
                         </button>
                     </template>
@@ -299,6 +301,8 @@ function reserva() {
         slots:           [],
         horaInicio:      '<?= $preHoraInicio ?>',
         horaFin:         '<?= $preHoraFin ?>',
+        horaInicioFmt:   '<?= $preHoraInicioFmt ?>',
+        horaFinFmt:      '<?= $preHoraFinFmt ?>',
         nombre:          '<?= $preNombre ?>',
         telefono:        '<?= $preTelefono ?>',
         cargando:        false,
@@ -320,10 +324,12 @@ function reserva() {
 
         async cargarSlots() {
             if (!this.fecha || !this.servicioId) return;
-            this.cargando   = true;
-            this.slots      = [];
-            this.horaInicio = '';
-            this.horaFin    = '';
+            this.cargando      = true;
+            this.slots         = [];
+            this.horaInicio    = '';
+            this.horaFin       = '';
+            this.horaInicioFmt = '';
+            this.horaFinFmt    = '';
             try {
                 const r = await fetch(`${baseUrl}/reservar/horarios?fecha=${this.fecha}&servicio_id=${this.servicioId}`);
                 this.slots = await r.json();
@@ -333,8 +339,10 @@ function reserva() {
 
         seleccionarSlot(slot) {
             if (!slot.disponible) return;
-            this.horaInicio = slot.hora_inicio;
-            this.horaFin    = slot.hora_fin;
+            this.horaInicio    = slot.hora_inicio;
+            this.horaFin       = slot.hora_fin;
+            this.horaInicioFmt = slot.hora_inicio_fmt;
+            this.horaFinFmt    = slot.hora_fin_fmt;
         },
 
         avanzarPaso3() {
@@ -352,7 +360,7 @@ function reserva() {
         },
 
         get slotLabel() {
-            return this.horaInicio ? `${this.horaInicio} – ${this.horaFin}` : '';
+            return this.horaInicioFmt ? `${this.horaInicioFmt} – ${this.horaFinFmt}` : '';
         },
 
         get precioFmt() {

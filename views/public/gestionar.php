@@ -96,9 +96,9 @@ $estadoInfo = isset($cita['estado']) ? ($estadoLabels[$cita['estado']] ?? ['labe
                 <div>
                     <div class="text-xs text-zinc-400 font-medium">Hora</div>
                     <div class="font-semibold text-zinc-800">
-                        <?= htmlspecialchars(substr($cita['hora_inicio'], 0, 5)) ?>
+                        <?= date('g:i A', strtotime($cita['hora_inicio'])) ?>
                         –
-                        <?= htmlspecialchars(substr($cita['hora_fin'], 0, 5)) ?>
+                        <?= date('g:i A', strtotime($cita['hora_fin'])) ?>
                         <span class="text-zinc-400 font-normal">(<?= duracionFmt((int)$cita['duracion_minutos']) ?>)</span>
                     </div>
                 </div>
@@ -189,7 +189,7 @@ $estadoInfo = isset($cita['estado']) ? ($estadoLabels[$cita['estado']] ?? ['labe
                                             : slot.disponible
                                                 ? 'border-stone-200 bg-white hover:border-blue-400 text-zinc-700'
                                                 : 'border-stone-100 bg-stone-50 text-zinc-300 cursor-not-allowed line-through'">
-                                    <span x-text="slot.hora_inicio"></span>
+                                    <span x-text="slot.hora_inicio_fmt"></span>
                                 </button>
                             </template>
                         </div>
@@ -201,7 +201,7 @@ $estadoInfo = isset($cita['estado']) ? ($estadoLabels[$cita['estado']] ?? ['labe
                             :class="horaInicio
                                 ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-sm'
                                 : 'bg-stone-200 text-zinc-400 cursor-not-allowed'">
-                        <span x-text="horaInicio ? 'Reprogramar para las ' + horaInicio : 'Selecciona una hora'"></span>
+                        <span x-text="horaInicioFmt ? 'Reprogramar para las ' + horaInicioFmt : 'Selecciona una hora'"></span>
                     </button>
                 </div>
             </form>
@@ -288,22 +288,26 @@ $estadoInfo = isset($cita['estado']) ? ($estadoLabels[$cita['estado']] ?? ['labe
 <script>
 function gestionar() {
     return {
-        panel:      null,
-        fecha:      '',
-        slots:      [],
-        horaInicio: '',
-        horaFin:    '',
-        cargando:   false,
+        panel:         null,
+        fecha:         '',
+        slots:         [],
+        horaInicio:    '',
+        horaFin:       '',
+        horaInicioFmt: '',
+        horaFinFmt:    '',
+        cargando:      false,
         servicioId: <?= (int) ($cita['servicio_id'] ?? 0) ?>,
 
         init() {},
 
         async cargarSlots() {
             if (!this.fecha || !this.servicioId) return;
-            this.cargando   = true;
-            this.slots      = [];
-            this.horaInicio = '';
-            this.horaFin    = '';
+            this.cargando      = true;
+            this.slots         = [];
+            this.horaInicio    = '';
+            this.horaFin       = '';
+            this.horaInicioFmt = '';
+            this.horaFinFmt    = '';
             try {
                 const r = await fetch(`${baseUrl}/reservar/horarios?fecha=${this.fecha}&servicio_id=${this.servicioId}&excluir=<?= (int)($cita['id'] ?? 0) ?>`);
                 this.slots = await r.json();
@@ -313,8 +317,10 @@ function gestionar() {
 
         seleccionarSlot(slot) {
             if (!slot.disponible) return;
-            this.horaInicio = slot.hora_inicio;
-            this.horaFin    = slot.hora_fin;
+            this.horaInicio    = slot.hora_inicio;
+            this.horaFin       = slot.hora_fin;
+            this.horaInicioFmt = slot.hora_inicio_fmt;
+            this.horaFinFmt    = slot.hora_fin_fmt;
         },
 
         confirmarRep() {

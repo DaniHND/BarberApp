@@ -125,8 +125,8 @@
         <p class="opacity-75 mb-0">Sistema Web para la Gestión Inteligente de Barberías</p>
       </div>
       <div class="text-end opacity-75" style="font-size:.83rem;">
-        <div>Versión 1.0 · Junio 2026</div>
-        <div class="mt-1">2 usuarios · 7 módulos · Simulación de un día completo</div>
+        <div>Versión 1.1 · Junio 2026</div>
+        <div class="mt-1">2 usuarios · 8 módulos · Simulación de un día completo · Fase 6</div>
         <button onclick="window.print()" class="btn btn-sm mt-2" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);">
           <i class="bi bi-printer me-1"></i>Imprimir manual
         </button>
@@ -152,6 +152,7 @@
     <a class="nav-link" href="#agenda">Agenda de Citas</a>
     <a class="nav-link" href="#espera">Lista de Espera</a>
     <a class="nav-link" href="#servicios">Servicios</a>
+    <a class="nav-link" href="#barberos">Barberos</a>
     <a class="nav-link" href="#clientes">Clientes Frecuentes</a>
     <a class="nav-link" href="#reportes">Reportes</a>
 
@@ -324,23 +325,25 @@
           </div>
           <div style="padding:.5rem;text-align:center;">
             <div style="font-size:.9rem;font-weight:800;margin-bottom:.5rem;">✂ Reserva tu cita</div>
-            <div style="font-size:.75rem;color:#94a3b8;margin-bottom:.75rem;">Sin registro — solo tu nombre y ya</div>
-            <div style="display:flex;gap:.5rem;justify-content:center;">
-              <div style="background:#2563eb;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;">1</div>
-              <div style="height:2px;background:#e2e8f0;flex:1;margin-top:11px;"></div>
-              <div style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;">2</div>
-              <div style="height:2px;background:#e2e8f0;flex:1;margin-top:11px;"></div>
-              <div style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;">3</div>
+            <div style="font-size:.75rem;color:#94a3b8;margin-bottom:.75rem;">Sin registro — 4 pasos simples</div>
+            <div style="display:flex;gap:.3rem;justify-content:center;align-items:center;">
+              <div style="background:#2563eb;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;">1</div>
+              <div style="height:2px;background:#e2e8f0;flex:1;"></div>
+              <div style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;">2</div>
+              <div style="height:2px;background:#e2e8f0;flex:1;"></div>
+              <div style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;">3</div>
+              <div style="height:2px;background:#e2e8f0;flex:1;"></div>
+              <div style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;">4</div>
             </div>
-            <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;">Servicio · Fecha/hora · Confirmar</div>
+            <div style="font-size:.66rem;color:#94a3b8;margin-top:.4rem;">Servicio · Barbero · Hora · Confirmar</div>
           </div>
         </div>
 
         <div class="step">
           <div class="step-num rojo">2</div>
           <div class="step-body">
-            <h6>Elegir servicio, fecha y hora</h6>
-            <p>El proceso tiene 3 pasos cortos. No requiere correo, teléfono ni contraseña.</p>
+            <h6>Elegir servicio, barbero, fecha y hora</h6>
+            <p>El proceso tiene 4 pasos cortos. No requiere correo, teléfono ni contraseña.</p>
           </div>
         </div>
 
@@ -593,6 +596,88 @@
   </div>
 </div>
 
+<!-- BARBEROS -->
+<div class="card seccion" id="barberos">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    <i class="bi bi-person-badge me-1" style="color:var(--azul2);"></i>Gestión de Barberos (Fase 6)
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">Este módulo permite registrar los barberos que trabajan en el local, configurar su horario semanal (qué días y en qué horas están disponibles) y bloquear fechas específicas por vacaciones o ausencias. Los clientes pueden elegir un barbero al hacer su reserva.</div>
+
+    <div class="step mt-3">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h6>Agregar un nuevo barbero</h6>
+        <p>Ir a <strong>Gestión → Barberos → Agregar barbero</strong>. Solo se requiere el nombre; la descripción y el orden son opcionales.</p>
+        <div class="mockup mt-1">
+          <div class="fw-semibold mb-2" style="font-size:.8rem;">Formulario: Nuevo barbero</div>
+          <div class="field-row"><span class="field-label">Nombre *</span><span class="field-val">Marco Rodríguez</span></div>
+          <div class="field-row"><span class="field-label">Descripción</span><span class="field-val">Especialista en degradados y barba</span></div>
+          <div class="field-row"><span class="field-label">Orden en lista</span><span class="field-val">1</span></div>
+          <div class="mt-2"><span class="btn-mock verde">Guardar y configurar horario</span></div>
+        </div>
+        <div class="ruta">Menú lateral → Barberos → Agregar barbero</div>
+        <div class="ok-box mt-2">Al guardar, el sistema redirige automáticamente a la pantalla de configuración de horario para que no se olvide asignarle los días de trabajo.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h6>Configurar el horario semanal</h6>
+        <p>En la página de horario se muestra una grilla con los 6 días (Lunes a Sábado). Para cada día se puede:</p>
+        <ul>
+          <li>Marcar la casilla <strong>"Trabaja este día"</strong> para activarlo</li>
+          <li>Definir la <strong>hora de entrada</strong> (ej: 8:00 AM) y la <strong>hora de salida</strong> (ej: 5:00 PM)</li>
+        </ul>
+        <div class="mockup mt-2">
+          <div class="fw-semibold mb-2" style="font-size:.8rem;">Horario semanal — Marco Rodríguez</div>
+          <div style="font-size:.75rem;">
+            <div class="d-flex align-items-center gap-2 mb-1"><input type="checkbox" checked disabled> <strong>Lunes</strong> <span class="ms-auto text-muted">8:00 AM – 5:00 PM</span></div>
+            <div class="d-flex align-items-center gap-2 mb-1"><input type="checkbox" checked disabled> <strong>Martes</strong> <span class="ms-auto text-muted">8:00 AM – 5:00 PM</span></div>
+            <div class="d-flex align-items-center gap-2 mb-1"><input type="checkbox" disabled> <strong>Miércoles</strong> <span class="ms-auto text-muted" style="color:#94a3b8;">Libre</span></div>
+            <div class="d-flex align-items-center gap-2 mb-1"><input type="checkbox" checked disabled> <strong>Jueves</strong> <span class="ms-auto text-muted">8:00 AM – 5:00 PM</span></div>
+            <div class="d-flex align-items-center gap-2 mb-1"><input type="checkbox" checked disabled> <strong>Viernes</strong> <span class="ms-auto text-muted">8:00 AM – 6:00 PM</span></div>
+            <div class="d-flex align-items-center gap-2"><input type="checkbox" checked disabled> <strong>Sábado</strong> <span class="ms-auto text-muted">9:00 AM – 2:00 PM</span></div>
+          </div>
+          <div class="mt-2"><span class="btn-mock">Guardar horario</span></div>
+        </div>
+        <div class="warn-box mt-2">Si un barbero no tiene horario configurado para un día, no aparecerá disponible ese día cuando el cliente seleccione ese barbero específico.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <h6>Bloquear una fecha (vacaciones / ausencia)</h6>
+        <p>En la misma pantalla de horario, al lado derecho hay un formulario para bloquear fechas específicas. Útil cuando el barbero no irá un día concreto aunque normalmente trabaje ese día.</p>
+        <div class="mockup mt-1">
+          <div class="fw-semibold mb-2" style="font-size:.8rem;">Bloquear fecha</div>
+          <div class="field-row"><span class="field-label">Fecha</span><span class="field-val">2026-07-04</span></div>
+          <div class="field-row"><span class="field-label">Motivo</span><span class="field-val">Vacaciones</span></div>
+          <div class="mt-2"><span class="btn-mock rojo">Bloquear esta fecha</span></div>
+        </div>
+        <p style="font-size:.83rem;margin-top:.5rem;">Las fechas bloqueadas aparecen en una lista debajo del formulario. Se pueden eliminar con el ícono de papelera si el barbero decide volver ese día.</p>
+        <div class="ruta">Barberos → ícono 🗓 del barbero → Gestionar horario</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">D</div>
+      <div class="step-body">
+        <h6>Activar o desactivar un barbero</h6>
+        <p>Con el interruptor (toggle) de la lista de barberos se puede desactivar temporalmente a un barbero. Un barbero inactivo no aparece en la página de reservas — los clientes no lo verán como opción hasta que se reactive.</p>
+      </div>
+    </div>
+
+    <div class="ok-box">
+      <strong>¿Qué ve el cliente cuando hay barberos registrados?</strong> En el paso 2 de la reserva, el cliente verá una tarjeta con "Sin preferencia" (usa el horario general de la barbería) y una tarjeta por cada barbero activo. Al elegir un barbero, los slots disponibles que se muestran en el paso 3 son <em>exclusivos</em> de ese barbero: filtrados por su horario y sus fechas bloqueadas.
+    </div>
+  </div>
+</div>
+
 <!-- CLIENTES FRECUENTES -->
 <div class="card seccion" id="clientes">
   <div class="card-header d-flex align-items-center gap-2">
@@ -728,17 +813,17 @@
   </div>
   <div class="card-body p-4">
 
-    <div class="info-box">El cliente solo necesita el enlace de la página de reservas. No hay que crear una cuenta ni recordar contraseñas. Todo el proceso toma menos de 2 minutos.</div>
+    <div class="info-box">El cliente solo necesita el enlace de la página de reservas. No hay que crear una cuenta ni recordar contraseñas. Todo el proceso de 4 pasos toma menos de 2 minutos.</div>
 
-    <div class="row g-4 mt-1">
+    <div class="row g-3 mt-1">
 
-      <div class="col-md-4">
+      <div class="col-md-6 col-lg-3">
         <div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:12px;padding:1.25rem;height:100%;">
           <div class="text-center mb-3">
             <div style="background:#2563eb;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">1</div>
             <div class="fw-bold">Elegir el servicio</div>
           </div>
-          <p style="font-size:.83rem;color:#475569;margin:0;">La primera pantalla muestra todos los servicios disponibles con su precio y duración. Hacer clic en el que se necesita para avanzar al siguiente paso.</p>
+          <p style="font-size:.83rem;color:#475569;margin:0;">La primera pantalla muestra todos los servicios disponibles con su precio y duración. Hacer clic en el que se necesita para avanzar.</p>
           <div class="mockup mt-2" style="padding:.6rem .75rem;">
             <div style="background:#fff;border:2px solid #2563eb;border-radius:8px;padding:.5rem .75rem;font-size:.75rem;">
               <div class="fw-bold">Corte clásico</div>
@@ -749,37 +834,55 @@
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div style="background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:1.25rem;height:100%;">
+      <div class="col-md-6 col-lg-3">
+        <div style="background:#faf5ff;border:2px solid #e9d5ff;border-radius:12px;padding:1.25rem;height:100%;">
           <div class="text-center mb-3">
-            <div style="background:#e2e8f0;color:#64748b;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">2</div>
-            <div class="fw-bold">Elegir fecha y hora</div>
+            <div style="background:#7c3aed;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">2</div>
+            <div class="fw-bold">Elegir el barbero</div>
           </div>
-          <p style="font-size:.83rem;color:#475569;margin:0;">Se selecciona la fecha y el sistema muestra automáticamente solo las horas disponibles. Los horarios ocupados no aparecen.</p>
+          <p style="font-size:.83rem;color:#475569;margin:0;">Se muestra una tarjeta "Sin preferencia" y una tarjeta por cada barbero activo. Elegir uno filtra los horarios del paso siguiente a los disponibles de ese barbero.</p>
           <div class="mockup mt-2" style="padding:.6rem .75rem;">
-            <div class="d-flex flex-wrap gap-1">
-              <div style="border:2px solid #2563eb;background:#2563eb;color:#fff;border-radius:8px;padding:.3rem .5rem;font-size:.72rem;font-weight:700;">10:00<br><span style="font-size:.62rem;opacity:.8;">10:30</span></div>
-              <div style="border:2px solid #e2e8f0;border-radius:8px;padding:.3rem .5rem;font-size:.72rem;color:#64748b;">10:30<br><span style="font-size:.62rem;">11:00</span></div>
-              <div style="border:2px solid #f1f5f9;background:#f8fafc;border-radius:8px;padding:.3rem .5rem;font-size:.72rem;color:#cbd5e1;text-decoration:line-through;">11:00<br><span style="font-size:.62rem;">11:30</span></div>
-            </div>
-            <div class="d-flex gap-3 mt-2" style="font-size:.68rem;color:#94a3b8;">
-              <span>⬜ Disponible</span><span style="color:#2563eb;">■ Seleccionado</span><span>▪ Ocupado</span>
+            <div class="d-flex gap-1 flex-wrap">
+              <div style="border:1px solid #e2e8f0;border-radius:8px;padding:.4rem .5rem;font-size:.7rem;text-align:center;flex:1;">
+                <div style="font-size:1rem;">🎲</div>
+                <div class="fw-semibold">Sin prefer.</div>
+              </div>
+              <div style="border:2px solid #7c3aed;border-radius:8px;padding:.4rem .5rem;font-size:.7rem;text-align:center;flex:1;background:#faf5ff;">
+                <div style="background:#7c3aed;color:#fff;border-radius:50%;width:22px;height:22px;line-height:22px;margin:0 auto;font-weight:800;font-size:.75rem;">M</div>
+                <div class="fw-semibold mt-1">Marco</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-6 col-lg-3">
+        <div style="background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:1.25rem;height:100%;">
+          <div class="text-center mb-3">
+            <div style="background:#0ea5e9;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">3</div>
+            <div class="fw-bold">Elegir fecha y hora</div>
+          </div>
+          <p style="font-size:.83rem;color:#475569;margin:0;">Se selecciona la fecha y el sistema muestra solo las horas disponibles en formato AM/PM. Los slots ya pasados y los ocupados no aparecen.</p>
+          <div class="mockup mt-2" style="padding:.6rem .75rem;">
+            <div class="d-flex flex-wrap gap-1">
+              <div style="border:2px solid #2563eb;background:#2563eb;color:#fff;border-radius:8px;padding:.3rem .5rem;font-size:.7rem;font-weight:700;">10:00 AM<br><span style="font-size:.6rem;opacity:.8;">10:30 AM</span></div>
+              <div style="border:2px solid #e2e8f0;border-radius:8px;padding:.3rem .5rem;font-size:.7rem;color:#64748b;">10:30 AM<br><span style="font-size:.6rem;">11:00 AM</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
         <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;padding:1.25rem;height:100%;">
           <div class="text-center mb-3">
-            <div style="background:#16a34a;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">3</div>
+            <div style="background:#16a34a;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">4</div>
             <div class="fw-bold">Confirmar la cita</div>
           </div>
           <p style="font-size:.83rem;color:#475569;margin:0;">Solo se pide el nombre o apodo (el teléfono es opcional). Al enviar, el sistema confirma la cita y muestra el enlace personal para gestionarla.</p>
           <div class="mockup mt-2" style="padding:.6rem .75rem;">
-            <div class="field-row" style="margin-bottom:.3rem;"><span class="field-label" style="min-width:80px;font-size:.72rem;">Nombre</span><span class="field-val" style="font-size:.72rem;">Carlos M.</span></div>
-            <div class="field-row"><span class="field-label" style="min-width:80px;font-size:.72rem;">Teléfono</span><span class="field-val" style="font-size:.72rem;color:#94a3b8;">(opcional)</span></div>
-            <div class="mt-2 text-center"><span class="btn-mock verde" style="font-size:.72rem;">✓ Confirmar reserva</span></div>
+            <div class="field-row" style="margin-bottom:.3rem;"><span class="field-label" style="min-width:70px;font-size:.7rem;">Nombre</span><span class="field-val" style="font-size:.7rem;">Carlos M.</span></div>
+            <div class="field-row"><span class="field-label" style="min-width:70px;font-size:.7rem;">Teléfono</span><span class="field-val" style="font-size:.7rem;color:#94a3b8;">(opcional)</span></div>
+            <div class="mt-2 text-center"><span class="btn-mock verde" style="font-size:.7rem;">✓ Confirmar reserva</span></div>
           </div>
         </div>
       </div>
@@ -1205,6 +1308,12 @@
 
           <dt>VIP / Frecuente / Regular</dt>
           <dd style="color:#64748b;margin-bottom:.75rem;">Rangos de fidelidad automáticos basados en visitas: VIP = 10+, Frecuente = 5-9, Regular = 1-4.</dd>
+
+          <dt>Sin preferencia</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Opción en el paso de elección de barbero que usa el horario general de la barbería y verifica conflictos contra todas las citas activas, sin filtrar por barbero específico.</dd>
+
+          <dt>Barbero_bloqueos</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Fechas específicas bloqueadas para un barbero (vacaciones, ausencias). Aunque ese barbero trabaje normalmente ese día de la semana, no aparecerá disponible en esa fecha.</dd>
         </dl>
       </div>
     </div>
@@ -1261,6 +1370,16 @@
       </div>
     </div>
 
+    <div class="step">
+      <div class="step-num" style="background:#64748b;">?</div>
+      <div class="step-body">
+        <h6>El cliente elige un barbero pero no aparecen horarios</h6>
+        <p><strong>Causa 1:</strong> El barbero no tiene horario configurado para ese día de la semana. Ir al panel admin → Barberos → Gestionar horario → activar el día correspondiente.</p>
+        <p><strong>Causa 2:</strong> La fecha seleccionada está en la lista de bloqueos del barbero (vacaciones / ausencia). El cliente debe elegir otra fecha o seleccionar "Sin preferencia".</p>
+        <p><strong>Causa 3:</strong> Todos los slots del barbero en esa fecha ya están ocupados. El cliente puede probar con "Sin preferencia" o elegir otro barbero / fecha.</p>
+      </div>
+    </div>
+
     <div class="warn-box">
       <strong>Si hay dudas técnicas o el sistema no responde como se espera:</strong> cerrar el navegador, abrir de nuevo e ingresar otra vez. Si el problema persiste, reiniciar Laragon (clic derecho en el ícono de la bandeja → Quit → volver a abrir Laragon).
     </div>
@@ -1272,7 +1391,7 @@
 </div><!-- /container -->
 
 <div class="text-center py-4 text-muted" style="font-size:.78rem;border-top:1px solid #e2e8f0;margin-top:1rem;">
-  BarberApp v1.0 — Manual de Usuario &nbsp;|&nbsp;
+  BarberApp v1.1 — Manual de Usuario · Fase 6: Multi-barbero &nbsp;|&nbsp;
   <a href="https://github.com/DaniHND/BarberApp" target="_blank" class="text-muted">
     <i class="bi bi-github me-1"></i>github.com/DaniHND/BarberApp
   </a>

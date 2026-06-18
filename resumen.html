@@ -187,6 +187,7 @@
         .archivo-tree .f3   { color: #7c3aed; }
         .archivo-tree .f4   { color: var(--dorado); }
         .archivo-tree .f5   { color: var(--rojo); }
+        .archivo-tree .f6   { color: #7c3aed; }
 
         /* ── Timeline ── */
         .timeline { position: relative; padding-left: 1.5rem; }
@@ -307,6 +308,9 @@
                     <span class="hero-badge" style="background:rgba(22,163,74,.25);border-color:rgba(22,163,74,.4);color:#4ade80;">
                         <i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>Fase 5 completada
                     </span>
+                    <span class="hero-badge" style="background:rgba(22,163,74,.25);border-color:rgba(22,163,74,.4);color:#4ade80;">
+                        <i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>Fase 6 completada
+                    </span>
                     <span class="hero-badge" style="background:rgba(56,189,248,.2);border-color:rgba(56,189,248,.4);color:#7dd3fc;">
                         <i class="bi bi-phone-fill me-1"></i>Mobile First aplicado
                     </span>
@@ -321,7 +325,7 @@
                 <a href="https://github.com/DaniHND/BarberApp" target="_blank" class="repo-link">
                     <i class="bi bi-github me-2"></i>DaniHND/BarberApp
                 </a>
-                <small style="opacity:.45;">Última actualización: 18 jun 2026 — Paleta azul/rojo aplicada</small>
+                <small style="opacity:.45;">Última actualización: 18 jun 2026 — Fase 6: Multi-barbero completada</small>
             </div>
         </div>
 
@@ -329,7 +333,7 @@
         <div class="mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,.1);">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <small style="opacity:.65;font-weight:600;">Progreso general del desarrollo</small>
-                <small style="opacity:.65;">5 de 5 fases completadas</small>
+                <small style="opacity:.65;">6 de 6 fases completadas</small>
             </div>
             <div class="progress" style="height:8px;background:rgba(255,255,255,.12);border-radius:4px;">
                 <div class="progress-bar" role="progressbar"
@@ -337,7 +341,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-1">
-                <small style="opacity:.4;">Todas las fases completas · 5 de 5</small>
+                <small style="opacity:.4;">Todas las fases completas · 6 de 6</small>
                 <small style="opacity:.4;font-weight:700;">100%</small>
             </div>
         </div>
@@ -401,11 +405,13 @@
                             <i class="bi bi-calendar-check me-2" style="color:var(--dorado);"></i>¿Cómo hace el cliente para reservar?
                         </div>
                         <div class="d-flex flex-wrap gap-2 align-items-center" style="font-size:.82rem;color:#57534e;">
-                            <span style="background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:.3rem .65rem;">1. Entra a la página web</span>
+                            <span style="background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:.3rem .65rem;">1. Elige el servicio</span>
                             <i class="bi bi-arrow-right text-muted"></i>
-                            <span style="background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:.3rem .65rem;">2. Escribe su nombre o apodo</span>
+                            <span style="background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:.3rem .65rem;">2. Elige el barbero (opcional)</span>
                             <i class="bi bi-arrow-right text-muted"></i>
-                            <span style="background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:.3rem .65rem;">3. Elige servicio, fecha y hora</span>
+                            <span style="background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:.3rem .65rem;">3. Elige fecha y hora</span>
+                            <i class="bi bi-arrow-right text-muted"></i>
+                            <span style="background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:.3rem .65rem;">4. Escribe tu nombre y confirma</span>
                             <i class="bi bi-arrow-right text-muted"></i>
                             <span style="background:#dbeafe;border:1px solid #bfdbfe;border-radius:6px;padding:.3rem .65rem;color:#1d4ed8;font-weight:600;">¡Cita confirmada! Sin contraseña</span>
                         </div>
@@ -433,19 +439,19 @@
             <div class="row g-3 mb-4">
                 <div class="col-6 col-sm-3">
                     <div class="stat-box">
-                        <div class="stat-num" style="color:var(--verde);">5</div>
+                        <div class="stat-num" style="color:var(--verde);">6</div>
                         <div class="stat-label">Fases completadas</div>
                     </div>
                 </div>
                 <div class="col-6 col-sm-3">
                     <div class="stat-box">
-                        <div class="stat-num" style="color:var(--dorado);">5</div>
+                        <div class="stat-num" style="color:var(--dorado);">6</div>
                         <div class="stat-label">Fases totales</div>
                     </div>
                 </div>
                 <div class="col-6 col-sm-3">
                     <div class="stat-box">
-                        <div class="stat-num" style="color:var(--azul);">8</div>
+                        <div class="stat-num" style="color:var(--azul);">11</div>
                         <div class="stat-label">Tablas en BD</div>
                     </div>
                 </div>
@@ -572,7 +578,7 @@
                                         <span class="badge-estado badge-hecho"><i class="bi bi-check-circle-fill me-1"></i>Completada</span>
                                     </div>
                                     <div class="plain-box mt-2">
-                                        <strong>Qué se construirá</strong>
+                                        <strong>Qué se construyó</strong>
                                         Cada vez que un cliente se atiende, el sistema registra automáticamente su visita: cuántas veces ha venido, cuándo fue la última vez y qué servicios ha pedido. Así el barbero puede ver quiénes son sus clientes más fieles. También se activan los reportes: ingresos del día y del mes, cuáles servicios se venden más, y el historial completo de citas. Todo con gráficas visuales.
                                     </div>
                                     <div class="d-flex flex-wrap gap-1">
@@ -581,6 +587,32 @@
                                         <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Reportes de ingresos diarios/mensuales</span>
                                         <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Servicios más vendidos</span>
                                         <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Historial de citas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fase 6 -->
+                        <div class="fase-card completa p-3">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="fase-numero">6</div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <h6 class="fw-bold mb-0 text-success">Multi-barbero + Horarios individuales + AM/PM</h6>
+                                        <span class="badge-estado badge-hecho"><i class="bi bi-check-circle-fill me-1"></i>Completada</span>
+                                    </div>
+                                    <div class="plain-box mt-2">
+                                        <strong>Qué se construyó</strong>
+                                        La barbería ahora puede tener varios barberos registrados. El administrador configura el horario semanal de cada uno (qué días trabaja, a qué horas) y puede bloquear fechas específicas por vacaciones o ausencias. El cliente elige si quiere un barbero en particular o "Sin preferencia", y el sistema muestra solo los slots disponibles según ese barbero. Las horas se muestran en formato AM/PM natural (8:00 AM, 3:30 PM) y los slots pasados se ocultan automáticamente al reservar en el día actual.
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">CRUD Barberos</span>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Horario semanal por barbero (Lun–Sáb)</span>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Bloqueo de fechas / ausencias</span>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Elección de barbero en reserva (4 pasos)</span>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Slots filtrados por barbero</span>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Horas en AM/PM</span>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-normal">Bloqueo de slots pasados</span>
                                     </div>
                                 </div>
                             </div>
@@ -608,10 +640,10 @@
                             <div class="modulo-item hecho">
                                 <div class="modulo-icono"><i class="bi bi-calendar-plus"></i></div>
                                 <div>
-                                    <div class="fw-semibold" style="font-size:.88rem;">Reserva Rápida</div>
-                                    <div class="text-muted" style="font-size:.78rem;">Nombre + servicio + fecha + hora. Sin cuenta ni contraseña</div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Reserva en 4 pasos</div>
+                                    <div class="text-muted" style="font-size:.78rem;">Servicio → Barbero → Fecha/Hora → Nombre. Sin cuenta ni contraseña</div>
                                 </div>
-                                <span class="badge-estado badge-hecho ms-auto">F3 ✓</span>
+                                <span class="badge-estado badge-hecho ms-auto">F3+F6 ✓</span>
                             </div>
 
                             <div class="modulo-item hecho">
@@ -697,6 +729,15 @@
                                     <div class="text-muted" style="font-size:.78rem;">Ingresos, servicios más vendidos, historial de citas</div>
                                 </div>
                                 <span class="badge-estado badge-hecho ms-auto">F5 ✓</span>
+                            </div>
+
+                            <div class="modulo-item hecho">
+                                <div class="modulo-icono"><i class="bi bi-person-badge"></i></div>
+                                <div>
+                                    <div class="fw-semibold" style="font-size:.88rem;">Gestión de Barberos</div>
+                                    <div class="text-muted" style="font-size:.78rem;">Horario semanal individual + bloqueo de fechas por ausencia</div>
+                                </div>
+                                <span class="badge-estado badge-hecho ms-auto">F6 ✓</span>
                             </div>
                         </div>
                     </div>
@@ -813,7 +854,8 @@
 
                             <div class="mt-1"><span class="carpeta">├── database/</span></div>
                             <div class="ms-3">
-                                <div><span class="f1">│   └── barberapp.sql</span> <span class="text-muted" style="font-size:.75rem;">← 8 tablas + datos iniciales</span></div>
+                                <div><span class="f1">│   ├── barberapp.sql</span> <span class="text-muted" style="font-size:.75rem;">← 8 tablas + datos iniciales</span></div>
+                                <div><span class="f6">│   └── fase6_barberos.sql</span> <span class="text-muted" style="font-size:.75rem;">← 3 tablas nuevas + FK en citas</span></div>
                             </div>
 
                             <div class="mt-1"><span class="carpeta">├── models/</span> <span class="text-muted" style="font-size:.75rem;">← Lógica de datos</span></div>
@@ -823,7 +865,8 @@
                                 <div><span class="f3">│   ├── Servicio.php</span></div>
                                 <div><span class="f4">│   ├── Cita.php · Cliente.php</span></div>
                                 <div><span class="f4">│   ├── ListaEspera.php · HistorialVisita.php</span></div>
-                                <div><span class="f5">│   └── Ingreso.php · Configuracion.php</span></div>
+                                <div><span class="f5">│   ├── Ingreso.php · Configuracion.php</span></div>
+                                <div><span class="f6">│   └── Barbero.php</span></div>
                             </div>
 
                             <div class="mt-1"><span class="carpeta">├── controllers/</span> <span class="text-muted" style="font-size:.75rem;">← Lógica de negocio</span></div>
@@ -833,7 +876,8 @@
                                 <div><span class="f3">│   ├── ServicioController.php</span></div>
                                 <div><span class="f4">│   ├── CitaController.php · ReservaController.php</span></div>
                                 <div><span class="f4">│   ├── EsperaController.php</span></div>
-                                <div><span class="f5">│   └── ClienteController.php · ReporteController.php</span></div>
+                                <div><span class="f5">│   ├── ClienteController.php · ReporteController.php</span></div>
+                                <div><span class="f6">│   └── BarberoController.php</span></div>
                             </div>
 
                             <div class="mt-1"><span class="carpeta">├── views/</span> <span class="text-muted" style="font-size:.75rem;">← Pantallas del sistema</span></div>
@@ -844,7 +888,8 @@
                                 <div><span class="f3">│   ├── servicios/</span></div>
                                 <div><span class="f4">│   ├── citas/ · reserva/ · espera/</span></div>
                                 <div><span class="f5">│   ├── clientes/ · reportes/</span></div>
-                                <div><span class="f4">│   └── public/reservar.php</span> <span class="text-muted" style="font-size:.75rem;">← Vista pública para clientes</span></div>
+                                <div><span class="f6">│   ├── barberos/</span> <span class="text-muted" style="font-size:.75rem;">index, crear, editar, horario</span></div>
+                                <div><span class="f4">│   └── public/reservar.php · gestionar.php</span> <span class="text-muted" style="font-size:.75rem;">← Vista pública para clientes</span></div>
                             </div>
 
                             <div class="mt-1"><span class="carpeta">├── assets/</span></div>
@@ -860,6 +905,7 @@
                         <span style="font-size:.78rem;"><span class="f3 fw-bold">■</span> Fase 3</span>
                         <span style="font-size:.78rem;"><span class="f4 fw-bold">■</span> Fase 4</span>
                         <span style="font-size:.78rem;"><span class="f5 fw-bold">■</span> Fase 5</span>
+                        <span style="font-size:.78rem;"><span class="f6 fw-bold">■</span> Fase 6</span>
                     </div>
                 </div>
             </div>
@@ -889,7 +935,7 @@
                         <div class="stack-icon" style="background:#f29111;"><i class="bi bi-database-fill"></i></div>
                         <div>
                             <div class="fw-semibold" style="font-size:.88rem;">MySQL — La base de datos</div>
-                            <div class="stack-desc">Guarda citas, clientes, servicios, ingresos y configuración. 8 tablas interconectadas con claves foráneas e índices para consultas rápidas.</div>
+                            <div class="stack-desc">Guarda citas, clientes, servicios, barberos, ingresos y configuración. 11 tablas interconectadas con claves foráneas e índices para consultas rápidas.</div>
                         </div>
                     </div>
 
@@ -940,12 +986,12 @@
             <div class="card mb-4">
                 <div class="card-header d-flex align-items-center gap-2 py-3 px-4">
                     <i class="bi bi-database-fill" style="color:var(--dorado);"></i>
-                    Base de datos — 8 tablas
+                    Base de datos — 11 tablas
                 </div>
                 <div class="card-body p-4">
                     <div class="plain-box">
                         <strong>Qué guarda cada tabla</strong>
-                        Cada tabla es como una hoja de cálculo dedicada a un tema. Están relacionadas entre sí: una cita sabe a qué cliente pertenece, qué servicio es y qué ingreso generó.
+                        Cada tabla es como una hoja de cálculo dedicada a un tema. Están relacionadas entre sí: una cita sabe a qué cliente pertenece, qué servicio es, qué barbero la atiende y qué ingreso generó.
                     </div>
                     <div class="section-title mt-3">Seguridad y configuración</div>
                     <div class="mb-3">
@@ -964,8 +1010,14 @@
                         <span class="tabla-chip"><i class="bi bi-table"></i> historial_visitas</span>
                     </div>
                     <div class="section-title">Finanzas</div>
-                    <div>
+                    <div class="mb-3">
                         <span class="tabla-chip"><i class="bi bi-table"></i> ingresos</span>
+                    </div>
+                    <div class="section-title">Barberos (Fase 6)</div>
+                    <div>
+                        <span class="tabla-chip" style="border-color:#ddd6fe;"><i class="bi bi-table" style="color:#7c3aed;"></i> barberos</span>
+                        <span class="tabla-chip" style="border-color:#ddd6fe;"><i class="bi bi-table" style="color:#7c3aed;"></i> barbero_horarios</span>
+                        <span class="tabla-chip" style="border-color:#ddd6fe;"><i class="bi bi-table" style="color:#7c3aed;"></i> barbero_bloqueos</span>
                     </div>
                 </div>
             </div>
@@ -1014,11 +1066,23 @@
                             <div class="text-muted" style="font-size:.78rem;">17 jun 2026</div>
                             <div class="text-muted" style="font-size:.78rem;">Historial automático de visitas al marcar atendido, clientes frecuentes con rangos VIP/Frecuente/Regular, reportes de ingresos con Chart.js, top servicios y últimas citas.</div>
                         </div>
+                        <div class="tl-item">
+                            <div class="tl-dot"></div>
+                            <div class="fw-semibold" style="font-size:.88rem;">Paleta de colores + Manual</div>
+                            <div class="text-muted" style="font-size:.78rem;">18 jun 2026</div>
+                            <div class="text-muted" style="font-size:.78rem;">Reemplazo de amarillo/ámbar por azul/rojo en los 16 archivos de vistas. Franja barber pole actualizada. Manual de usuario (manual.html) añadido.</div>
+                        </div>
+                        <div class="tl-item">
+                            <div class="tl-dot"></div>
+                            <div class="fw-semibold" style="font-size:.88rem;">AM/PM + bloqueo de slots pasados</div>
+                            <div class="text-muted" style="font-size:.78rem;">18 jun 2026</div>
+                            <div class="text-muted" style="font-size:.78rem;">Horas cambiadas de formato 24h a 12h AM/PM en reserva pública y gestión de cita. Slots ya pasados se ocultan automáticamente al reservar para el día de hoy.</div>
+                        </div>
                         <div class="tl-item" style="padding-bottom:0;">
                             <div class="tl-dot"></div>
-                            <div class="fw-semibold" style="font-size:.88rem;">Paleta de colores actualizada</div>
+                            <div class="fw-semibold" style="font-size:.88rem;">Fase 6 — Multi-barbero completada</div>
                             <div class="text-muted" style="font-size:.78rem;">18 jun 2026</div>
-                            <div class="text-muted" style="font-size:.78rem;">Reemplazo de amarillo/ámbar por azul/rojo en los 16 archivos de vistas. Franja barber pole actualizada a rojo/blanco/azul. Manual de usuario añadido.</div>
+                            <div class="text-muted" style="font-size:.78rem;">3 tablas nuevas (barberos, barbero_horarios, barbero_bloqueos). Módulo de gestión completo: CRUD barberos, horario semanal, bloqueo de fechas. Reserva pública actualizada a 4 pasos con elección de barbero. Disponibilidad filtrada por barbero.</div>
                         </div>
                     </div>
                 </div>
@@ -1051,7 +1115,7 @@
                         <table class="table table-sm mb-0" style="font-size:.83rem;">
                             <tbody>
                                 <tr><td class="text-muted">Nombre</td><td><code>barberapp</code></td></tr>
-                                <tr><td class="text-muted">Script SQL</td><td><code>database/barberapp.sql</code></td></tr>
+                                <tr><td class="text-muted">Script SQL</td><td><code>database/barberapp.sql</code> + <code>fase6_barberos.sql</code></td></tr>
                                 <tr><td class="text-muted">Host</td><td><code>localhost</code></td></tr>
                             </tbody>
                         </table>

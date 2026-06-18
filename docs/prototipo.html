@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barbería El Filo — Reserva tu cita</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+:root {
+  --azul:  #2563eb;
+  --azul2: #1e3a8a;
+  --rojo:  #dc2626;
+  --verde: #16a34a;
+  --gris:  #64748b;
+}
+body { font-family:'Segoe UI',system-ui,sans-serif; background:#f8fafc; color:#1e293b; }
+
+/* ── Stripe ── */
+.barber-stripe {
+  height:5px;
+  background:repeating-linear-gradient(
+    90deg,
+    var(--rojo) 0,var(--rojo) 18px,
+    #fff 18px,#fff 26px,
+    var(--azul) 26px,var(--azul) 44px,
+    #fff 44px,#fff 52px
+  );
+}
+
+/* ── Hero ── */
+.hero {
+  background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#18181b 100%);
+  color:#fff; padding:5rem 0 4rem; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute;
+  width:420px; height:420px; border-radius:50%;
+  background:rgba(37,99,235,.1); top:-150px; right:-100px;
+}
+.hero::after {
+  content:''; position:absolute;
+  width:280px; height:280px; border-radius:50%;
+  background:rgba(220,38,38,.08); bottom:-100px; left:-80px;
+}
+.hero-badge {
+  display:inline-block;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:20px; padding:.28rem .9rem;
+  font-size:.75rem; font-weight:600; letter-spacing:.04em;
+}
+.btn-reservar {
+  background:var(--rojo); color:#fff; border:none; border-radius:12px;
+  padding:.95rem 2rem; font-size:1.05rem; font-weight:700;
+  text-decoration:none; display:inline-block; transition:all .2s;
+}
+.btn-reservar:hover {
+  background:#b91c1c; color:#fff;
+  transform:translateY(-2px); box-shadow:0 8px 22px rgba(220,38,38,.35);
+}
+
+/* ── Stats bar ── */
+.stats-bar { background:#1e3a8a; padding:.85rem 0; }
+.stat-item { text-align:center; }
+.stat-num  { font-size:1.35rem; font-weight:800; color:#60a5fa; line-height:1; }
+.stat-lbl  { font-size:.7rem; color:rgba(255,255,255,.55); margin-top:.15rem; }
+
+/* ── Sections ── */
+.sec-title { font-size:1.75rem; font-weight:800; color:var(--azul2); }
+.sec-sub   { color:var(--gris); font-size:.9rem; }
+
+/* ── How steps ── */
+.how-num {
+  width:48px; height:48px; border-radius:50%;
+  background:var(--azul); color:#fff;
+  font-weight:800; font-size:1.1rem;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto .75rem;
+}
+
+/* ── Service list items ── */
+.svc-row {
+  background:#fff; border:1px solid #e2e8f0; border-radius:12px;
+  padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem;
+}
+.svc-icon {
+  width:46px; height:46px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.15rem; flex-shrink:0;
+}
+
+/* ── Barber cards ── */
+.team-card {
+  background:#fff; border:1px solid #e2e8f0;
+  border-radius:16px; padding:1.5rem; text-align:center;
+}
+.team-avatar {
+  width:66px; height:66px; border-radius:50%;
+  color:#fff; font-weight:800; font-size:1.5rem;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 1rem;
+}
+
+/* ── DEMO section ── */
+.demo-bg {
+  background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 65%,#18181b 100%);
+  padding:4rem 0;
+}
+.demo-card {
+  background:#fff; border-radius:20px;
+  padding:2rem; box-shadow:0 24px 60px rgba(0,0,0,.25);
+}
+
+/* Step indicator */
+.step-ind { display:flex; align-items:center; justify-content:center; margin-bottom:1.75rem; }
+.s-dot {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:.85rem; flex-shrink:0; transition:all .2s;
+}
+.s-dot.active  { background:var(--azul); color:#fff; }
+.s-dot.done    { background:var(--verde); color:#fff; }
+.s-dot.pending { background:#e2e8f0; color:#94a3b8; }
+.s-line { flex:1; height:2px; background:#e2e8f0; max-width:55px; transition:background .2s; }
+.s-line.done { background:var(--verde); }
+
+/* Servicio card (demo) */
+.svc-card {
+  border:2px solid #e2e8f0; border-radius:12px;
+  padding:1.1rem; background:#fff; cursor:pointer; transition:all .2s;
+}
+.svc-card:hover   { border-color:var(--azul); transform:translateY(-2px); box-shadow:0 6px 18px rgba(37,99,235,.1); }
+.svc-card.sel     { border-color:var(--azul); background:#eff6ff; }
+.svc-card .s-icon { width:44px; height:44px; border-radius:10px; background:#dbeafe; color:var(--azul); display:flex; align-items:center; justify-content:center; font-size:1.1rem; margin-bottom:.6rem; }
+.precio-chip      { background:var(--azul); color:#fff; border-radius:20px; padding:.15rem .6rem; font-size:.72rem; font-weight:700; }
+
+/* Barbero card (demo) */
+.brb-card {
+  border:2px solid #e2e8f0; border-radius:12px;
+  padding:1rem; background:#fff; text-align:center; cursor:pointer; transition:all .2s;
+}
+.brb-card:hover { border-color:#7c3aed; transform:translateY(-2px); }
+.brb-card.sel   { border-color:#7c3aed; background:#faf5ff; }
+.brb-av {
+  width:52px; height:52px; border-radius:50%;
+  color:#fff; font-weight:800; font-size:1.25rem;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto .65rem;
+}
+.brb-av.none { background:#e2e8f0; color:#94a3b8; font-size:1.35rem; }
+
+/* Slot buttons */
+.slot-btn {
+  border:2px solid #e2e8f0; border-radius:9px;
+  padding:.5rem .7rem; background:#fff; cursor:pointer;
+  font-size:.78rem; font-weight:600; text-align:center;
+  line-height:1.3; min-width:82px; transition:all .15s;
+}
+.slot-btn:hover     { border-color:var(--azul); background:#eff6ff; }
+.slot-btn.sel       { border-color:var(--azul); background:var(--azul); color:#fff; }
+.slot-btn.ocupado   { border-color:#f1f5f9; background:#f8fafc; color:#cbd5e1; cursor:not-allowed; text-decoration:line-through; }
+
+/* Resumen box */
+.resumen-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:1rem; font-size:.85rem; }
+
+/* Confirm box */
+.confirm-box { background:#f0fdf4; border:2px solid #bbf7d0; border-radius:14px; padding:2rem; text-align:center; }
+.token-box   { background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:.5rem 1rem; font-family:monospace; font-size:.85rem; color:#1d4ed8; word-break:break-all; margin:.65rem 0; }
+
+/* Info cards */
+.info-card  { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:1.5rem; text-align:center; }
+.info-icon  { width:52px; height:52px; border-radius:13px; background:#eff6ff; color:var(--azul); display:flex; align-items:center; justify-content:center; font-size:1.25rem; margin:0 auto .75rem; }
+
+/* Footer */
+footer { background:#0f172a; color:#64748b; padding:2rem 0; font-size:.8rem; }
+
+@media(max-width:576px){
+  .hero { padding:3rem 0 2.5rem; }
+  .hero h1 { font-size:2.1rem; }
+  .demo-card { padding:1.25rem; border-radius:14px; }
+  .btn-reservar { font-size:.95rem; padding:.8rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="barber-stripe"></div>
+
+<!-- ══ HERO ══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-6">
+        <div class="mb-3 d-flex flex-wrap gap-2">
+          <span class="hero-badge"><i class="bi bi-scissors me-1"></i>Barbería Profesional</span>
+          <span class="hero-badge" style="background:rgba(220,38,38,.25);border-color:rgba(220,38,38,.4);color:#fca5a5;">
+            <i class="bi bi-circle-fill me-1" style="font-size:.42rem;"></i>Abierto · Lun–Sáb
+          </span>
+        </div>
+        <h1 class="fw-black mb-2" style="font-size:3rem;line-height:1.05;">
+          Barbería<br><span style="color:#60a5fa;">El Filo</span>
+        </h1>
+        <p class="mb-4" style="opacity:.72;font-size:1rem;max-width:440px;">
+          Cortes de calidad, atención personalizada. Reserva en línea en menos de 2 minutos — sin registro, sin contraseña.
+        </p>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <a href="#demo" class="btn-reservar">
+            <i class="bi bi-calendar-check me-2"></i>Reserva tu cita
+          </a>
+          <div style="font-size:.8rem;opacity:.6;line-height:1.8;">
+            <div><i class="bi bi-clock me-1"></i>Lun–Vie 8:00 AM–6:00 PM · Sáb 9:00 AM–2:00 PM</div>
+            <div><i class="bi bi-geo-alt me-1"></i>Col. El Parque, Tegucigalpa</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel mockup -->
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center">
+        <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:1.5rem;width:320px;">
+          <div style="font-size:.68rem;color:rgba(255,255,255,.38);letter-spacing:.1em;text-align:center;margin-bottom:1rem;">AGENDA DE HOY — PANEL DEL BARBERO</div>
+
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <div style="background:rgba(255,255,255,.09);border-radius:9px;padding:.8rem 1rem;display:flex;align-items:center;gap:.75rem;">
+              <div style="background:#3b82f6;width:3px;height:36px;border-radius:3px;flex-shrink:0;"></div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:.85rem;">Andrés García</div>
+                <div style="font-size:.72rem;color:rgba(255,255,255,.45);">Degradado · 10:30 AM</div>
+              </div>
+              <div style="background:rgba(59,130,246,.3);color:#93c5fd;border-radius:20px;padding:.13rem .5rem;font-size:.68rem;font-weight:600;">Confirmado</div>
+            </div>
+            <div style="background:rgba(255,255,255,.09);border-radius:9px;padding:.8rem 1rem;display:flex;align-items:center;gap:.75rem;">
+              <div style="background:#22c55e;width:3px;height:36px;border-radius:3px;flex-shrink:0;"></div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:.85rem;">Carlos Mejía</div>
+                <div style="font-size:.72rem;color:rgba(255,255,255,.45);">Corte clásico · 11:30 AM</div>
+              </div>
+              <div style="background:rgba(34,197,94,.25);color:#86efac;border-radius:20px;padding:.13rem .5rem;font-size:.68rem;font-weight:600;">Llegó</div>
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:9px;padding:.8rem 1rem;display:flex;align-items:center;gap:.75rem;opacity:.55;">
+              <div style="background:#94a3b8;width:3px;height:36px;border-radius:3px;flex-shrink:0;"></div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:.85rem;">Sofía Reyes</div>
+                <div style="font-size:.72rem;color:rgba(255,255,255,.38);">Corte + Barba · 2:00 PM</div>
+              </div>
+              <div style="background:rgba(148,163,184,.2);color:#cbd5e1;border-radius:20px;padding:.13rem .5rem;font-size:.68rem;font-weight:600;">Reservado</div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:1rem;padding-top:.85rem;border-top:1px solid rgba(255,255,255,.1);font-size:.72rem;color:rgba(255,255,255,.35);">
+            <span><i class="bi bi-calendar3 me-1"></i>3 citas hoy</span>
+            <span><i class="bi bi-cash-coin me-1"></i>L 360 ingresos</span>
+            <span>BarberApp v1.1</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS BAR ════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="row g-0 text-white">
+      <div class="col-3" style="border-right:1px solid rgba(255,255,255,.13);">
+        <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Servicios</div></div>
+      </div>
+      <div class="col-3" style="border-right:1px solid rgba(255,255,255,.13);">
+        <div class="stat-item"><div class="stat-num">2</div><div class="stat-lbl">Barberos</div></div>
+      </div>
+      <div class="col-3" style="border-right:1px solid rgba(255,255,255,.13);">
+        <div class="stat-item"><div class="stat-num" style="color:#4ade80;">6</div><div class="stat-lbl">Días / semana</div></div>
+      </div>
+      <div class="col-3">
+        <div class="stat-item"><div class="stat-num" style="color:#fca5a5;">2 min</div><div class="stat-lbl">Para reservar</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CÓMO FUNCIONA ════════════════════════════════ -->
+<section class="py-5" style="background:#f8fafc;">
+  <div class="container">
+    <div class="text-center mb-4">
+      <div class="sec-title mb-1"><i class="bi bi-lightning-charge-fill me-2" style="color:var(--azul);font-size:1.5rem;"></i>¿Cómo reservar?</div>
+      <p class="sec-sub">4 pasos simples — sin cuenta, sin contraseña</p>
+    </div>
+    <div class="row g-4 text-center">
+      <div class="col-6 col-md-3">
+        <div class="how-num">1</div>
+        <div class="fw-bold mb-1">Elige servicio</div>
+        <p style="font-size:.8rem;color:var(--gris);margin:0;">Corte, barba, degradado o combo con precio y tiempo</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="how-num" style="background:#7c3aed;">2</div>
+        <div class="fw-bold mb-1">Elige barbero</div>
+        <p style="font-size:.8rem;color:var(--gris);margin:0;">Tu favorito o "Sin preferencia" — tú decides</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="how-num" style="background:#0ea5e9;">3</div>
+        <div class="fw-bold mb-1">Elige fecha y hora</div>
+        <p style="font-size:.8rem;color:var(--gris);margin:0;">Solo aparecen los horarios realmente disponibles</p>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="how-num" style="background:var(--verde);">4</div>
+        <div class="fw-bold mb-1">Confirma</div>
+        <p style="font-size:.8rem;color:var(--gris);margin:0;">Solo tu nombre. ¡Cita reservada al instante!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICIOS ════════════════════════════════════ -->
+<section class="py-5" style="background:#fff;">
+  <div class="container">
+    <div class="text-center mb-4">
+      <div class="sec-title mb-1"><i class="bi bi-scissors me-2" style="color:var(--rojo);font-size:1.4rem;"></i>Nuestros servicios</div>
+      <p class="sec-sub">Precios directos, sin sorpresas</p>
+    </div>
+    <div class="row g-3">
+
+      <div class="col-sm-6 col-lg-4">
+        <div class="svc-row">
+          <div class="svc-icon" style="background:#dbeafe;color:var(--azul);"><i class="bi bi-scissors"></i></div>
+          <div><div class="fw-bold">Corte Clásico</div><div style="font-size:.77rem;color:var(--gris);">Tijera y navaja · 30 min</div></div>
+          <div class="ms-auto fw-bold" style="color:var(--azul);">L. 90</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-4">
+        <div class="svc-row">
+          <div class="svc-icon" style="background:#dbeafe;color:var(--azul);"><i class="bi bi-stars"></i></div>
+          <div><div class="fw-bold">Degradado</div><div style="font-size:.77rem;color:var(--gris);">Fade profesional · 45 min</div></div>
+          <div class="ms-auto fw-bold" style="color:var(--azul);">L. 120</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-4">
+        <div class="svc-row">
+          <div class="svc-icon" style="background:#dbeafe;color:var(--azul);"><i class="bi bi-person-bounding-box"></i></div>
+          <div><div class="fw-bold">Barba</div><div style="font-size:.77rem;color:var(--gris);">Perfilada e hidratación · 20 min</div></div>
+          <div class="ms-auto fw-bold" style="color:var(--azul);">L. 70</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-4">
+        <div class="svc-row">
+          <div class="svc-icon" style="background:#fee2e2;color:var(--rojo);"><i class="bi bi-gem"></i></div>
+          <div><div class="fw-bold">Corte + Barba</div><div style="font-size:.77rem;color:var(--gris);">Combo completo · 45 min</div></div>
+          <div class="ms-auto fw-bold" style="color:var(--rojo);">L. 150</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-4">
+        <div class="svc-row">
+          <div class="svc-icon" style="background:#dbeafe;color:var(--azul);"><i class="bi bi-emoji-smile"></i></div>
+          <div><div class="fw-bold">Corte de Niño</div><div style="font-size:.77rem;color:var(--gris);">Hasta 10 años · 20 min</div></div>
+          <div class="ms-auto fw-bold" style="color:var(--azul);">L. 70</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-4">
+        <div style="border:2px dashed #bfdbfe;border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:center;gap:.75rem;background:#f0f7ff;">
+          <div class="text-center">
+            <div class="fw-semibold" style="color:var(--azul);">¿Algo especial?</div>
+            <div style="font-size:.77rem;color:var(--gris);">Consulta directamente en la barbería</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ EQUIPO ════════════════════════════════════════ -->
+<section class="py-5" style="background:#f1f5f9;">
+  <div class="container">
+    <div class="text-center mb-4">
+      <div class="sec-title mb-1"><i class="bi bi-people-fill me-2" style="color:var(--azul);font-size:1.4rem;"></i>Nuestro equipo</div>
+      <p class="sec-sub">Elige a tu barbero favorito al hacer la reserva</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#1e3a8a,#2563eb);">M</div>
+          <div class="fw-bold">Marco Rodríguez</div>
+          <div style="font-size:.78rem;color:var(--gris);margin:.3rem 0 .85rem;">Especialista en degradados y fade</div>
+          <div class="d-flex flex-wrap gap-1 justify-content-center">
+            <span style="background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:.15rem .55rem;font-size:.7rem;font-weight:600;">Degradados</span>
+            <span style="background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:.15rem .55rem;font-size:.7rem;font-weight:600;">Barba</span>
+          </div>
+          <div style="margin-top:.85rem;font-size:.75rem;color:var(--gris);"><i class="bi bi-clock me-1"></i>Lun, Mar, Jue, Vie, Sáb</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#dc2626,#ef4444);">L</div>
+          <div class="fw-bold">Luis Méndez</div>
+          <div style="font-size:.78rem;color:var(--gris);margin:.3rem 0 .85rem;">Experto en cortes clásicos y niños</div>
+          <div class="d-flex flex-wrap gap-1 justify-content-center">
+            <span style="background:#fee2e2;color:#b91c1c;border-radius:20px;padding:.15rem .55rem;font-size:.7rem;font-weight:600;">Clásico</span>
+            <span style="background:#fee2e2;color:#b91c1c;border-radius:20px;padding:.15rem .55rem;font-size:.7rem;font-weight:600;">Niños</span>
+          </div>
+          <div style="margin-top:.85rem;font-size:.75rem;color:var(--gris);"><i class="bi bi-clock me-1"></i>Lun a Sáb</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ DEMO INTERACTIVO ══════════════════════════════ -->
+<section class="demo-bg" id="demo">
+  <div class="container">
+
+    <div class="text-center text-white mb-4">
+      <span style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:.25rem .9rem;font-size:.75rem;font-weight:600;letter-spacing:.04em;">
+        DEMO INTERACTIVO
+      </span>
+      <div class="sec-title text-white mt-2 mb-1" style="color:#fff!important;">Reserva tu cita aquí</div>
+      <p style="color:rgba(255,255,255,.6);font-size:.88rem;margin:0;">Prueba el proceso completo — simulación real del sistema</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-9">
+        <div class="demo-card" x-data="reservaDemo()">
+
+          <!-- Indicador de pasos -->
+          <div class="step-ind" x-show="!confirmado">
+            <div class="s-dot" :class="paso===1?'active':(paso>1?'done':'pending')">
+              <template x-if="paso>1"><i class="bi bi-check-lg" style="font-size:.72rem;"></i></template>
+              <template x-if="paso<=1"><span>1</span></template>
+            </div>
+            <div class="s-line" :class="paso>1?'done':''"></div>
+            <div class="s-dot" :class="paso===2?'active':(paso>2?'done':'pending')">
+              <template x-if="paso>2"><i class="bi bi-check-lg" style="font-size:.72rem;"></i></template>
+              <template x-if="paso<=2"><span>2</span></template>
+            </div>
+            <div class="s-line" :class="paso>2?'done':''"></div>
+            <div class="s-dot" :class="paso===3?'active':(paso>3?'done':'pending')">
+              <template x-if="paso>3"><i class="bi bi-check-lg" style="font-size:.72rem;"></i></template>
+              <template x-if="paso<=3"><span>3</span></template>
+            </div>
+            <div class="s-line" :class="paso>3?'done':''"></div>
+            <div class="s-dot" :class="paso===4?'active':'pending'"><span>4</span></div>
+          </div>
+
+          <!-- ── PASO 1: Servicio ── -->
+          <div x-show="paso===1&&!confirmado">
+            <h5 class="fw-bold mb-1"><i class="bi bi-scissors me-2" style="color:var(--azul);"></i>Elige tu servicio</h5>
+            <p class="text-muted mb-3" style="font-size:.83rem;">¿Qué te hacemos hoy?</p>
+            <div class="row g-2">
+              <template x-for="s in servicios" :key="s.id">
+                <div class="col-6">
+                  <div class="svc-card" :class="svcId===s.id?'sel':''" @click="elegirServicio(s)">
+                    <div class="s-icon"><i :class="s.icon"></i></div>
+                    <div class="fw-semibold" style="font-size:.88rem;" x-text="s.nombre"></div>
+                    <div class="text-muted mb-2" style="font-size:.73rem;" x-text="s.desc+' · '+s.duracion+' min'"></div>
+                    <span class="precio-chip" x-text="'L. '+s.precio"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- ── PASO 2: Barbero ── -->
+          <div x-show="paso===2&&!confirmado">
+            <h5 class="fw-bold mb-1"><i class="bi bi-person-badge me-2" style="color:#7c3aed;"></i>Elige tu barbero</h5>
+            <p class="text-muted mb-3" style="font-size:.83rem;">Opcional — puedes elegir cualquiera</p>
+            <div class="row g-2">
+
+              <div class="col-4">
+                <div class="brb-card" :class="brbId===0?'sel':''" @click="elegirBarbero(0,'Sin preferencia')">
+                  <div class="brb-av none"><i class="bi bi-shuffle"></i></div>
+                  <div class="fw-semibold" style="font-size:.78rem;">Sin preferencia</div>
+                  <div class="text-muted" style="font-size:.68rem;">Cualquiera libre</div>
+                </div>
+              </div>
+
+              <template x-for="b in barberos" :key="b.id">
+                <div class="col-4">
+                  <div class="brb-card" :class="brbId===b.id?'sel':''" @click="elegirBarbero(b.id,b.nombre)">
+                    <div class="brb-av" :style="'background:'+b.color"><span x-text="b.inicial"></span></div>
+                    <div class="fw-semibold" style="font-size:.78rem;" x-text="b.nombre.split(' ')[0]"></div>
+                    <div class="text-muted" style="font-size:.68rem;" x-text="b.esp"></div>
+                  </div>
+                </div>
+              </template>
+
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn btn-outline-secondary btn-sm" @click="paso=1"><i class="bi bi-arrow-left me-1"></i>Volver</button>
+              <button class="btn btn-primary btn-sm ms-auto" @click="paso=3">Continuar <i class="bi bi-arrow-right ms-1"></i></button>
+            </div>
+          </div>
+
+          <!-- ── PASO 3: Fecha y hora ── -->
+          <div x-show="paso===3&&!confirmado">
+            <h5 class="fw-bold mb-1"><i class="bi bi-calendar3 me-2" style="color:#0ea5e9;"></i>Fecha y hora</h5>
+            <p class="text-muted mb-3" style="font-size:.83rem;">¿Cuándo te vemos?</p>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size:.83rem;">Selecciona la fecha</label>
+              <input type="date" class="form-control" x-model="fecha" :min="hoy()" @change="generarSlots()">
+            </div>
+
+            <div x-show="fecha&&slots.length">
+              <div class="fw-semibold mb-2" style="font-size:.83rem;">
+                Horarios disponibles
+                <span class="text-muted fw-normal" style="font-size:.75rem;">
+                  — <span x-text="brbId>0?brbNombre:'cualquier barbero'"></span>
+                </span>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <template x-for="sl in slots" :key="sl.ini">
+                  <button class="slot-btn"
+                    :class="sl.ocup?'ocupado':(slotSel&&slotSel.ini===sl.ini?'sel':'')"
+                    :disabled="sl.ocup"
+                    @click="!sl.ocup&&(slotSel=sl)">
+                    <div x-text="sl.iniFmt"></div>
+                    <div style="font-size:.65rem;opacity:.7;" x-text="sl.finFmt"></div>
+                  </button>
+                </template>
+              </div>
+            </div>
+
+            <div x-show="fecha&&!slots.length" class="text-center py-3 text-muted" style="font-size:.83rem;">
+              <i class="bi bi-calendar-x me-1"></i>Sin horarios para esta fecha. Prueba con otro día.
+            </div>
+
+            <div x-show="!fecha" class="text-center py-3 text-muted" style="font-size:.83rem;">
+              <i class="bi bi-hand-index me-1"></i>Selecciona una fecha primero.
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn btn-outline-secondary btn-sm" @click="paso=2"><i class="bi bi-arrow-left me-1"></i>Volver</button>
+              <button class="btn btn-primary btn-sm ms-auto" @click="paso=4" :disabled="!slotSel">
+                Continuar <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ── PASO 4: Nombre y confirmar ── -->
+          <div x-show="paso===4&&!confirmado">
+            <h5 class="fw-bold mb-1"><i class="bi bi-check2-circle me-2" style="color:var(--verde);"></i>Confirma tu reserva</h5>
+            <p class="text-muted mb-3" style="font-size:.83rem;">Un paso más y listo</p>
+
+            <div class="resumen-box mb-3">
+              <div class="fw-semibold mb-2" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;">Tu cita</div>
+              <div class="d-flex align-items-center gap-2 mb-1" style="font-size:.85rem;">
+                <i class="bi bi-scissors" style="color:var(--azul);width:16px;"></i>
+                <span x-text="svcNombre"></span>
+                <span class="ms-auto fw-bold" style="color:var(--azul);" x-text="'L. '+svcPrecio"></span>
+              </div>
+              <div class="d-flex align-items-center gap-2 mb-1" style="font-size:.85rem;">
+                <i class="bi bi-person-badge" style="color:#7c3aed;width:16px;"></i>
+                <span x-text="brbNombre"></span>
+              </div>
+              <div class="d-flex align-items-center gap-2 mb-1" style="font-size:.85rem;">
+                <i class="bi bi-calendar3" style="color:#0ea5e9;width:16px;"></i>
+                <span x-text="fechaFmt(fecha)"></span>
+              </div>
+              <div class="d-flex align-items-center gap-2" style="font-size:.85rem;">
+                <i class="bi bi-clock" style="color:var(--verde);width:16px;"></i>
+                <span x-text="slotSel?slotSel.iniFmt+' – '+slotSel.finFmt:''"></span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size:.83rem;">
+                Tu nombre o apodo <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" placeholder="Ej: Carlos, Carlitos, C. Mejía…"
+                x-model="nombre" style="font-size:.95rem;padding:.7rem 1rem;">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size:.83rem;">
+                Teléfono <span class="text-muted fw-normal">(opcional)</span>
+              </label>
+              <input type="tel" class="form-control" placeholder="+504 9999-0000"
+                x-model="telefono" style="font-size:.95rem;padding:.7rem 1rem;">
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn btn-outline-secondary btn-sm" @click="paso=3">
+                <i class="bi bi-arrow-left me-1"></i>Volver
+              </button>
+              <button class="btn btn-success flex-grow-1 fw-bold" style="padding:.7rem;"
+                @click="confirmar()" :disabled="nombre.trim()===''">
+                <i class="bi bi-check-circle-fill me-2"></i>Confirmar reserva
+              </button>
+            </div>
+          </div>
+
+          <!-- ── CONFIRMACIÓN ── -->
+          <div x-show="confirmado">
+            <div class="confirm-box">
+              <div style="font-size:2.75rem;margin-bottom:.5rem;">✅</div>
+              <h5 class="fw-bold text-success mb-1">¡Cita confirmada!</h5>
+              <p style="font-size:.83rem;color:#166534;" class="mb-3">
+                Tu reserva está registrada. Guarda este enlace — te sirve para cancelar o reprogramar.
+              </p>
+              <div class="token-box" x-text="'localhost/BarberApp/gestionar/'+token"></div>
+              <div style="font-size:.73rem;color:#64748b;margin-bottom:1rem;">Enlace personal de tu cita (demo)</div>
+
+              <div class="resumen-box text-start mb-3" style="border-color:#bbf7d0;background:#fff;">
+                <div class="fw-semibold mb-1" style="color:var(--verde);font-size:.8rem;">Detalles de tu cita:</div>
+                <div style="font-size:.82rem;display:flex;flex-direction:column;gap:.25rem;">
+                  <div><i class="bi bi-scissors me-2" style="color:var(--azul);"></i><span x-text="svcNombre"></span></div>
+                  <div><i class="bi bi-person-badge me-2" style="color:#7c3aed;"></i><span x-text="brbNombre"></span></div>
+                  <div><i class="bi bi-calendar3 me-2" style="color:#0ea5e9;"></i><span x-text="fechaFmt(fecha)"></span></div>
+                  <div><i class="bi bi-clock me-2" style="color:var(--verde);"></i><span x-text="slotSel?slotSel.iniFmt+' – '+slotSel.finFmt:''"></span></div>
+                  <div><i class="bi bi-person me-2" style="color:var(--gris);"></i><span x-text="nombre"></span></div>
+                </div>
+              </div>
+
+              <button class="btn btn-outline-primary btn-sm" @click="reiniciar()">
+                <i class="bi bi-arrow-clockwise me-1"></i>Hacer otra reserva (demo)
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /demo-card -->
+
+        <div class="text-center mt-3" style="color:rgba(255,255,255,.35);font-size:.73rem;">
+          <i class="bi bi-info-circle me-1"></i>Simulación — ningún dato es enviado al servidor
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ INFO / HORARIOS ═══════════════════════════════ -->
+<section class="py-5" style="background:#fff;">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+
+      <div class="col-sm-6 col-md-3">
+        <div class="info-card">
+          <div class="info-icon"><i class="bi bi-clock-fill"></i></div>
+          <div class="fw-bold mb-2">Horarios</div>
+          <div style="font-size:.8rem;color:var(--gris);line-height:1.9;">
+            Lun – Vie<br><strong style="color:#1e293b;">8:00 AM – 6:00 PM</strong><br>
+            Sábados<br><strong style="color:#1e293b;">9:00 AM – 2:00 PM</strong><br>
+            <span class="text-danger fw-semibold">Dom: Cerrado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <div class="info-card">
+          <div class="info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+          <div class="fw-bold mb-2">Ubicación</div>
+          <div style="font-size:.8rem;color:var(--gris);line-height:1.9;">
+            Col. El Parque<br>Blv. Central, Local #4<br>
+            Frente al Supermercado<br>Don Pedro<br>
+            <strong style="color:#1e293b;">Tegucigalpa</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <div class="info-card">
+          <div class="info-icon" style="background:#f0fdf4;color:#25d366;"><i class="bi bi-whatsapp"></i></div>
+          <div class="fw-bold mb-2">WhatsApp</div>
+          <div style="font-size:.8rem;color:var(--gris);line-height:1.9;">
+            ¿Preguntas? Escríbenos<br>
+            <strong style="color:#1e293b;">+504 9999-1234</strong><br><br>
+            O reserva arriba —<br>
+            <span style="color:var(--azul);font-weight:600;">¡es más rápido!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <div class="info-card" style="border-color:#bfdbfe;background:#f0f7ff;">
+          <div class="info-icon" style="background:#dbeafe;"><i class="bi bi-qr-code"></i></div>
+          <div class="fw-bold mb-2">Comparte el link</div>
+          <div style="font-size:.8rem;color:var(--gris);line-height:1.9;">
+            El barbero comparte este enlace por WhatsApp o imprime un QR en su local para que los clientes reserven solos.
+          </div>
+          <a href="#demo" class="d-block mt-2 fw-bold text-decoration-none" style="color:var(--rojo);font-size:.8rem;">
+            <i class="bi bi-arrow-up-circle me-1"></i>Subir a reservar
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="row align-items-center g-3">
+      <div class="col-md-4">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <i class="bi bi-scissors" style="color:#60a5fa;font-size:1rem;"></i>
+          <span style="color:#f1f5f9;font-weight:700;">Barbería El Filo</span>
+        </div>
+        <div>Administrado con <strong style="color:#93c5fd;">BarberApp v1.1</strong></div>
+      </div>
+      <div class="col-md-4 text-md-center">
+        Lun–Vie 8 AM–6 PM &nbsp;·&nbsp; Sáb 9 AM–2 PM
+      </div>
+      <div class="col-md-4 text-md-end">
+        <a href="https://github.com/DaniHND/BarberApp" target="_blank"
+           style="color:#64748b;text-decoration:none;">
+          <i class="bi bi-github me-1"></i>github.com/DaniHND/BarberApp
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+<div class="barber-stripe"></div>
+
+<!-- ══ ALPINE.JS LOGIC ═══════════════════════════════ -->
+<script>
+function reservaDemo() {
+  return {
+    paso: 1,
+    confirmado: false,
+
+    svcId: null, svcNombre: '', svcPrecio: 0, svcDur: 30,
+    brbId: 0,    brbNombre: 'Sin preferencia',
+    fecha: '', slots: [], slotSel: null,
+    nombre: '', telefono: '', token: '',
+
+    servicios: [
+      { id:1, nombre:'Corte Clásico', desc:'Tijera y navaja',  precio:90,  duracion:30, icon:'bi bi-scissors' },
+      { id:2, nombre:'Degradado',     desc:'Fade profesional', precio:120, duracion:45, icon:'bi bi-stars' },
+      { id:3, nombre:'Barba',         desc:'Perfilada',        precio:70,  duracion:20, icon:'bi bi-person-bounding-box' },
+      { id:4, nombre:'Corte + Barba', desc:'Combo completo',   precio:150, duracion:45, icon:'bi bi-gem' },
+      { id:5, nombre:'Corte de Niño', desc:'Hasta 10 años',    precio:70,  duracion:20, icon:'bi bi-emoji-smile' },
+    ],
+
+    barberos: [
+      { id:1, nombre:'Marco Rodríguez', inicial:'M', color:'#1e3a8a', esp:'Degradados' },
+      { id:2, nombre:'Luis Méndez',     inicial:'L', color:'#dc2626', esp:'Clásico' },
+    ],
+
+    elegirServicio(s) {
+      this.svcId = s.id; this.svcNombre = s.nombre;
+      this.svcPrecio = s.precio; this.svcDur = s.duracion;
+      this.slotSel = null; this.slots = [];
+      this.paso = 2;
+    },
+
+    elegirBarbero(id, nombre) {
+      this.brbId = id; this.brbNombre = nombre;
+      this.slotSel = null; this.slots = [];
+    },
+
+    hoy() { return new Date().toISOString().split('T')[0]; },
+
+    generarSlots() {
+      this.slotSel = null;
+      if (!this.fecha) { this.slots = []; return; }
+
+      const d   = new Date(this.fecha + 'T00:00:00');
+      const dia = d.getDay(); // 0=dom
+      if (dia === 0) { this.slots = []; return; }
+
+      // Horario según barbero
+      let ini = 8*60, fin = 18*60;
+      if (this.brbId === 1) { ini = 8*60; fin = 17*60; }
+      if (this.brbId === 2) { ini = 9*60; fin = 16*60; }
+      if (dia === 6) fin = Math.min(fin, 14*60); // sábado max 2 PM
+
+      const ahora  = new Date();
+      const esHoy  = this.fecha === this.hoy();
+      const ocup   = new Set([2, 5, 8]); // índices "ocupados" mock
+      const fmt = (h, m) => {
+        const ap = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return h12 + ':' + String(m).padStart(2,'0') + ' ' + ap;
+      };
+
+      const list = []; let idx = 0;
+      for (let t = ini; t + this.svcDur <= fin; t += 30, idx++) {
+        const hi = Math.floor(t/60), mi = t%60;
+        const hf = Math.floor((t+this.svcDur)/60), mf = (t+this.svcDur)%60;
+
+        if (esHoy) {
+          const dt = new Date(this.fecha+'T'+String(hi).padStart(2,'0')+':'+String(mi).padStart(2,'0'));
+          if (dt < ahora) continue;
+        }
+
+        list.push({
+          ini:    String(hi).padStart(2,'0')+':'+String(mi).padStart(2,'0'),
+          fin:    String(hf).padStart(2,'0')+':'+String(mf).padStart(2,'0'),
+          iniFmt: fmt(hi, mi),
+          finFmt: fmt(hf, mf),
+          ocup:   ocup.has(idx),
+        });
+      }
+      this.slots = list;
+    },
+
+    fechaFmt(f) {
+      if (!f) return '';
+      const DIAS  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+      const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      const d = new Date(f + 'T00:00:00');
+      return DIAS[d.getDay()] + ', ' + d.getDate() + ' ' + MESES[d.getMonth()] + ' ' + d.getFullYear();
+    },
+
+    confirmar() {
+      if (!this.nombre.trim()) return;
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      this.token = Array.from({length:20}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+      this.confirmado = true;
+    },
+
+    reiniciar() {
+      Object.assign(this, {
+        paso:1, confirmado:false,
+        svcId:null, svcNombre:'', svcPrecio:0, svcDur:30,
+        brbId:0, brbNombre:'Sin preferencia',
+        fecha:'', slots:[], slotSel:null,
+        nombre:'', telefono:'', token:'',
+      });
+    },
+  };
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

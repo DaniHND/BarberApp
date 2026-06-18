@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 $visitas = (int)$cliente['total_visitas'];
-if ($visitas >= 10)     { $badgeClass = 'bg-amber-100 text-amber-700'; $badgeLabel = 'VIP'; }
+if ($visitas >= 10)     { $badgeClass = 'bg-blue-100 text-blue-700'; $badgeLabel = 'VIP'; }
 elseif ($visitas >= 5)  { $badgeClass = 'bg-blue-100 text-blue-700';   $badgeLabel = 'Frecuente'; }
 else                    { $badgeClass = 'bg-zinc-100 text-zinc-600';    $badgeLabel = 'Regular'; }
 ?>
 
 <!-- Breadcrumb -->
 <div class="flex items-center gap-2 text-xs text-zinc-400 mb-5">
-    <a href="<?= url('clientes') ?>" class="hover:text-amber-600 transition-colors">Clientes Frecuentes</a>
+    <a href="<?= url('clientes') ?>" class="hover:text-blue-600 transition-colors">Clientes Frecuentes</a>
     <i data-lucide="chevron-right" class="w-3 h-3"></i>
     <span class="text-zinc-600 font-medium"><?= htmlspecialchars($cliente['nombre']) ?></span>
 </div>
@@ -15,8 +15,8 @@ else                    { $badgeClass = 'bg-zinc-100 text-zinc-600';    $badgeLa
 <!-- Card del cliente -->
 <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-5 mb-5">
     <div class="flex items-center gap-4 flex-wrap">
-        <div class="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center
-                    text-xl font-bold text-amber-700 flex-shrink-0">
+        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center
+                    text-xl font-bold text-blue-700 flex-shrink-0">
             <?= mb_strtoupper(mb_substr($cliente['nombre'], 0, 1)) ?>
         </div>
         <div class="flex-1 min-w-0">
@@ -53,7 +53,7 @@ else                    { $badgeClass = 'bg-zinc-100 text-zinc-600';    $badgeLa
 <!-- Historial de visitas -->
 <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
     <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
-        <i data-lucide="history" class="w-4 h-4 text-amber-500"></i>
+        <i data-lucide="history" class="w-4 h-4 text-blue-500"></i>
         <h3 class="text-sm font-semibold text-zinc-800">Historial de visitas</h3>
         <span class="ml-auto text-xs bg-stone-100 text-zinc-500 font-semibold px-2 py-0.5 rounded-full">
             <?= count($historial) ?> registro<?= count($historial) !== 1 ? 's' : '' ?>
@@ -82,8 +82,8 @@ else                    { $badgeClass = 'bg-zinc-100 text-zinc-600';    $badgeLa
                     </td>
                     <td class="px-3 py-3.5">
                         <?php if ($h['servicio_nombre']): ?>
-                        <span class="inline-flex items-center gap-1.5 text-xs bg-amber-50 text-amber-700
-                                     border border-amber-100 rounded-full px-2.5 py-0.5">
+                        <span class="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700
+                                     border border-blue-100 rounded-full px-2.5 py-0.5">
                             <i data-lucide="scissors" class="w-3 h-3"></i>
                             <?= htmlspecialchars($h['servicio_nombre']) ?>
                         </span>

@@ -9,7 +9,7 @@ aside nav::-webkit-scrollbar-thumb  { background: #3f3f46; border-radius: 4px; }
 aside a { will-change: background-color, color; }
 
 /* Focus visible accesible */
-:focus-visible { outline: 2px solid #f59e0b; outline-offset: 2px; }
+:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
 
 /* Input sin fondo amarillo en autofill (Chrome) */
 input:-webkit-autofill {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -12,11 +12,11 @@
                 extend: {
                     colors: {
                         barber: {
-                            50:  '#fffbeb',
-                            100: '#fef3c7',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
+                            50:  '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
                         }
                     }
                 }
@@ -40,13 +40,13 @@
 <body class="bg-stone-100 min-h-screen">
 
 <!-- Barber pole stripe -->
-<div style="height:4px;background:repeating-linear-gradient(90deg,#dc2626 0,#dc2626 16px,#fff 16px,#fff 24px,#f59e0b 24px,#f59e0b 40px,#fff 40px,#fff 48px);"></div>
+<div style="height:4px;background:repeating-linear-gradient(90deg,#dc2626 0,#dc2626 16px,#fff 16px,#fff 24px,#2563eb 24px,#2563eb 40px,#fff 40px,#fff 48px);"></div>
 
 <!-- Top bar -->
 <header class="bg-zinc-900 text-white shadow-md">
     <div class="max-w-lg mx-auto px-4 py-3.5 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
                 <i data-lucide="scissors" class="w-4 h-4 text-white"></i>
             </div>
             <span class="font-bold text-base"><?= htmlspecialchars($cfg['nombre_barberia'] ?? APP_NAME) ?></span>

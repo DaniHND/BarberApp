@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
@@ -17,7 +17,7 @@
     <div class="h-1.5 rounded-t-xl overflow-hidden flex">
         <div class="flex-1 bg-red-600"></div>
         <div class="flex-1 bg-white"></div>
-        <div class="flex-1 bg-amber-500"></div>
+        <div class="flex-1 bg-blue-500"></div>
         <div class="flex-1 bg-white"></div>
         <div class="flex-1 bg-red-600"></div>
     </div>
@@ -27,7 +27,7 @@
 
         <!-- Logo -->
         <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-amber-500 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-amber-500/30">
+            <div class="w-16 h-16 bg-blue-500 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/>
@@ -58,7 +58,7 @@
                 <input id="usuario" type="text" name="usuario" autocomplete="username"
                        value="<?= htmlspecialchars($usuario ?? '') ?>"
                        class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
-                              focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent
+                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                               transition-shadow"
                        placeholder="Ingresa tu usuario" autofocus required>
             </div>
@@ -72,7 +72,7 @@
                     <input id="password" :type="showPass ? 'text' : 'password'" name="password"
                            autocomplete="current-password"
                            class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 pr-10 text-sm
-                                  focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                                   transition-shadow"
                            placeholder="••••••••" required>
                     <button type="button" @click="showPass = !showPass"
@@ -93,8 +93,8 @@
             </div>
 
             <button type="submit"
-                    class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-4
-                           rounded-lg transition-colors shadow-lg shadow-amber-500/25 active:scale-95">
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 px-4
+                           rounded-lg transition-colors shadow-lg shadow-blue-500/25 active:scale-95">
                 Ingresar al sistema
             </button>
         </form>
@@ -123,7 +123,7 @@
                 <span class="text-zinc-500">Usuario</span>
                 <button type="button"
                         onclick="document.getElementById('usuario').value='admin'"
-                        class="font-mono text-amber-400 hover:text-amber-300 transition-colors cursor-pointer">
+                        class="font-mono text-blue-400 hover:text-blue-300 transition-colors cursor-pointer">
                     admin
                 </button>
             </div>
@@ -131,7 +131,7 @@
                 <span class="text-zinc-500">Contraseña</span>
                 <button type="button"
                         onclick="document.getElementById('password').value='Admin123'"
-                        class="font-mono text-amber-400 hover:text-amber-300 transition-colors cursor-pointer">
+                        class="font-mono text-blue-400 hover:text-blue-300 transition-colors cursor-pointer">
                     Admin123
                 </button>
             </div>

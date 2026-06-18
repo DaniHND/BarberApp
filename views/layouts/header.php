@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        barber: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+                        barber: { 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb' }
                     }
                 }
             }
@@ -50,7 +50,7 @@
 
     <!-- Brand -->
     <div class="flex items-center gap-3 px-5 py-4 border-b border-zinc-800 flex-shrink-0">
-        <div class="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div class="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
             <i data-lucide="scissors" class="w-5 h-5 text-white"></i>
         </div>
         <div>
@@ -65,7 +65,7 @@
         <!-- Dashboard -->
         <a href="<?= url('dashboard') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                  <?= ($activeNav ?? '') === 'dashboard' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
+                  <?= ($activeNav ?? '') === 'dashboard' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>
             Dashboard
         </a>
@@ -77,7 +77,7 @@
 
         <a href="<?= url('citas') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                  <?= ($activeNav ?? '') === 'citas' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
+                  <?= ($activeNav ?? '') === 'citas' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="calendar-days" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Agenda de Citas</span>
             <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F4</span>
@@ -85,7 +85,7 @@
 
         <a href="<?= url('espera') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                  <?= ($activeNav ?? '') === 'espera' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
+                  <?= ($activeNav ?? '') === 'espera' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="users" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Lista de Espera</span>
             <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F4</span>
@@ -106,7 +106,7 @@
 
         <a href="<?= url('servicios') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                  <?= ($activeNav ?? '') === 'servicios' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
+                  <?= ($activeNav ?? '') === 'servicios' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="scissors" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Servicios</span>
             <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F2</span>
@@ -114,7 +114,7 @@
 
         <a href="<?= url('clientes') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                  <?= ($activeNav ?? '') === 'clientes' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
+                  <?= ($activeNav ?? '') === 'clientes' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="heart-handshake" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Clientes Frecuentes</span>
         </a>
@@ -126,7 +126,7 @@
 
         <a href="<?= url('reportes') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                  <?= ($activeNav ?? '') === 'reportes' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
+                  <?= ($activeNav ?? '') === 'reportes' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="bar-chart-3" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Reportes</span>
         </a>
@@ -136,8 +136,8 @@
     <!-- Usuario + Logout -->
     <div class="border-t border-zinc-800 px-3 py-3 flex-shrink-0">
         <div class="flex items-center gap-3 px-3 py-2 mb-1">
-            <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                <i data-lucide="user" class="w-4 h-4 text-amber-400"></i>
+            <div class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="user" class="w-4 h-4 text-blue-400"></i>
             </div>
             <div class="flex-1 min-w-0">
                 <div class="text-white text-sm font-medium truncate">

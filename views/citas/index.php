@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $esHoy     = $fecha === date('Y-m-d');
 $esPasado  = $fecha < date('Y-m-d');
 $horaActual = date('H:i');
@@ -37,7 +37,7 @@ $acciones = [
         <div class="text-center px-2">
             <div class="text-sm font-bold text-zinc-900"><?= fechaEsp($fecha, 'completa') ?></div>
             <?php if ($esHoy): ?>
-            <span class="text-xs text-amber-600 font-semibold">Hoy · <?= $horaActual ?></span>
+            <span class="text-xs text-blue-600 font-semibold">Hoy · <?= $horaActual ?></span>
             <?php elseif ($esPasado): ?>
             <span class="text-xs text-zinc-400">Día pasado</span>
             <?php else: ?>
@@ -50,7 +50,7 @@ $acciones = [
         </a>
         <?php if (!$esHoy): ?>
         <a href="<?= url('citas') ?>"
-           class="ml-1 text-xs px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-colors">
+           class="ml-1 text-xs px-2.5 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
             Hoy
         </a>
         <?php endif; ?>
@@ -60,7 +60,7 @@ $acciones = [
     <input type="date" value="<?= $fecha ?>"
            onchange="location.href='<?= url('citas') ?>?fecha='+this.value"
            class="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-zinc-700 bg-white
-                  focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm hidden sm:block">
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hidden sm:block">
 </div>
 
 <!-- Stats del día -->
@@ -87,7 +87,7 @@ $acciones = [
 <!-- FullCalendar — solo tablet/desktop -->
 <div class="hidden md:block bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden mb-5">
     <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
-        <i data-lucide="calendar-range" class="w-4 h-4 text-amber-500"></i>
+        <i data-lucide="calendar-range" class="w-4 h-4 text-blue-500"></i>
         <h3 class="text-sm font-semibold text-zinc-800">Vista de agenda</h3>
     </div>
     <div class="p-3">
@@ -99,11 +99,11 @@ $acciones = [
 <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
     <div class="px-5 py-3.5 border-b border-stone-100 flex items-center justify-between">
         <h3 class="text-sm font-semibold text-zinc-800 flex items-center gap-2">
-            <i data-lucide="list" class="w-4 h-4 text-amber-500"></i>
+            <i data-lucide="list" class="w-4 h-4 text-blue-500"></i>
             Citas del día
         </h3>
         <a href="<?= url('reservar') ?>" target="_blank"
-           class="text-xs text-amber-500 hover:text-amber-700 flex items-center gap-1">
+           class="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1">
             <i data-lucide="external-link" class="w-3 h-3"></i>
             Página de reservas
         </a>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Datos del dashboard
 $citasHoy       = (int)   ($stats['citas_hoy']       ?? 0);
 $enEspera       = (int)   ($stats['en_espera']        ?? 0);
@@ -44,14 +44,14 @@ $maxCitas = max(array_values($citasSemana ?? [0]) ?: [0]);
     <div class="bg-white rounded-xl p-4 border border-stone-200 shadow-sm">
         <div class="flex items-start justify-between mb-3">
             <p class="text-xs text-zinc-500 font-medium">Servicios activos</p>
-            <div class="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center">
-                <i data-lucide="scissors" class="w-4 h-4 text-amber-500"></i>
+            <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center">
+                <i data-lucide="scissors" class="w-4 h-4 text-blue-500"></i>
             </div>
         </div>
         <p class="text-2xl font-bold text-zinc-900"><?= $serviciosAct ?></p>
         <p class="text-xs text-zinc-400 mt-1">
             <?php if ($serviciosAct === 0): ?>
-                <a href="<?= url('servicios/crear') ?>" class="text-amber-500 hover:underline">Agregar servicios →</a>
+                <a href="<?= url('servicios/crear') ?>" class="text-blue-500 hover:underline">Agregar servicios →</a>
             <?php else: ?>
                 disponibles para reserva
             <?php endif; ?>
@@ -78,7 +78,7 @@ $maxCitas = max(array_values($citasSemana ?? [0]) ?: [0]);
     <div class="lg:col-span-2 bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
         <div class="px-5 py-3.5 border-b border-stone-100 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-zinc-800 flex items-center gap-2">
-                <i data-lucide="trending-up" class="w-4 h-4 text-amber-500"></i>
+                <i data-lucide="trending-up" class="w-4 h-4 text-blue-500"></i>
                 Citas — últimos 7 días
             </h3>
             <?php if (array_sum($chartData) > 0): ?>
@@ -102,17 +102,17 @@ $maxCitas = max(array_values($citasSemana ?? [0]) ?: [0]);
     <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
         <div class="px-5 py-3.5 border-b border-stone-100 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-zinc-800 flex items-center gap-2">
-                <i data-lucide="star" class="w-4 h-4 text-amber-500"></i>
+                <i data-lucide="star" class="w-4 h-4 text-blue-500"></i>
                 Top servicios
             </h3>
-            <a href="<?= url('servicios') ?>" class="text-xs text-amber-500 hover:text-amber-700">Ver todos</a>
+            <a href="<?= url('servicios') ?>" class="text-xs text-blue-500 hover:text-blue-700">Ver todos</a>
         </div>
         <div class="p-4">
             <?php if (empty($topServicios)): ?>
             <div class="text-center py-6">
                 <i data-lucide="scissors" class="w-7 h-7 text-zinc-200 mx-auto mb-2"></i>
                 <p class="text-xs text-zinc-400">Sin servicios aún</p>
-                <a href="<?= url('servicios/crear') ?>" class="text-xs text-amber-500 hover:underline mt-1 block">
+                <a href="<?= url('servicios/crear') ?>" class="text-xs text-blue-500 hover:underline mt-1 block">
                     Agregar servicio →
                 </a>
             </div>
@@ -122,7 +122,7 @@ $maxCitas = max(array_values($citasSemana ?? [0]) ?: [0]);
                 $maxTotal = max(array_column($topServicios, 'total')) ?: 1;
                 foreach ($topServicios as $i => $svc):
                     $pct = $maxTotal > 0 ? round(($svc['total'] / $maxTotal) * 100) : 0;
-                    $colores = ['bg-amber-500','bg-blue-500','bg-green-500','bg-purple-500','bg-red-400'];
+                    $colores = ['bg-blue-600','bg-red-500','bg-green-500','bg-purple-500','bg-zinc-400'];
                     $color = $colores[$i] ?? 'bg-zinc-400';
                 ?>
                 <div>

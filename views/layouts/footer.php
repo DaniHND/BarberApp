@@ -1,4 +1,4 @@
-    </main>
+﻿    </main>
 
     <!-- Footer desktop -->
     <footer class="hidden md:block px-4 md:px-6 py-3 text-center text-xs text-zinc-400 border-t border-stone-200 bg-white">
@@ -28,9 +28,9 @@
     ?>
     <a href="<?= url($item['url']) ?>"
        class="relative flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5 transition-colors
-              <?= $bnActive ? 'text-amber-500' : 'text-zinc-400' ?>">
+              <?= $bnActive ? 'text-blue-500' : 'text-zinc-400' ?>">
         <?php if ($bnActive): ?>
-        <span class="absolute top-0 inset-x-1/4 h-0.5 bg-amber-500 rounded-b-full"></span>
+        <span class="absolute top-0 inset-x-1/4 h-0.5 bg-blue-500 rounded-b-full"></span>
         <?php endif; ?>
         <i data-lucide="<?= $item['icon'] ?>" class="w-[22px] h-[22px]"></i>
         <span class="text-[10px] leading-none <?= $bnActive ? 'font-bold' : 'font-normal' ?>">

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $nombresMes = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio',
                'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
@@ -35,7 +35,7 @@ $maxMonto    = $topSvcs ? max(array_column($topSvcs, 'total_monto')) : 0;
         </a>
         <?php if (!$esActual): ?>
         <a href="<?= url('reportes') ?>"
-           class="text-xs px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-colors">
+           class="text-xs px-2.5 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
             Hoy
         </a>
         <?php endif; ?>
@@ -59,11 +59,11 @@ $maxMonto    = $topSvcs ? max(array_column($topSvcs, 'total_monto')) : 0;
     <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-4">
         <div class="flex items-center justify-between mb-2">
             <span class="text-xs text-zinc-500">Ingresos del mes</span>
-            <div class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
-                <i data-lucide="trending-up" class="w-4 h-4 text-amber-600"></i>
+            <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                <i data-lucide="trending-up" class="w-4 h-4 text-blue-600"></i>
             </div>
         </div>
-        <div class="text-2xl font-bold text-amber-700"><?= moneda($totalMes) ?></div>
+        <div class="text-2xl font-bold text-blue-700"><?= moneda($totalMes) ?></div>
         <div class="text-xs text-zinc-400 mt-1"><?= $nombresMes[$mes] ?> <?= $anio ?></div>
     </div>
 
@@ -97,7 +97,7 @@ $maxMonto    = $topSvcs ? max(array_column($topSvcs, 'total_monto')) : 0;
     <!-- Ingresos por día — gráfica -->
     <div class="lg:col-span-2 bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
         <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
-            <i data-lucide="bar-chart-2" class="w-4 h-4 text-amber-500"></i>
+            <i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-500"></i>
             <h3 class="text-sm font-semibold text-zinc-800">Ingresos diarios — <?= $nombresMes[$mes] ?> <?= $anio ?></h3>
         </div>
         <div class="p-4">
@@ -115,14 +115,14 @@ $maxMonto    = $topSvcs ? max(array_column($topSvcs, 'total_monto')) : 0;
     <!-- Top servicios -->
     <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
         <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
-            <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i>
+            <i data-lucide="trophy" class="w-4 h-4 text-blue-500"></i>
             <h3 class="text-sm font-semibold text-zinc-800">Top servicios del mes</h3>
         </div>
         <div class="p-4 space-y-3">
             <?php if (empty($topSvcs)): ?>
             <div class="text-center py-6 text-zinc-400 text-sm">Sin datos este mes</div>
             <?php else:
-                $coloresBars = ['bg-amber-400','bg-blue-400','bg-emerald-400','bg-purple-400','bg-rose-400'];
+                $coloresBars = ['bg-blue-600','bg-red-500','bg-emerald-400','bg-purple-400','bg-rose-400'];
                 foreach ($topSvcs as $idx => $svc):
                     $pct = $maxMonto > 0 ? round(($svc['total_monto'] / $maxMonto) * 100) : 0;
                     $color = $coloresBars[$idx % count($coloresBars)];
@@ -151,7 +151,7 @@ $maxMonto    = $topSvcs ? max(array_column($topSvcs, 'total_monto')) : 0;
 <!-- Últimas citas atendidas -->
 <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
     <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
-        <i data-lucide="list-checks" class="w-4 h-4 text-amber-500"></i>
+        <i data-lucide="list-checks" class="w-4 h-4 text-blue-500"></i>
         <h3 class="text-sm font-semibold text-zinc-800">Últimas citas cobradas</h3>
         <span class="ml-auto text-xs text-zinc-400">Últimas 15</span>
     </div>
@@ -180,8 +180,8 @@ $maxMonto    = $topSvcs ? max(array_column($topSvcs, 'total_monto')) : 0;
                     </td>
                     <td class="px-3 py-3 hidden sm:table-cell">
                         <?php if ($u['servicio_nombre']): ?>
-                        <span class="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700
-                                     border border-amber-100 rounded-full px-2 py-0.5">
+                        <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700
+                                     border border-blue-100 rounded-full px-2 py-0.5">
                             <i data-lucide="scissors" class="w-3 h-3"></i>
                             <?= htmlspecialchars($u['servicio_nombre']) ?>
                         </span>

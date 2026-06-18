@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $hoy      = date('Y-m-d');
 $maxFecha = date('Y-m-d', strtotime('+30 days'));
 $datos    = $datos ?? [];
@@ -33,15 +33,15 @@ foreach ($servicios as $s) {
         <?php foreach ([1 => 'Servicio', 2 => 'Fecha y hora', 3 => 'Confirmar'] as $n => $label): ?>
         <div class="flex flex-col items-center">
             <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
-                        <?= $pasoInicial >= $n ? 'bg-amber-500 text-white' : 'bg-stone-200 text-zinc-400' ?>">
+                        <?= $pasoInicial >= $n ? 'bg-blue-500 text-white' : 'bg-stone-200 text-zinc-400' ?>">
                 <?= $n ?>
             </div>
-            <span class="text-xs mt-1 <?= $pasoInicial >= $n ? 'text-amber-600 font-medium' : 'text-zinc-400' ?> hidden sm:block">
+            <span class="text-xs mt-1 <?= $pasoInicial >= $n ? 'text-blue-600 font-medium' : 'text-zinc-400' ?> hidden sm:block">
                 <?= $label ?>
             </span>
         </div>
         <?php if ($n < 3): ?>
-        <div class="w-12 h-0.5 mx-1 mb-4 <?= $pasoInicial > $n ? 'bg-amber-500' : 'bg-stone-200' ?>"></div>
+        <div class="w-12 h-0.5 mx-1 mb-4 <?= $pasoInicial > $n ? 'bg-blue-500' : 'bg-stone-200' ?>"></div>
         <?php endif; ?>
         <?php endforeach; ?>
     </div>
@@ -78,8 +78,8 @@ foreach ($servicios as $s) {
                         @click="seleccionarServicio(<?= (int)$s['id'] ?>, '<?= addslashes(htmlspecialchars($s['nombre'])) ?>', <?= (float)$s['precio'] ?>, <?= (int)$s['duracion_minutos'] ?>)"
                         class="slot-btn w-full p-5 rounded-2xl border-2 text-left transition-all active:scale-[.98]"
                         :class="servicioId === <?= (int)$s['id'] ?>
-                            ? 'border-amber-500 bg-amber-50 shadow-md'
-                            : 'border-stone-200 bg-white hover:border-amber-300 hover:shadow-sm'">
+                            ? 'border-blue-500 bg-blue-50 shadow-md'
+                            : 'border-stone-200 bg-white hover:border-blue-300 hover:shadow-sm'">
                     <div class="flex items-center justify-between gap-3">
                         <div class="min-w-0 flex-1">
                             <div class="font-bold text-zinc-800"><?= htmlspecialchars($s['nombre']) ?></div>
@@ -88,7 +88,7 @@ foreach ($servicios as $s) {
                             <?php endif; ?>
                         </div>
                         <div class="text-right flex-shrink-0">
-                            <div class="text-lg font-black text-amber-600"><?= moneda((float)$s['precio']) ?></div>
+                            <div class="text-lg font-black text-blue-600"><?= moneda((float)$s['precio']) ?></div>
                             <div class="text-xs text-zinc-400"><?= duracionFmt((int)$s['duracion_minutos']) ?></div>
                         </div>
                     </div>
@@ -103,10 +103,10 @@ foreach ($servicios as $s) {
 
             <!-- Chip de servicio seleccionado -->
             <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-3 py-1.5">
-                    <i data-lucide="scissors" class="w-3.5 h-3.5 text-amber-600"></i>
-                    <span class="text-sm font-medium text-amber-800" x-text="servicioNombre"></span>
-                    <span class="text-xs text-amber-600" x-text="'· ' + precioFmt"></span>
+                <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5">
+                    <i data-lucide="scissors" class="w-3.5 h-3.5 text-blue-600"></i>
+                    <span class="text-sm font-medium text-blue-800" x-text="servicioNombre"></span>
+                    <span class="text-xs text-blue-600" x-text="'· ' + precioFmt"></span>
                 </div>
                 <button type="button" @click="paso = 1"
                         class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors underline">
@@ -125,7 +125,7 @@ foreach ($servicios as $s) {
                        min="<?= $hoy ?>"
                        max="<?= $maxFecha ?>"
                        class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
-                              focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 <p class="text-xs text-zinc-400 mt-1.5">Lunes a sábado · Máximo 30 días</p>
             </div>
 
@@ -143,7 +143,7 @@ foreach ($servicios as $s) {
 
                 <!-- Cargando -->
                 <div x-show="fecha && cargando" class="text-center py-6">
-                    <div class="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    <div class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                     <p class="text-xs text-zinc-400">Verificando disponibilidad…</p>
                 </div>
 
@@ -164,9 +164,9 @@ foreach ($servicios as $s) {
                                 :disabled="!slot.disponible"
                                 class="slot-btn py-4 px-2 rounded-2xl border-2 text-center flex flex-col items-center gap-0.5 transition-all active:scale-[.97]"
                                 :class="horaInicio === slot.hora_inicio
-                                    ? 'border-amber-500 bg-amber-500 text-white shadow-md'
+                                    ? 'border-blue-500 bg-blue-500 text-white shadow-md'
                                     : slot.disponible
-                                        ? 'border-stone-200 bg-white hover:border-amber-400 hover:shadow-sm text-zinc-700'
+                                        ? 'border-stone-200 bg-white hover:border-blue-400 hover:shadow-sm text-zinc-700'
                                         : 'border-stone-100 bg-stone-50 text-zinc-300 cursor-not-allowed'">
                             <span class="text-base font-black leading-none" x-text="slot.hora_inicio"></span>
                             <span class="text-[10px] font-normal opacity-70 leading-none" x-text="slot.hora_fin"
@@ -182,7 +182,7 @@ foreach ($servicios as $s) {
                         <span class="text-xs text-zinc-400">Disponible</span>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded border-2 border-amber-500 bg-amber-500"></div>
+                        <div class="w-3 h-3 rounded border-2 border-blue-500 bg-blue-500"></div>
                         <span class="text-xs text-zinc-400">Seleccionado</span>
                     </div>
                     <div class="flex items-center gap-1.5">
@@ -198,7 +198,7 @@ foreach ($servicios as $s) {
                     :disabled="!horaInicio"
                     class="slot-btn w-full py-4 rounded-2xl font-bold text-base transition-all active:scale-[.98]"
                     :class="horaInicio
-                        ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-md'
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
                         : 'bg-stone-200 text-zinc-400 cursor-not-allowed'">
                 <span x-text="horaInicio ? 'Continuar · ' + slotLabel : 'Selecciona una hora'"></span>
             </button>
@@ -208,26 +208,26 @@ foreach ($servicios as $s) {
         <div x-show="paso === 3" x-cloak>
 
             <!-- Resumen de la selección -->
-            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
-                <div class="text-xs font-semibold text-amber-700 mb-2 uppercase tracking-wide">Tu selección</div>
-                <div class="space-y-1.5 text-sm text-amber-900">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                <div class="text-xs font-semibold text-blue-700 mb-2 uppercase tracking-wide">Tu selección</div>
+                <div class="space-y-1.5 text-sm text-blue-900">
                     <div class="flex items-center gap-2">
-                        <i data-lucide="scissors" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+                        <i data-lucide="scissors" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
                         <span x-text="servicioNombre" class="font-medium"></span>
-                        <span x-text="'— ' + precioFmt" class="text-amber-600 ml-auto"></span>
+                        <span x-text="'— ' + precioFmt" class="text-blue-600 ml-auto"></span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i data-lucide="calendar" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+                        <i data-lucide="calendar" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
                         <span x-text="fechaFmt(fecha)"></span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i data-lucide="clock" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+                        <i data-lucide="clock" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
                         <span x-text="slotLabel"></span>
-                        <span x-text="'(' + servicioDuracion + ' min)'" class="text-amber-600 ml-1"></span>
+                        <span x-text="'(' + servicioDuracion + ' min)'" class="text-blue-600 ml-1"></span>
                     </div>
                 </div>
                 <button type="button" @click="paso = 2"
-                        class="text-xs text-amber-600 hover:text-amber-800 underline mt-2 block">
+                        class="text-xs text-blue-600 hover:text-blue-800 underline mt-2 block">
                     Cambiar fecha/hora
                 </button>
             </div>
@@ -252,7 +252,7 @@ foreach ($servicios as $s) {
                                value="<?= $preNombre ?>"
                                placeholder="¿Cómo te llamamos?"
                                class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
-                                      focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                autofocus required>
                     </div>
 
@@ -265,13 +265,13 @@ foreach ($servicios as $s) {
                                value="<?= $preTelefono ?>"
                                placeholder="Para recordatorios"
                                class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
-                                      focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>
 
                 <!-- Confirmar -->
                 <button type="submit"
-                        class="slot-btn w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4
+                        class="slot-btn w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4
                                rounded-2xl shadow-md text-base flex items-center justify-center gap-2 active:scale-[.98] transition-all">
                     <i data-lucide="calendar-check" class="w-4 h-4"></i>
                     Confirmar reserva

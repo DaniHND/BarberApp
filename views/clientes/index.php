@@ -1,10 +1,10 @@
-<!-- Header de página -->
+﻿<!-- Header de página -->
 <div class="flex items-center justify-between mb-5">
     <div>
         <h2 class="text-base font-bold text-zinc-900">Clientes Frecuentes</h2>
         <p class="text-xs text-zinc-400 mt-0.5">Registrados automáticamente al atender citas</p>
     </div>
-    <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200
+    <span class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200
                  text-xs font-semibold px-3 py-1.5 rounded-full">
         <i data-lucide="users" class="w-3.5 h-3.5"></i>
         <?= count($clientes) ?>
@@ -16,15 +16,15 @@
 <!-- Estado vacío -->
 <div class="bg-white rounded-2xl border border-stone-200 shadow-sm">
     <div class="p-10 text-center">
-        <div class="w-16 h-16 bg-amber-50 rounded-full mx-auto flex items-center justify-center mb-4">
-            <i data-lucide="heart-handshake" class="w-7 h-7 text-amber-500"></i>
+        <div class="w-16 h-16 bg-blue-50 rounded-full mx-auto flex items-center justify-center mb-4">
+            <i data-lucide="heart-handshake" class="w-7 h-7 text-blue-500"></i>
         </div>
         <h3 class="text-base font-semibold text-zinc-700 mb-1">Sin clientes frecuentes aún</h3>
         <p class="text-sm text-zinc-400 max-w-xs mx-auto">
             Cuando marques una cita como <strong>Atendida</strong>, el cliente aparecerá aquí automáticamente.
         </p>
         <a href="<?= url('citas') ?>"
-           class="inline-flex items-center gap-2 mt-4 bg-amber-500 hover:bg-amber-600 text-white
+           class="inline-flex items-center gap-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white
                   text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
             <i data-lucide="calendar-days" class="w-4 h-4"></i>
             Ir a la agenda
@@ -38,7 +38,7 @@
 <div class="block md:hidden space-y-3">
     <?php foreach ($clientes as $i => $c):
         $visitas = (int)$c['total_visitas'];
-        if ($visitas >= 10)    { $badgeBg = 'bg-amber-100'; $badgeText = 'text-amber-700'; $badgeDot = 'bg-amber-400'; $badgeLabel = 'VIP'; }
+        if ($visitas >= 10)    { $badgeBg = 'bg-blue-100'; $badgeText = 'text-blue-700'; $badgeDot = 'bg-blue-400'; $badgeLabel = 'VIP'; }
         elseif ($visitas >= 5) { $badgeBg = 'bg-blue-100';  $badgeText = 'text-blue-700';  $badgeDot = 'bg-blue-400';  $badgeLabel = 'Frecuente'; }
         else                   { $badgeBg = 'bg-zinc-100';  $badgeText = 'text-zinc-600';  $badgeDot = 'bg-zinc-300';  $badgeLabel = 'Regular'; }
     ?>
@@ -66,7 +66,7 @@
                 </span>
                 <?php endif; ?>
                 <?php if ($c['servicio_favorito']): ?>
-                <span class="text-xs text-amber-600 flex items-center gap-1 truncate max-w-[120px]">
+                <span class="text-xs text-blue-600 flex items-center gap-1 truncate max-w-[120px]">
                     <i data-lucide="scissors" class="w-3 h-3 flex-shrink-0"></i><?= htmlspecialchars($c['servicio_favorito']) ?>
                 </span>
                 <?php endif; ?>
@@ -83,8 +83,8 @@
                 <div class="text-[10px] text-zinc-400 leading-none">visit<?= $visitas !== 1 ? 'as' : 'a' ?></div>
             </div>
             <a href="<?= url('clientes/historial') ?>?id=<?= (int)$c['id'] ?>"
-               class="flex items-center gap-1 text-xs font-semibold text-amber-600 hover:text-amber-800
-                      bg-amber-50 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg transition-colors">
+               class="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800
+                      bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg transition-colors">
                 <i data-lucide="history" class="w-3.5 h-3.5"></i>
                 Ver
             </a>
@@ -101,7 +101,7 @@
 <div class="hidden md:block bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
 
     <div class="px-5 py-3 border-b border-stone-100 bg-stone-50 flex flex-wrap items-center gap-3 text-xs text-zinc-500">
-        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>VIP — 10+ visitas</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block"></span>VIP — 10+ visitas</span>
         <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block"></span>Frecuente — 5-9 visitas</span>
         <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-zinc-300 inline-block"></span>Regular — 1-4 visitas</span>
     </div>
@@ -123,7 +123,7 @@
             <tbody class="divide-y divide-stone-50">
                 <?php foreach ($clientes as $i => $c):
                     $visitas = (int)$c['total_visitas'];
-                    if ($visitas >= 10)    { $badge = ['bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'dot' => 'bg-amber-400', 'label' => 'VIP']; }
+                    if ($visitas >= 10)    { $badge = ['bg' => 'bg-blue-100', 'text' => 'text-blue-700', 'dot' => 'bg-blue-400', 'label' => 'VIP']; }
                     elseif ($visitas >= 5) { $badge = ['bg' => 'bg-blue-100',  'text' => 'text-blue-700',  'dot' => 'bg-blue-400',  'label' => 'Frecuente']; }
                     else                   { $badge = ['bg' => 'bg-zinc-100',  'text' => 'text-zinc-600',  'dot' => 'bg-zinc-300',  'label' => 'Regular']; }
                 ?>
@@ -161,8 +161,8 @@
                     </td>
                     <td class="px-3 py-3.5">
                         <?php if ($c['servicio_favorito']): ?>
-                        <span class="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700
-                                     border border-amber-100 rounded-full px-2 py-0.5">
+                        <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700
+                                     border border-blue-100 rounded-full px-2 py-0.5">
                             <i data-lucide="scissors" class="w-3 h-3"></i>
                             <?= htmlspecialchars($c['servicio_favorito']) ?>
                         </span>
@@ -173,7 +173,7 @@
                     <td class="px-3 py-3.5 text-right">
                         <a href="<?= url('clientes/historial') ?>?id=<?= (int)$c['id'] ?>"
                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-500
-                                  hover:text-amber-600 hover:bg-amber-50 px-2.5 py-1.5 rounded-lg transition-colors border border-stone-200">
+                                  hover:text-blue-600 hover:bg-blue-50 px-2.5 py-1.5 rounded-lg transition-colors border border-stone-200">
                             <i data-lucide="history" class="w-3.5 h-3.5"></i>
                             Ver historial
                         </a>

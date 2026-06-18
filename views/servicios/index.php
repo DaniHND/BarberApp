@@ -1,4 +1,4 @@
-<?php /** @var array $servicios */ ?>
+﻿<?php /** @var array $servicios */ ?>
 
 <!-- Header de página -->
 <div class="flex items-center justify-between mb-5">
@@ -7,7 +7,7 @@
         <p class="text-xs text-zinc-500 mt-0.5">Gestiona los cortes y servicios que ofreces</p>
     </div>
     <a href="<?= url('servicios/crear') ?>"
-       class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold
+       class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold
               px-4 py-2 rounded-lg transition-colors shadow-sm">
         <i data-lucide="plus" class="w-4 h-4"></i>
         Nuevo servicio
@@ -26,7 +26,7 @@
         <p class="text-sm font-semibold text-zinc-600">Sin servicios registrados</p>
         <p class="text-xs text-zinc-400 mt-1 mb-4">Agrega los cortes y servicios que ofrece tu barbería</p>
         <a href="<?= url('servicios/crear') ?>"
-           class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm
+           class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm
                   font-semibold px-4 py-2 rounded-lg transition-colors">
             <i data-lucide="plus" class="w-4 h-4"></i>
             Agregar primer servicio
@@ -97,7 +97,7 @@
 
                             <!-- Editar -->
                             <a href="<?= url('servicios/editar') ?>?id=<?= $s['id'] ?>"
-                               class="p-1.5 rounded-lg text-zinc-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+                               class="p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                                title="Editar">
                                 <i data-lucide="pencil" class="w-4 h-4"></i>
                             </a>
@@ -107,7 +107,7 @@
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
                                 <input type="hidden" name="id" value="<?= $s['id'] ?>">
                                 <button type="submit"
-                                        class="p-1.5 rounded-lg transition-colors <?= $s['activo'] ? 'text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100' : 'text-amber-500 hover:text-amber-700 hover:bg-amber-50' ?>"
+                                        class="p-1.5 rounded-lg transition-colors <?= $s['activo'] ? 'text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100' : 'text-blue-500 hover:text-blue-700 hover:bg-blue-50' ?>"
                                         title="<?= $s['activo'] ? 'Desactivar' : 'Activar' ?>">
                                     <i data-lucide="<?= $s['activo'] ? 'eye-off' : 'eye' ?>" class="w-4 h-4"></i>
                                 </button>

@@ -1,4 +1,4 @@
-<?php $hoy = date('H:i'); ?>
+﻿<?php $hoy = date('H:i'); ?>
 
 <div class="grid lg:grid-cols-3 gap-5">
 
@@ -6,7 +6,7 @@
     <div class="lg:col-span-1">
         <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
             <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
-                <i data-lucide="user-plus" class="w-4 h-4 text-amber-500"></i>
+                <i data-lucide="user-plus" class="w-4 h-4 text-blue-500"></i>
                 <h3 class="text-sm font-semibold text-zinc-800">Agregar a la espera</h3>
             </div>
             <form method="POST" action="<?= url('espera/agregar') ?>" class="p-5 space-y-4">
@@ -18,7 +18,7 @@
                     </label>
                     <input type="text" name="nombre" placeholder="Nombre del cliente"
                            class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
-                                  focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                            required autofocus>
                 </div>
 
@@ -28,7 +28,7 @@
                     </label>
                     <input type="tel" name="telefono" placeholder="Número de contacto"
                            class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
-                                  focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
@@ -37,7 +37,7 @@
                     </label>
                     <select name="servicio_id"
                             class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
-                                   focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white">
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
                         <option value="">Sin especificar</option>
                         <?php foreach ($servicios as $s): ?>
                         <option value="<?= (int)$s['id'] ?>">
@@ -48,7 +48,7 @@
                 </div>
 
                 <button type="submit"
-                        class="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600
+                        class="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600
                                text-white text-sm font-semibold py-2.5 rounded-lg transition-colors shadow-sm">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                     Agregar a la espera
@@ -57,7 +57,7 @@
 
             <!-- Info -->
             <div class="px-5 pb-4">
-                <div class="bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-700">
+                <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-700">
                     <i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i>
                     Clientes que llegaron sin cita previa. Se atienden en orden de llegada.
                 </div>
@@ -70,11 +70,11 @@
         <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
             <div class="px-5 py-3.5 border-b border-stone-100 flex items-center justify-between">
                 <h3 class="text-sm font-semibold text-zinc-800 flex items-center gap-2">
-                    <i data-lucide="users" class="w-4 h-4 text-amber-500"></i>
+                    <i data-lucide="users" class="w-4 h-4 text-blue-500"></i>
                     En espera ahora
                 </h3>
                 <div class="flex items-center gap-2">
-                    <span class="text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded-full">
+                    <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full">
                         <?= count($lista) ?> esperando
                     </span>
                     <span class="text-xs text-zinc-400"><?= $hoy ?></span>
@@ -99,7 +99,7 @@
                 <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-stone-50/50 transition-colors">
 
                     <!-- Número de turno -->
-                    <div class="w-9 h-9 rounded-full bg-amber-500 flex items-center justify-center
+                    <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center
                                 text-white font-bold text-sm flex-shrink-0">
                         <?= $i + 1 ?>
                     </div>
@@ -124,7 +124,7 @@
                             <?php endif; ?>
                         </div>
                         <?php if ($p['servicio_nombre']): ?>
-                        <div class="text-xs text-amber-600 mt-0.5 font-medium">
+                        <div class="text-xs text-blue-600 mt-0.5 font-medium">
                             <?= htmlspecialchars($p['servicio_nombre']) ?>
                         </div>
                         <?php else: ?>

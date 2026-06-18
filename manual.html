@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Usuario — BarberApp</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  :root {
+    --azul:  #1a3a6b;
+    --azul2: #2563eb;
+    --rojo:  #dc2626;
+    --verde: #16a34a;
+    --narj:  #d97706;
+  }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:#f8fafc; color:#1e293b; font-size:.95rem; }
+
+  /* Nav lateral */
+  .sidebar-nav { position:sticky; top:20px; }
+  .sidebar-nav .nav-link { color:#475569; font-size:.82rem; padding:.3rem .75rem; border-radius:6px; }
+  .sidebar-nav .nav-link:hover { background:#e2e8f0; color:#1e293b; }
+  .sidebar-nav .nav-link.active { background:#dbeafe; color:#1d4ed8; font-weight:600; }
+  .sidebar-nav .nav-section { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#94a3b8; padding:.6rem .75rem .2rem; }
+
+  /* Hero */
+  .hero { background:linear-gradient(135deg,#1a3a6b 0%,#1a2a5e 60%,#18181b 100%); color:#fff; padding:2.5rem 2rem; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; width:300px; height:300px; border-radius:50%; background:rgba(37,99,235,.08); top:-100px; right:-60px; }
+  .hero::after  { content:''; position:absolute; width:200px; height:200px; border-radius:50%; background:rgba(220,38,38,.06); bottom:-80px; left:-40px; }
+  .hero h1 { font-size:2rem; font-weight:800; }
+
+  /* Stripe */
+  .barber-stripe { height:4px; background:repeating-linear-gradient(90deg,#dc2626 0,#dc2626 16px,#fff 16px,#fff 24px,#2563eb 24px,#2563eb 40px,#fff 40px,#fff 48px); }
+
+  /* Cards */
+  .card { border:none; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.07); margin-bottom:1.5rem; }
+  .card-header { background:transparent; border-bottom:1px solid #e2e8f0; font-weight:700; padding:.9rem 1.25rem; }
+
+  /* Secciones */
+  .seccion { scroll-margin-top:20px; }
+
+  /* Rol badge */
+  .rol-badge { display:inline-block; padding:.2rem .65rem; border-radius:20px; font-size:.75rem; font-weight:700; }
+  .rol-barbero { background:#dbeafe; color:#1d4ed8; }
+  .rol-cliente  { background:#fee2e2; color:#b91c1c; }
+
+  /* Steps */
+  .step { display:flex; gap:1rem; margin-bottom:1.25rem; }
+  .step-num { width:32px; height:32px; border-radius:50%; background:var(--azul2); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.85rem; flex-shrink:0; margin-top:2px; }
+  .step-num.rojo  { background:var(--rojo); }
+  .step-num.verde { background:var(--verde); }
+  .step-body h6 { font-size:.9rem; margin-bottom:.3rem; }
+  .step-body p, .step-body ul { font-size:.85rem; color:#475569; margin-bottom:0; }
+  .step-body ul { padding-left:1.2rem; }
+
+  /* Mockup */
+  .mockup { background:#f0f4f8; border:1px solid #cbd5e1; border-radius:10px; padding:1rem 1.25rem; font-size:.8rem; margin:.75rem 0; }
+  .mockup-bar { background:#e2e8f0; border-radius:6px; padding:.3rem .75rem; margin-bottom:.75rem; font-size:.75rem; color:#64748b; display:flex; align-items:center; gap:.5rem; }
+  .mockup-bar .dot { width:8px; height:8px; border-radius:50%; }
+  .field-row { display:flex; align-items:center; gap:.75rem; margin-bottom:.5rem; }
+  .field-label { min-width:130px; color:#64748b; font-size:.78rem; }
+  .field-val { background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:.25rem .6rem; font-size:.8rem; flex:1; }
+  .btn-mock { background:var(--azul2); color:#fff; border:none; border-radius:6px; padding:.3rem .85rem; font-size:.78rem; font-weight:600; cursor:default; display:inline-block; }
+  .btn-mock.rojo  { background:var(--rojo); }
+  .btn-mock.verde { background:var(--verde); }
+  .btn-mock.gris  { background:#64748b; }
+
+  /* Info boxes */
+  .info-box { border-left:4px solid var(--azul2); background:#eff6ff; border-radius:0 8px 8px 0; padding:.75rem 1rem; font-size:.83rem; color:#1e3a5f; margin:.75rem 0; }
+  .warn-box  { border-left:4px solid var(--narj);  background:#fffbeb; border-radius:0 8px 8px 0; padding:.75rem 1rem; font-size:.83rem; color:#78350f; margin:.75rem 0; }
+  .ok-box    { border-left:4px solid var(--verde);  background:#f0fdf4; border-radius:0 8px 8px 0; padding:.75rem 1rem; font-size:.83rem; color:#14532d; margin:.75rem 0; }
+  .danger-box{ border-left:4px solid var(--rojo);   background:#fff1f2; border-radius:0 8px 8px 0; padding:.75rem 1rem; font-size:.83rem; color:#881337; margin:.75rem 0; }
+
+  /* Timeline */
+  .sim-timeline { position:relative; padding-left:2rem; }
+  .sim-timeline::before { content:''; position:absolute; left:.65rem; top:0; bottom:0; width:2px; background:#e2e8f0; }
+  .sim-item { position:relative; padding-bottom:1.5rem; }
+  .sim-dot { position:absolute; left:-2rem; top:.25rem; width:16px; height:16px; border-radius:50%; border:2px solid #fff; }
+  .sim-dot.barbero { background:#1d4ed8; box-shadow:0 0 0 2px #1d4ed8; }
+  .sim-dot.cliente { background:#dc2626;  box-shadow:0 0 0 2px #dc2626; }
+  .sim-dot.sistema { background:#7c3aed; box-shadow:0 0 0 2px #7c3aed; }
+
+  /* Ruta */
+  .ruta { font-family:monospace; background:#f1f5f9; border-radius:6px; padding:.15rem .5rem; font-size:.8rem; color:#1e40af; display:inline-block; margin-top:.4rem; }
+
+  /* Estado chips */
+  .estado-chip { display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .75rem; border-radius:20px; font-size:.78rem; font-weight:600; margin:.2rem; }
+  .est-disponible  { background:#dcfce7; color:#15803d; }
+  .est-reservado   { background:#dbeafe; color:#1d4ed8; }
+  .est-confirmado  { background:#fef9c3; color:#a16207; }
+  .est-atendido    { background:#d1fae5; color:#065f46; }
+  .est-nopresento  { background:#fee2e2; color:#b91c1c; }
+  .est-espera      { background:#ede9fe; color:#7c3aed; }
+
+  /* Sección divider */
+  .section-divider { border:none; border-top:2px solid #e2e8f0; margin:2rem 0; }
+
+  /* Hero badge */
+  .hero-badge { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:.25rem .85rem; font-size:.75rem; font-weight:600; letter-spacing:.05em; }
+
+  @media(max-width:991px){ .sidebar-nav { display:none; } }
+  @media print {
+    .sidebar-nav, .barber-stripe { display:none!important; }
+    .card { box-shadow:none; border:1px solid #e2e8f0!important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="barber-stripe"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container-xl">
+    <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+          <i class="bi bi-scissors fs-3"></i>
+          <span class="hero-badge">BarberApp v1.0</span>
+          <span class="hero-badge" style="background:rgba(37,99,235,.3);border-color:rgba(96,165,250,.5);color:#93c5fd;">
+            <i class="bi bi-phone-fill me-1"></i>Mobile First
+          </span>
+        </div>
+        <h1>Manual de Usuario</h1>
+        <p class="opacity-75 mb-0">Sistema Web para la Gestión Inteligente de Barberías</p>
+      </div>
+      <div class="text-end opacity-75" style="font-size:.83rem;">
+        <div>Versión 1.0 · Junio 2026</div>
+        <div class="mt-1">2 usuarios · 7 módulos · Simulación de un día completo</div>
+        <button onclick="window.print()" class="btn btn-sm mt-2" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);">
+          <i class="bi bi-printer me-1"></i>Imprimir manual
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="container-xl py-4">
+<div class="row g-4">
+
+<!-- ── SIDEBAR ─────────────────────────────── -->
+<div class="col-lg-2 d-print-none">
+  <nav class="sidebar-nav">
+    <div class="nav-section">Introducción</div>
+    <a class="nav-link" href="#intro">¿Qué es BarberApp?</a>
+    <a class="nav-link" href="#usuarios">Los 2 usuarios</a>
+    <a class="nav-link" href="#acceso">Cómo ingresar</a>
+
+    <div class="nav-section mt-2">Guía del Barbero</div>
+    <a class="nav-link" href="#dashboard">Dashboard</a>
+    <a class="nav-link" href="#agenda">Agenda de Citas</a>
+    <a class="nav-link" href="#espera">Lista de Espera</a>
+    <a class="nav-link" href="#servicios">Servicios</a>
+    <a class="nav-link" href="#clientes">Clientes Frecuentes</a>
+    <a class="nav-link" href="#reportes">Reportes</a>
+
+    <div class="nav-section mt-2">Guía del Cliente</div>
+    <a class="nav-link" href="#reservar">Hacer una reserva</a>
+    <a class="nav-link" href="#gestionar">Gestionar la cita</a>
+
+    <div class="nav-section mt-2">Simulación</div>
+    <a class="nav-link" href="#sim-intro">La barbería</a>
+    <a class="nav-link" href="#sim-manana">Mañana</a>
+    <a class="nav-link" href="#sim-tarde">Tarde</a>
+    <a class="nav-link" href="#sim-cierre">Cierre del día</a>
+
+    <div class="nav-section mt-2">Referencia</div>
+    <a class="nav-link" href="#estados">Los 6 estados</a>
+    <a class="nav-link" href="#glosario">Glosario</a>
+    <a class="nav-link" href="#problemas">Problemas comunes</a>
+  </nav>
+</div>
+
+<!-- ── CONTENIDO PRINCIPAL ─────────────────── -->
+<div class="col-lg-10">
+
+<!-- ═══════════════════════════════════════════
+     PARTE 1: INTRODUCCIÓN
+════════════════════════════════════════════ -->
+<h4 class="fw-bold mb-3" style="color:var(--azul);">
+  <i class="bi bi-book me-2"></i>Parte 1 — Introducción al sistema
+</h4>
+
+<!-- ¿Qué es BarberApp? -->
+<div class="card seccion" id="intro">
+  <div class="card-header"><i class="bi bi-question-circle me-2" style="color:var(--azul2);"></i>¿Qué es BarberApp?</div>
+  <div class="card-body p-4">
+    <p>BarberApp es un <strong>sistema web para administrar una barbería</strong>: citas, agenda del día, lista de espera, servicios, clientes frecuentes e ingresos. Se usa desde el teléfono, tablet o computadora sin instalar ninguna aplicación.</p>
+
+    <div class="row g-3 mt-1">
+      <div class="col-md-6">
+        <div style="background:#f8fafc;border-radius:8px;padding:1rem;border:1px solid #e2e8f0;">
+          <div class="fw-semibold mb-2"><i class="bi bi-x-circle text-danger me-2"></i>Sin BarberApp</div>
+          <ul style="font-size:.83rem;color:#64748b;margin:0;padding-left:1.2rem;">
+            <li>Las citas se manejan por WhatsApp o de memoria</li>
+            <li>Es fácil olvidar quién tiene cita y a qué hora</li>
+            <li>No se sabe cuánto se ganó en el día</li>
+            <li>Los clientes frecuentes no reciben atención especial</li>
+            <li>Los espacios vacíos se pierden sin aviso</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div style="background:#f0fdf4;border-radius:8px;padding:1rem;border:1px solid #bbf7d0;">
+          <div class="fw-semibold mb-2"><i class="bi bi-check-circle text-success me-2"></i>Con BarberApp</div>
+          <ul style="font-size:.83rem;color:#475569;margin:0;padding-left:1.2rem;">
+            <li>Los clientes reservan solos desde el celular</li>
+            <li>La agenda del día se ve de un vistazo</li>
+            <li>Los ingresos se registran automáticamente</li>
+            <li>Identificas a tus clientes VIP al instante</li>
+            <li>El sistema avisa cuando alguien no llegó</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box mt-3">
+      <strong>¿Cómo funciona en pocas palabras?</strong><br>
+      El cliente entra a la página web de la barbería, pone su nombre, elige el servicio y selecciona la hora libre — sin crear cuenta. El barbero ve esa cita al instante en su panel, la confirma cuando el cliente llega, y al terminar la marca como atendida. El sistema registra el ingreso y suma la visita al historial del cliente.
+    </div>
+  </div>
+</div>
+
+<!-- Los 2 usuarios -->
+<div class="card seccion" id="usuarios">
+  <div class="card-header"><i class="bi bi-people me-2" style="color:var(--azul2);"></i>Los 2 tipos de usuario</div>
+  <div class="card-body p-4">
+    <div class="row g-3">
+
+      <div class="col-md-6">
+        <div style="border:2px solid #bfdbfe;border-radius:10px;padding:1rem;">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero / Administrador</span>
+          </div>
+          <p style="font-size:.83rem;color:#64748b;margin-bottom:.5rem;">Es el dueño o encargado de la barbería. Tiene acceso completo al panel de administración: ve la agenda, gestiona la lista de espera, crea servicios, identifica clientes frecuentes y revisa los reportes de ingresos.</p>
+          <div style="font-size:.78rem;color:#64748b;"><strong>Acceso:</strong> <code>http://localhost/BarberApp</code> → Login con usuario y contraseña</div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div style="border:2px solid #fecaca;border-radius:10px;padding:1rem;">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="rol-badge rol-cliente"><i class="bi bi-person me-1"></i>Cliente</span>
+          </div>
+          <p style="font-size:.83rem;color:#64748b;margin-bottom:.5rem;">Es la persona que quiere reservar una cita. No necesita crear cuenta ni contraseña — solo pone su nombre o apodo y elige el servicio, la fecha y la hora disponible. Recibe un enlace para cancelar o reprogramar si lo necesita.</p>
+          <div style="font-size:.78rem;color:#64748b;"><strong>Acceso:</strong> <code>http://localhost/BarberApp/reservar</code> → Sin login</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Cómo ingresar -->
+<div class="card seccion" id="acceso">
+  <div class="card-header"><i class="bi bi-box-arrow-in-right me-2" style="color:var(--azul2);"></i>Cómo ingresar al sistema</div>
+  <div class="card-body p-4">
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="fw-semibold mb-3" style="font-size:.88rem;"><span class="rol-badge rol-barbero me-2">Barbero</span>Acceso al panel admin</div>
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h6>Abrir el navegador e ir al sistema</h6>
+            <p>Escribir la dirección del sistema en el navegador. El sistema redirige automáticamente al login.</p>
+          </div>
+        </div>
+
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="dot" style="background:#ff5f57;"></div>
+            <div class="dot" style="background:#febc2e;"></div>
+            <div class="dot" style="background:#28c840;"></div>
+            <span>🔒 localhost/BarberApp</span>
+          </div>
+          <div style="max-width:320px;margin:0 auto;padding:.5rem;">
+            <div class="text-center mb-3">
+              <div style="font-size:1.1rem;font-weight:800;color:var(--azul);">✂ BarberApp</div>
+              <div style="font-size:.75rem;color:#94a3b8;">Panel de Administración</div>
+            </div>
+            <div class="field-row"><span class="field-label">Usuario</span><span class="field-val">admin</span></div>
+            <div class="field-row"><span class="field-label">Contraseña</span><span class="field-val">••••••••</span></div>
+            <div class="mt-2 text-center"><span class="btn-mock">Ingresar</span></div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h6>Escribir usuario y contraseña</h6>
+            <p>Las credenciales demo para pruebas son usuario <code>admin</code> y contraseña <code>Admin123</code>.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h6>Se carga el Dashboard</h6>
+            <p>El sistema abre el tablero principal con las citas del día, lista de espera activa e ingresos del día.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="fw-semibold mb-3" style="font-size:.88rem;"><span class="rol-badge rol-cliente me-2">Cliente</span>Acceso a la página de reservas</div>
+
+        <div class="step">
+          <div class="step-num rojo">1</div>
+          <div class="step-body">
+            <h6>El barbero comparte el enlace de reservas</h6>
+            <p>El cliente solo necesita la URL de la página pública de la barbería. No hace falta descargarse nada.</p>
+          </div>
+        </div>
+
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="dot" style="background:#ff5f57;"></div>
+            <div class="dot" style="background:#febc2e;"></div>
+            <div class="dot" style="background:#28c840;"></div>
+            <span>localhost/BarberApp/reservar</span>
+          </div>
+          <div style="padding:.5rem;text-align:center;">
+            <div style="font-size:.9rem;font-weight:800;margin-bottom:.5rem;">✂ Reserva tu cita</div>
+            <div style="font-size:.75rem;color:#94a3b8;margin-bottom:.75rem;">Sin registro — solo tu nombre y ya</div>
+            <div style="display:flex;gap:.5rem;justify-content:center;">
+              <div style="background:#2563eb;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;">1</div>
+              <div style="height:2px;background:#e2e8f0;flex:1;margin-top:11px;"></div>
+              <div style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;">2</div>
+              <div style="height:2px;background:#e2e8f0;flex:1;margin-top:11px;"></div>
+              <div style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;">3</div>
+            </div>
+            <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;">Servicio · Fecha/hora · Confirmar</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num rojo">2</div>
+          <div class="step-body">
+            <h6>Elegir servicio, fecha y hora</h6>
+            <p>El proceso tiene 3 pasos cortos. No requiere correo, teléfono ni contraseña.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num rojo">3</div>
+          <div class="step-body">
+            <h6>Guardar el enlace de la cita</h6>
+            <p>Al confirmar, el sistema muestra un enlace único para gestionar la cita. El cliente puede guardar esa página como favorito.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn-box mt-2">
+      <strong>Si el sistema no carga:</strong> Verifica que Laragon esté corriendo. En la bandeja del sistema (esquina inferior derecha) debe aparecer el ícono de Laragon con Apache y MySQL en verde. Si no, clic derecho → Start All.
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════
+     PARTE 2: GUÍA DEL BARBERO
+════════════════════════════════════════════ -->
+<h4 class="fw-bold mb-3" style="color:var(--azul);">
+  <i class="bi bi-scissors me-2"></i>Parte 2 — Guía del Barbero (Panel Admin)
+</h4>
+
+<!-- DASHBOARD -->
+<div class="card seccion" id="dashboard">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    <i class="bi bi-speedometer2 me-1" style="color:var(--azul2);"></i>Dashboard — Resumen del día
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">El Dashboard es la primera pantalla que ve el barbero al ingresar. Muestra de un vistazo el estado actual de la barbería sin necesidad de navegar a otros módulos.</div>
+
+    <div class="step mt-3">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h6>Tarjetas de KPIs (indicadores del día)</h6>
+        <p>Cuatro tarjetas en la parte superior muestran:</p>
+        <ul>
+          <li><strong>Citas hoy</strong> — cuántas citas hay agendadas para el día de hoy</li>
+          <li><strong>En espera</strong> — cuántas personas están en la lista de espera en este momento</li>
+          <li><strong>Atendidos</strong> — cuántos clientes ya fueron atendidos hoy</li>
+          <li><strong>Ingresos del día</strong> — suma del dinero generado por los servicios atendidos</li>
+        </ul>
+        <div class="ruta">Menú lateral → Dashboard</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h6>Gráfica de citas — últimos 7 días</h6>
+        <p>Una gráfica de barras muestra cuántas citas hubo cada uno de los últimos 7 días. Permite identificar los días más ocupados de la semana de un vistazo.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <h6>Top servicios del mes</h6>
+        <p>Una lista ordenada de los servicios más solicitados en el mes actual, con una barra de porcentaje. Útil para saber qué ofrecer con más promoción.</p>
+      </div>
+    </div>
+
+    <div class="ok-box">Si el sistema muestra "No hay servicios" en el dashboard, es porque aún no se han creado servicios. Ir a <strong>Servicios → Agregar servicio</strong> para comenzar.</div>
+  </div>
+</div>
+
+<!-- AGENDA DE CITAS -->
+<div class="card seccion" id="agenda">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    <i class="bi bi-calendar3 me-1" style="color:var(--azul2);"></i>Agenda de Citas
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">La agenda es el módulo más importante para el día a día. Muestra todas las citas activas, permite cambiar el estado de cada cita y buscar por fecha o nombre de cliente.</div>
+
+    <div class="step mt-3">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h6>Vista calendario (desktop y tablet)</h6>
+        <p>En pantallas grandes, la agenda muestra un calendario estilo Google Calendar (FullCalendar) con las citas del día como bloques de colores según su estado. Se puede navegar día a día o por semana.</p>
+        <div class="ruta">Menú lateral → Agenda de Citas</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h6>Vista lista (móvil)</h6>
+        <p>En teléfonos, el calendario se oculta automáticamente y se muestra una lista vertical de las citas del día con los botones de acción. Esta vista es más fácil de operar con el pulgar.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <h6>Cambiar el estado de una cita</h6>
+        <p>Cada cita tiene botones de acción para avanzar su estado. El flujo normal es:</p>
+        <div class="d-flex flex-wrap align-items-center gap-2 mt-2" style="font-size:.8rem;">
+          <span class="estado-chip est-reservado">Reservado</span>
+          <i class="bi bi-arrow-right text-muted"></i>
+          <span class="estado-chip est-confirmado">Confirmado</span>
+          <i class="bi bi-arrow-right text-muted"></i>
+          <span class="estado-chip est-atendido">Atendido ✓</span>
+        </div>
+        <div class="mt-2" style="font-size:.83rem;color:#64748b;">
+          Si el cliente no llega: <span class="estado-chip est-nopresento" style="font-size:.72rem;">No Presentado</span>
+          Si es un cliente sin cita que ya fue atendido: <span class="estado-chip est-espera" style="font-size:.72rem;">En Espera</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">D</div>
+      <div class="step-body">
+        <h6>Auto-liberación de citas vencidas</h6>
+        <p>Si un cliente tenía cita y no llegó 10 minutos después de su hora, el sistema lo marca automáticamente como <strong>No Presentado</strong> la próxima vez que el barbero cargue la página. El slot queda libre para otro cliente.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">E</div>
+      <div class="step-body">
+        <h6>Buscar citas por fecha</h6>
+        <p>Con el selector de fecha en la parte superior se puede navegar a cualquier día — pasado o futuro — para ver las citas de ese día específico.</p>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <strong>Al marcar una cita como "Atendido"</strong>, el sistema registra automáticamente: 1) un ingreso en la tabla de reportes con el precio del servicio, y 2) una visita en el historial del cliente. No hace falta ingresar el ingreso manualmente.
+    </div>
+  </div>
+</div>
+
+<!-- LISTA DE ESPERA -->
+<div class="card seccion" id="espera">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    <i class="bi bi-people me-1" style="color:var(--azul2);"></i>Lista de Espera
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">La lista de espera es para los clientes que llegan sin cita previa. El barbero los anota en la lista y los va atendiendo por orden de llegada cuando queda un espacio libre.</div>
+
+    <div class="step mt-3">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h6>Agregar un cliente a la lista</h6>
+        <p>Cuando llega alguien sin cita, el barbero llena el formulario con:</p>
+        <ul>
+          <li><strong>Nombre</strong> — nombre o apodo del cliente</li>
+          <li><strong>Servicio</strong> — qué servicio quiere (se puede cambiar después)</li>
+          <li><strong>Teléfono</strong> — opcional, para poder llamarle si hay espera larga</li>
+        </ul>
+        <div class="mockup mt-2">
+          <div class="fw-semibold mb-2" style="font-size:.8rem;">Formulario: Agregar a la espera</div>
+          <div class="field-row"><span class="field-label">Nombre</span><span class="field-val">Carlos Mejía</span></div>
+          <div class="field-row"><span class="field-label">Servicio</span><span class="field-val">Corte clásico ▼</span></div>
+          <div class="field-row"><span class="field-label">Teléfono (opcional)</span><span class="field-val">+504 9999-0000</span></div>
+          <div class="mt-2"><span class="btn-mock">Agregar a la lista</span></div>
+        </div>
+        <div class="ruta">Menú lateral → Lista de Espera</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h6>La lista muestra el tiempo de espera en vivo</h6>
+        <p>Cada persona en la lista muestra cuántos minutos lleva esperando desde que fue agregada, actualizándose automáticamente. Esto ayuda a priorizar sin tener que ver el reloj.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <h6>Atender o quitar de la lista</h6>
+        <p>Cuando es el turno del cliente:</p>
+        <ul>
+          <li><strong>Atendido</strong> — el cliente fue atendido. Se registra la visita y el ingreso automáticamente. Sale de la lista.</li>
+          <li><strong>Quitar</strong> — el cliente decidió no esperar y se fue. Se elimina de la lista sin registrar ingreso.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<div class="card seccion" id="servicios">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    <i class="bi bi-scissors me-1" style="color:var(--azul2);"></i>Gestión de Servicios
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">Los servicios son lo que el barbero ofrece: corte, barba, degradado, etc. Cada servicio tiene un nombre, precio y duración. Los clientes los ven en la página de reservas para elegir el que quieren.</div>
+
+    <div class="step mt-3">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h6>Crear un nuevo servicio</h6>
+        <div class="mockup mt-1">
+          <div class="fw-semibold mb-2" style="font-size:.8rem;">Formulario: Nuevo servicio</div>
+          <div class="field-row"><span class="field-label">Nombre</span><span class="field-val">Corte clásico</span></div>
+          <div class="field-row"><span class="field-label">Descripción</span><span class="field-val">Corte tradicional con tijera y navaja</span></div>
+          <div class="field-row"><span class="field-label">Precio (L)</span><span class="field-val">90.00</span></div>
+          <div class="field-row"><span class="field-label">Duración (min)</span><span class="field-val">30</span></div>
+          <div class="field-row"><span class="field-label">Estado</span><span class="field-val">Activo ✓</span></div>
+          <div class="mt-2"><span class="btn-mock verde">Guardar servicio</span></div>
+        </div>
+        <div class="ruta">Menú lateral → Servicios → Agregar servicio</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h6>Editar un servicio existente</h6>
+        <p>Para cambiar el precio, la duración o la descripción de un servicio, hacer clic en el ícono de lápiz en la fila del servicio. Los cambios aplican de inmediato en la página pública de reservas.</p>
+        <div class="ruta">Servicios → ícono ✏ del servicio</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <h6>Activar o desactivar un servicio</h6>
+        <p>El interruptor (toggle) activa o desactiva el servicio. Un servicio desactivado no aparece en la página pública ni puede seleccionarse para nuevas citas, pero las citas existentes no se ven afectadas.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">D</div>
+      <div class="step-body">
+        <h6>Eliminar un servicio</h6>
+        <p>Los servicios no se borran permanentemente — se archivan (soft delete). Esto protege el historial de citas pasadas. Si se necesita reactivar, contactar al administrador del sistema.</p>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <strong>La duración del servicio es clave:</strong> determina cuánto dura cada slot de hora en la página de reservas. Un servicio de 30 min genera slots cada 30 min (10:00, 10:30, 11:00…). Si se configura como 45 min, los slots son cada 45 min. Definir bien la duración evita citas amontonadas.
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTES FRECUENTES -->
+<div class="card seccion" id="clientes">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    <i class="bi bi-person-heart me-1" style="color:var(--azul2);"></i>Clientes Frecuentes
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">El historial de clientes se construye automáticamente cada vez que se marca una cita como "Atendido". No hay que ingresar datos manualmente — el sistema identifica al cliente por nombre y teléfono y acumula sus visitas.</div>
+
+    <div class="step mt-3">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h6>Los 3 rangos de fidelidad</h6>
+        <p>El sistema clasifica automáticamente a los clientes según cuántas veces han venido:</p>
+        <div class="row g-2 mt-1">
+          <div class="col-md-4">
+            <div style="border:1px solid #bfdbfe;border-radius:8px;padding:.75rem;background:#eff6ff;font-size:.8rem;text-align:center;">
+              <div class="fw-bold" style="color:#1d4ed8;font-size:.9rem;">⭐ VIP</div>
+              <div class="text-muted mt-1">10 o más visitas</div>
+              <div style="font-size:.75rem;color:#64748b;margin-top:.3rem;">Clientes más leales de la barbería</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div style="border:1px solid #bbf7d0;border-radius:8px;padding:.75rem;background:#f0fdf4;font-size:.8rem;text-align:center;">
+              <div class="fw-bold" style="color:#15803d;font-size:.9rem;">👍 Frecuente</div>
+              <div class="text-muted mt-1">5 a 9 visitas</div>
+              <div style="font-size:.75rem;color:#64748b;margin-top:.3rem;">Clientes habituales en crecimiento</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div style="border:1px solid #e2e8f0;border-radius:8px;padding:.75rem;background:#f8fafc;font-size:.8rem;text-align:center;">
+              <div class="fw-bold" style="color:#475569;font-size:.9rem;">🙂 Regular</div>
+              <div class="text-muted mt-1">1 a 4 visitas</div>
+              <div style="font-size:.75rem;color:#64748b;margin-top:.3rem;">Nuevos clientes en etapa inicial</div>
+            </div>
+          </div>
+        </div>
+        <div class="ruta">Menú lateral → Clientes Frecuentes</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h6>Ver el historial de un cliente</h6>
+        <p>Al hacer clic en el nombre de un cliente se abre su historial completo: todas las visitas con fecha, servicio y precio. El servicio favorito (el más pedido) aparece destacado en la tarjeta principal.</p>
+        <div class="ruta">Clientes Frecuentes → nombre del cliente → Ver historial</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <h6>Vista móvil vs desktop</h6>
+        <p>En el teléfono se muestran tarjetas apiladas con el nombre, las visitas y el servicio favorito bien visibles. En la computadora aparece la tabla completa con todas las columnas de información.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REPORTES -->
+<div class="card seccion" id="reportes">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-barbero"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    <i class="bi bi-bar-chart-line me-1" style="color:var(--azul2);"></i>Reportes
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">Los reportes muestran el rendimiento económico de la barbería. Todo se calcula automáticamente a partir de las citas marcadas como "Atendido" — no hay que ingresar cifras manualmente.</div>
+
+    <div class="step mt-3">
+      <div class="step-num">A</div>
+      <div class="step-body">
+        <h6>KPIs de ingresos</h6>
+        <p>Dos tarjetas en la parte superior muestran:</p>
+        <ul>
+          <li><strong>Ingresos de hoy</strong> — total del dinero generado en el día actual</li>
+          <li><strong>Ingresos del mes</strong> — total acumulado desde el primer día del mes</li>
+        </ul>
+        <div class="ruta">Menú lateral → Reportes</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body">
+        <h6>Gráfica de ingresos por día</h6>
+        <p>Una gráfica de barras muestra el ingreso de cada día del mes actual. Permite ver en qué días la barbería genera más dinero y planificar horarios o promociones en consecuencia.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body">
+        <h6>Top servicios del mes</h6>
+        <p>Lista ordenada de los servicios que más dinero generaron en el mes, con el monto total de cada uno y una barra de porcentaje para comparar visualmente.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">D</div>
+      <div class="step-body">
+        <h6>Historial de las últimas citas atendidas</h6>
+        <p>Una tabla en la parte inferior muestra las últimas citas atendidas con: nombre del cliente, servicio, fecha, hora y precio cobrado. Útil para responder preguntas como "¿cuánto le cobré a fulano la última vez?".</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">E</div>
+      <div class="step-body">
+        <h6>Filtrar por mes</h6>
+        <p>El selector de mes en la esquina superior permite ver los reportes de cualquier mes anterior, no solo el actual.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════
+     PARTE 3: GUÍA DEL CLIENTE
+════════════════════════════════════════════ -->
+<h4 class="fw-bold mb-3" style="color:var(--azul);">
+  <i class="bi bi-person me-2"></i>Parte 3 — Guía del Cliente
+</h4>
+
+<!-- HACER UNA RESERVA -->
+<div class="card seccion" id="reservar">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-cliente"><i class="bi bi-person me-1"></i>Cliente</span>
+    <i class="bi bi-calendar-plus me-1" style="color:var(--rojo);"></i>Cómo hacer una reserva
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">El cliente solo necesita el enlace de la página de reservas. No hay que crear una cuenta ni recordar contraseñas. Todo el proceso toma menos de 2 minutos.</div>
+
+    <div class="row g-4 mt-1">
+
+      <div class="col-md-4">
+        <div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:12px;padding:1.25rem;height:100%;">
+          <div class="text-center mb-3">
+            <div style="background:#2563eb;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">1</div>
+            <div class="fw-bold">Elegir el servicio</div>
+          </div>
+          <p style="font-size:.83rem;color:#475569;margin:0;">La primera pantalla muestra todos los servicios disponibles con su precio y duración. Hacer clic en el que se necesita para avanzar al siguiente paso.</p>
+          <div class="mockup mt-2" style="padding:.6rem .75rem;">
+            <div style="background:#fff;border:2px solid #2563eb;border-radius:8px;padding:.5rem .75rem;font-size:.75rem;">
+              <div class="fw-bold">Corte clásico</div>
+              <div class="text-muted">Tijera y navaja</div>
+              <div class="fw-bold text-primary mt-1">L. 90.00 · 30 min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div style="background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:1.25rem;height:100%;">
+          <div class="text-center mb-3">
+            <div style="background:#e2e8f0;color:#64748b;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">2</div>
+            <div class="fw-bold">Elegir fecha y hora</div>
+          </div>
+          <p style="font-size:.83rem;color:#475569;margin:0;">Se selecciona la fecha y el sistema muestra automáticamente solo las horas disponibles. Los horarios ocupados no aparecen.</p>
+          <div class="mockup mt-2" style="padding:.6rem .75rem;">
+            <div class="d-flex flex-wrap gap-1">
+              <div style="border:2px solid #2563eb;background:#2563eb;color:#fff;border-radius:8px;padding:.3rem .5rem;font-size:.72rem;font-weight:700;">10:00<br><span style="font-size:.62rem;opacity:.8;">10:30</span></div>
+              <div style="border:2px solid #e2e8f0;border-radius:8px;padding:.3rem .5rem;font-size:.72rem;color:#64748b;">10:30<br><span style="font-size:.62rem;">11:00</span></div>
+              <div style="border:2px solid #f1f5f9;background:#f8fafc;border-radius:8px;padding:.3rem .5rem;font-size:.72rem;color:#cbd5e1;text-decoration:line-through;">11:00<br><span style="font-size:.62rem;">11:30</span></div>
+            </div>
+            <div class="d-flex gap-3 mt-2" style="font-size:.68rem;color:#94a3b8;">
+              <span>⬜ Disponible</span><span style="color:#2563eb;">■ Seleccionado</span><span>▪ Ocupado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;padding:1.25rem;height:100%;">
+          <div class="text-center mb-3">
+            <div style="background:#16a34a;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin:0 auto .75rem;">3</div>
+            <div class="fw-bold">Confirmar la cita</div>
+          </div>
+          <p style="font-size:.83rem;color:#475569;margin:0;">Solo se pide el nombre o apodo (el teléfono es opcional). Al enviar, el sistema confirma la cita y muestra el enlace personal para gestionarla.</p>
+          <div class="mockup mt-2" style="padding:.6rem .75rem;">
+            <div class="field-row" style="margin-bottom:.3rem;"><span class="field-label" style="min-width:80px;font-size:.72rem;">Nombre</span><span class="field-val" style="font-size:.72rem;">Carlos M.</span></div>
+            <div class="field-row"><span class="field-label" style="min-width:80px;font-size:.72rem;">Teléfono</span><span class="field-val" style="font-size:.72rem;color:#94a3b8;">(opcional)</span></div>
+            <div class="mt-2 text-center"><span class="btn-mock verde" style="font-size:.72rem;">✓ Confirmar reserva</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ok-box mt-3">
+      <strong>¡Importante!</strong> Al confirmar la cita, el sistema muestra una página con el enlace personal de la cita. El cliente debe guardar ese enlace (agregarlo a favoritos o tomar una captura de pantalla) para poder cancelar o reprogramar después.
+    </div>
+
+    <div class="warn-box">
+      <strong>Regla de horarios:</strong> La barbería solo acepta reservas de lunes a sábado. Las citas pueden hacerse con máximo 30 días de anticipación. Si no hay horarios disponibles en la fecha seleccionada, prueba con otro día.
+    </div>
+  </div>
+</div>
+
+<!-- GESTIONAR LA CITA -->
+<div class="card seccion" id="gestionar">
+  <div class="card-header d-flex align-items-center gap-2">
+    <span class="rol-badge rol-cliente"><i class="bi bi-person me-1"></i>Cliente</span>
+    <i class="bi bi-arrow-repeat me-1" style="color:var(--rojo);"></i>Gestionar la cita (reprogramar o cancelar)
+  </div>
+  <div class="card-body p-4">
+
+    <div class="info-box">Cada cita tiene un enlace único que funciona como "llave" para gestionarla. Con ese enlace el cliente puede reprogramar o cancelar sin necesidad de llamar al barbero.</div>
+
+    <div class="step mt-3">
+      <div class="step-num rojo">A</div>
+      <div class="step-body">
+        <h6>Entrar al enlace de la cita</h6>
+        <p>El enlace tiene un formato como: <code>localhost/BarberApp/gestionar/abc123xyz</code>. Al abrirlo, la página muestra el resumen de la cita (servicio, fecha, hora y precio).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num rojo">B</div>
+      <div class="step-body">
+        <h6>Reprogramar la cita</h6>
+        <p>Al seleccionar "Reprogramar", se abre el selector de fecha y hora — igual que al hacer la reserva original. Se elige la nueva fecha, luego el nuevo horario disponible y se confirma. La cita anterior queda liberada automáticamente.</p>
+        <div class="mockup mt-2">
+          <div class="fw-semibold mb-2" style="font-size:.8rem;">Reprogramar cita — Carlos M. · Corte clásico</div>
+          <div class="field-row"><span class="field-label">Nueva fecha</span><span class="field-val">2026-06-25</span></div>
+          <div class="field-row"><span class="field-label">Nueva hora</span><span class="field-val">11:00 – 11:30 ✓</span></div>
+          <div class="mt-2"><span class="btn-mock">Confirmar reprogramación</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num rojo">C</div>
+      <div class="step-body">
+        <h6>Cancelar la cita</h6>
+        <p>Al seleccionar "Cancelar mi cita", el sistema pide confirmación con un mensaje de alerta. Al confirmar, la cita se cancela y el horario queda disponible para otros clientes.</p>
+      </div>
+    </div>
+
+    <div class="danger-box">
+      <strong>El enlace solo funciona para citas pendientes o confirmadas.</strong> Una vez que la cita fue marcada como "Atendido" o "No Presentado" por el barbero, el enlace muestra el historial de esa cita pero ya no permite cambios.
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════
+     PARTE 4: SIMULACIÓN COMPLETA
+════════════════════════════════════════════ -->
+<h4 class="fw-bold mb-1" style="color:var(--azul);">
+  <i class="bi bi-play-circle me-2"></i>Parte 4 — Simulación: un día completo en la barbería
+</h4>
+<p class="text-muted mb-3" style="font-size:.85rem;">Sigue este ejemplo para ver cómo el sistema acompaña todos los momentos del día de trabajo.</p>
+
+<!-- La barbería -->
+<div class="card seccion" id="sim-intro" style="border-left:4px solid var(--azul2);">
+  <div class="card-header"><i class="bi bi-shop me-2" style="color:var(--azul2);"></i>La barbería del ejemplo</div>
+  <div class="card-body p-4">
+    <div style="background:#eff6ff;border-radius:10px;padding:1.25rem;border:1px solid #bfdbfe;">
+      <div class="fw-bold fs-6 mb-2" style="color:#1e40af;">
+        <i class="bi bi-scissors me-2"></i>Barbería "El Filo" — Martes típico
+      </div>
+      <div class="row g-2" style="font-size:.83rem;color:#475569;">
+        <div class="col-sm-6"><i class="bi bi-person me-1"></i><strong>Barbero:</strong> Don Marco (único admin)</div>
+        <div class="col-sm-6"><i class="bi bi-clock me-1"></i><strong>Horario:</strong> 8:00 AM – 6:00 PM</div>
+        <div class="col-sm-6"><i class="bi bi-phone me-1"></i><strong>Administra desde:</strong> Su teléfono Android</div>
+        <div class="col-sm-6"><i class="bi bi-calendar-check me-1"></i><strong>Citas del día:</strong> 5 reservadas</div>
+      </div>
+    </div>
+
+    <div class="row g-2 mt-3">
+      <div class="col-12">
+        <div class="fw-semibold mb-2" style="font-size:.83rem;">Servicios disponibles:</div>
+        <div class="d-flex flex-wrap gap-2" style="font-size:.78rem;">
+          <span style="background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:.3rem .6rem;"><strong>Corte clásico</strong> · L90 · 30 min</span>
+          <span style="background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:.3rem .6rem;"><strong>Degradado</strong> · L120 · 45 min</span>
+          <span style="background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:.3rem .6rem;"><strong>Barba</strong> · L70 · 20 min</span>
+          <span style="background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:.3rem .6rem;"><strong>Corte + Barba</strong> · L150 · 45 min</span>
+          <span style="background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:.3rem .6rem;"><strong>Corte de niño</strong> · L70 · 20 min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAÑANA -->
+<div class="card seccion" id="sim-manana">
+  <div class="card-header">
+    <i class="bi bi-sunrise me-2" style="color:var(--narj);"></i>
+    La mañana — 8:00 AM a 12:00 PM
+  </div>
+  <div class="card-body p-4">
+
+    <div class="sim-timeline">
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">8:05 AM — Don Marco abre el Dashboard</div>
+        <div class="text-muted" style="font-size:.8rem;">Entra al sistema desde el teléfono mientras prepara la barbería</div>
+        <div style="background:#f0f4f8;border-radius:8px;padding:.75rem 1rem;margin-top:.5rem;font-size:.8rem;border:1px solid #cbd5e1;">
+          <div class="fw-semibold mb-1">Lo que ve en el Dashboard:</div>
+          <div class="d-flex flex-wrap gap-2">
+            <span style="background:#dbeafe;color:#1d4ed8;padding:.25rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600;">5 citas hoy</span>
+            <span style="background:#fef9c3;color:#a16207;padding:.25rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600;">0 en espera</span>
+            <span style="background:#d1fae5;color:#065f46;padding:.25rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600;">0 atendidos</span>
+            <span style="background:#f0fdf4;color:#15803d;padding:.25rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600;">L 0.00 ingresos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot cliente"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">Anoche — Andrés García reservó en línea</div>
+        <div class="text-muted" style="font-size:.8rem;">Andrés entró a la página de reservas la noche anterior desde su celular</div>
+        <div style="font-size:.8rem;margin-top:.5rem;">
+          Eligió: <strong>Degradado · L120 · 10:30 AM · martes 18 jun 2026</strong><br>
+          Su cita aparece en la agenda de Don Marco con estado <span class="estado-chip est-reservado" style="font-size:.72rem;">Reservado</span>
+        </div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">10:20 AM — Andrés llega temprano</div>
+        <div class="text-muted" style="font-size:.8rem;">Don Marco abre la Agenda de Citas → encuentra la cita de Andrés en la lista → clic en "Llegó"</div>
+        <div class="ok-box mt-2" style="margin:.5rem 0 0;">
+          La cita cambia de <span class="estado-chip est-reservado" style="font-size:.72rem;">Reservado</span> a <span class="estado-chip est-confirmado" style="font-size:.72rem;">Confirmado</span>. Andrés puede sentarse a esperar.
+        </div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">10:30 AM — Andrés pasa a la silla</div>
+        <div class="text-muted" style="font-size:.8rem;">Don Marco toca "En proceso" (o directamente "Atendido" al terminar)</div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">11:15 AM — Andrés está listo</div>
+        <div class="text-muted" style="font-size:.8rem;">Don Marco toca "Atendido" en la cita de Andrés</div>
+        <div style="background:#f0fdf4;border-radius:8px;padding:.6rem .9rem;margin-top:.5rem;font-size:.8rem;border:1px solid #bbf7d0;">
+          <strong>El sistema hace 2 cosas automáticamente:</strong><br>
+          ✓ Registra un ingreso de <strong>L120</strong> en Reportes<br>
+          ✓ Suma 1 visita al historial de Andrés García (ahora tiene 4 visitas → Regular)
+        </div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot cliente"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">11:00 AM — Carlos llega sin cita</div>
+        <div class="text-muted" style="font-size:.8rem;">Carlos quiere un corte pero no hizo reserva. Don Marco lo agrega a la Lista de Espera.</div>
+        <div class="mockup mt-2" style="max-width:380px;">
+          <div class="fw-semibold mb-2" style="font-size:.8rem;">Agregar a Lista de Espera</div>
+          <div class="field-row"><span class="field-label">Nombre</span><span class="field-val">Carlos Mejía</span></div>
+          <div class="field-row"><span class="field-label">Servicio</span><span class="field-val">Corte clásico ▼</span></div>
+          <div class="mt-2"><span class="btn-mock">Agregar</span></div>
+        </div>
+        <div class="text-muted mt-1" style="font-size:.78rem;">Carlos ve su nombre en la lista con el tiempo de espera incrementando en vivo: <strong>0:01, 0:02, 0:03…</strong></div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">11:20 AM — Don Marco atiende a Carlos de la lista</div>
+        <div class="text-muted" style="font-size:.8rem;">Terminó con otro cliente y tiene el espacio libre. Toca "Atendido" en Carlos de la lista de espera.</div>
+        <div class="ok-box mt-2" style="margin:.5rem 0 0;">
+          ✓ Ingreso de <strong>L90</strong> registrado. ✓ Carlos sale de la lista. El sistema registra su visita (primera vez → Regular).
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TARDE -->
+<div class="card seccion" id="sim-tarde">
+  <div class="card-header">
+    <i class="bi bi-sun me-2" style="color:var(--narj);"></i>
+    La tarde — 12:00 PM a 5:00 PM
+  </div>
+  <div class="card-body p-4">
+
+    <div class="sim-timeline">
+
+      <div class="sim-item">
+        <div class="sim-dot cliente"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">12:15 PM — María confirma que va llegando</div>
+        <div class="text-muted" style="font-size:.8rem;">María tenía reserva para 12:30 PM (corte de niño). Don Marco la marca como "Llegó" en la agenda.</div>
+        <div style="font-size:.8rem;margin-top:.4rem;">Estado: <span class="estado-chip est-confirmado" style="font-size:.72rem;">Confirmado</span> — está en camino.</div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">12:30 PM — Se atiende el niño</div>
+        <div class="text-muted" style="font-size:.8rem;">20 minutos de servicio. Don Marco marca "Atendido".</div>
+        <div class="ok-box mt-2" style="margin:.5rem 0 0;">
+          ✓ L70 registrado. ✓ Historial de "el niño de María" actualizado.
+        </div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot sistema"></div>
+        <div class="fw-semibold" style="font-size:.88rem;color:#7c3aed;">1:10 PM — El sistema detecta un no-show</div>
+        <div class="text-muted" style="font-size:.8rem;">Roberto tenía cita a la 1:00 PM. Han pasado 10 minutos y no llegó.</div>
+        <div style="background:#ede9fe;border-radius:8px;padding:.6rem .9rem;margin-top:.5rem;font-size:.8rem;border:1px solid #c4b5fd;">
+          <strong>⚡ Auto-liberación:</strong> La próxima vez que Don Marco carga la Agenda, el sistema detecta que Roberto no confirmó y cambia el estado automáticamente a <span class="estado-chip est-nopresento" style="font-size:.72rem;">No Presentado</span>. El slot de las 1:00 PM queda disponible para un nuevo cliente.
+        </div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot cliente"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">2:00 PM — Sofía cambia su cita desde el celular</div>
+        <div class="text-muted" style="font-size:.8rem;">Sofía tenía reserva para las 3:30 PM pero no puede ir. Abre el enlace de su cita.</div>
+        <div style="font-size:.8rem;margin-top:.4rem;">
+          Entra a <code>localhost/BarberApp/gestionar/su-token-único</code> → elige "Reprogramar" → selecciona el miércoles a las 11:00 AM → confirma.
+        </div>
+        <div class="info-box mt-2" style="margin:.5rem 0 0;">Don Marco no tiene que hacer nada — el slot de 3:30 PM del martes se libera solo y el miércoles 11:00 AM queda bloqueado para Sofía.</div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">4:00 PM — Don Marco revisa quién es VIP</div>
+        <div class="text-muted" style="font-size:.8rem;">Va a Clientes Frecuentes para ver el listado.</div>
+        <div style="font-size:.8rem;margin-top:.5rem;background:#eff6ff;border-radius:8px;padding:.6rem .9rem;border:1px solid #bfdbfe;">
+          Ve que <strong>Andrés García</strong> tiene 4 visitas (Regular) — falta poco para Frecuente.<br>
+          <strong>Pedro Ruiz</strong> tiene 12 visitas → <span style="background:#dbeafe;color:#1d4ed8;padding:.1rem .4rem;border-radius:10px;font-size:.72rem;font-weight:700;">⭐ VIP</span> — cliente de toda la vida.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CIERRE DEL DÍA -->
+<div class="card seccion" id="sim-cierre">
+  <div class="card-header">
+    <span class="rol-badge rol-barbero me-2"><i class="bi bi-scissors me-1"></i>Barbero</span>
+    Cierre del día — Revisión de Reportes
+  </div>
+  <div class="card-body p-4">
+
+    <div class="sim-timeline">
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">5:45 PM — Don Marco abre Reportes</div>
+        <div class="text-muted" style="font-size:.8rem;">Al terminar el último cliente del día, revisa cómo le fue.</div>
+        <div style="background:#f0f4f8;border-radius:8px;padding:.75rem 1rem;margin-top:.5rem;font-size:.8rem;border:1px solid #cbd5e1;">
+          <div class="fw-semibold mb-2">Resumen del día — Martes 18 jun 2026:</div>
+          <div class="row g-2">
+            <div class="col-6 col-sm-3 text-center p-2" style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;">
+              <div class="fw-bold" style="font-size:1.2rem;color:#2563eb;">L 450</div>
+              <div style="font-size:.7rem;color:#64748b;">Ingresos del día</div>
+            </div>
+            <div class="col-6 col-sm-3 text-center p-2" style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;">
+              <div class="fw-bold" style="font-size:1.2rem;color:#16a34a;">5</div>
+              <div style="font-size:.7rem;color:#64748b;">Servicios atendidos</div>
+            </div>
+            <div class="col-6 col-sm-3 text-center p-2" style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;">
+              <div class="fw-bold" style="font-size:1.2rem;color:#dc2626;">1</div>
+              <div style="font-size:.7rem;color:#64748b;">No presentados</div>
+            </div>
+            <div class="col-6 col-sm-3 text-center p-2" style="background:#fff;border-radius:8px;border:1px solid #e2e8f0;">
+              <div class="fw-bold" style="font-size:1.2rem;color:#7c3aed;">1</div>
+              <div style="font-size:.7rem;color:#64748b;">De lista de espera</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-item">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">Top servicios de hoy</div>
+        <div style="font-size:.8rem;margin-top:.4rem;">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:.6rem .9rem;">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <div style="width:120px;font-size:.78rem;">Corte clásico</div>
+              <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;"><div style="width:60%;height:100%;background:#2563eb;border-radius:4px;"></div></div>
+              <div style="font-size:.75rem;color:#64748b;min-width:50px;">L 180</div>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <div style="width:120px;font-size:.78rem;">Degradado</div>
+              <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;"><div style="width:40%;height:100%;background:#dc2626;border-radius:4px;"></div></div>
+              <div style="font-size:.75rem;color:#64748b;min-width:50px;">L 120</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div style="width:120px;font-size:.78rem;">Corte de niño</div>
+              <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;"><div style="width:23%;height:100%;background:#16a34a;border-radius:4px;"></div></div>
+              <div style="font-size:.75rem;color:#64748b;min-width:50px;">L 70</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-item" style="padding-bottom:0;">
+        <div class="sim-dot barbero"></div>
+        <div class="fw-semibold" style="font-size:.88rem;">El día termina — todo quedó registrado</div>
+        <div class="text-muted" style="font-size:.8rem;">Don Marco cierra sesión. Mañana el sistema estará listo con las citas del nuevo día.</div>
+        <div class="ok-box mt-2" style="margin:.5rem 0 0;">
+          ✓ Ingresos del día registrados automáticamente<br>
+          ✓ Historial de cada cliente actualizado<br>
+          ✓ El no-show de Roberto quedó anotado<br>
+          ✓ La cita de Sofía ya está reprogramada para mañana
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════
+     PARTE 5: REFERENCIA
+════════════════════════════════════════════ -->
+<h4 class="fw-bold mb-3" style="color:var(--azul);">
+  <i class="bi bi-journal-text me-2"></i>Parte 5 — Referencia rápida
+</h4>
+
+<!-- LOS 6 ESTADOS -->
+<div class="card seccion" id="estados">
+  <div class="card-header"><i class="bi bi-circle-half me-2" style="color:var(--azul2);"></i>Los 6 estados de una cita</div>
+  <div class="card-body p-4">
+    <div class="table-responsive">
+      <table class="table table-bordered" style="font-size:.83rem;">
+        <thead style="background:#f8fafc;">
+          <tr>
+            <th style="width:130px;">Estado</th>
+            <th>Significado</th>
+            <th>¿Qué pasa después?</th>
+            <th style="width:120px;">¿Quién lo asigna?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="estado-chip est-reservado">Reservado</span></td>
+            <td>El cliente hizo la reserva en línea. Está confirmada pero el cliente aún no ha llegado.</td>
+            <td>Cuando llega el cliente, el barbero lo cambia a "Confirmado".</td>
+            <td style="font-size:.78rem;">Sistema (automático al reservar)</td>
+          </tr>
+          <tr>
+            <td><span class="estado-chip est-confirmado">Confirmado</span></td>
+            <td>El cliente llegó a la barbería y está esperando que le toque.</td>
+            <td>Cuando pasa a la silla o al terminar, se marca "Atendido".</td>
+            <td style="font-size:.78rem;">Barbero (toca "Llegó")</td>
+          </tr>
+          <tr>
+            <td><span class="estado-chip est-atendido">Atendido</span></td>
+            <td>El servicio fue completado. El ingreso y la visita quedan registrados.</td>
+            <td>Estado final. No se puede cambiar.</td>
+            <td style="font-size:.78rem;">Barbero (toca "Atendido")</td>
+          </tr>
+          <tr>
+            <td><span class="estado-chip est-nopresento">No Presentado</span></td>
+            <td>El cliente no llegó y pasaron más de 10 minutos desde su hora de cita.</td>
+            <td>El slot queda liberado. Puede ser asignado a alguien de espera.</td>
+            <td style="font-size:.78rem;">Sistema (auto) o Barbero</td>
+          </tr>
+          <tr>
+            <td><span class="estado-chip est-espera">En Espera</span></td>
+            <td>Persona sin cita que fue agregada a la lista de espera.</td>
+            <td>Al atenderla se registra como atendida o se quita de la lista.</td>
+            <td style="font-size:.78rem;">Barbero (Lista de Espera)</td>
+          </tr>
+          <tr>
+            <td><span class="estado-chip est-disponible">Disponible</span></td>
+            <td>Slot de hora libre, sin ninguna cita asignada.</td>
+            <td>Los clientes pueden reservar este espacio en línea.</td>
+            <td style="font-size:.78rem;">Sistema (calculado)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- GLOSARIO -->
+<div class="card seccion" id="glosario">
+  <div class="card-header"><i class="bi bi-book me-2" style="color:var(--azul2);"></i>Glosario — términos del sistema</div>
+  <div class="card-body p-4">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <dl style="font-size:.85rem;">
+          <dt>Slot</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Un espacio de tiempo disponible para agendar una cita. Si el servicio dura 30 min, hay slots cada 30 min: 9:00, 9:30, 10:00, etc.</dd>
+
+          <dt>Token</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Código único que identifica la cita de un cliente. Se incluye en el enlace de gestión de cita y actúa como contraseña para modificarla.</dd>
+
+          <dt>Soft delete</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Eliminación "suave" de un registro. El servicio no se borra permanentemente, solo queda inactivo. Protege el historial de citas pasadas.</dd>
+
+          <dt>KPI</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Indicador clave de rendimiento. En BarberApp son los números del dashboard: citas hoy, atendidos, ingresos del día, etc.</dd>
+        </dl>
+      </div>
+      <div class="col-md-6">
+        <dl style="font-size:.85rem;">
+          <dt>Auto-liberación</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Proceso automático que marca como "No Presentado" a los clientes que no confirmaron su llegada 10 minutos después de su cita.</dd>
+
+          <dt>Mobile First</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">El sistema fue diseñado primero para teléfonos y luego adaptado para computadoras. Cada botón es grande y fácil de tocar con el dedo.</dd>
+
+          <dt>Bottom Navigation</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">La barra de navegación que aparece en la parte inferior del teléfono con los 5 módulos principales: Inicio, Citas, Espera, Clientes, Reportes.</dd>
+
+          <dt>VIP / Frecuente / Regular</dt>
+          <dd style="color:#64748b;margin-bottom:.75rem;">Rangos de fidelidad automáticos basados en visitas: VIP = 10+, Frecuente = 5-9, Regular = 1-4.</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEMAS COMUNES -->
+<div class="card seccion" id="problemas">
+  <div class="card-header"><i class="bi bi-wrench me-2" style="color:var(--azul2);"></i>Problemas comunes y soluciones</div>
+  <div class="card-body p-4">
+
+    <div class="step">
+      <div class="step-num" style="background:#64748b;">?</div>
+      <div class="step-body">
+        <h6>El sistema no carga / "No se puede conectar con el sitio"</h6>
+        <p><strong>Causa:</strong> Laragon no está corriendo.</p>
+        <p><strong>Solución:</strong> Buscar el ícono de Laragon en la bandeja del sistema (abajo a la derecha), clic derecho → Start All. Esperar unos segundos y recargar la página.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num" style="background:#64748b;">?</div>
+      <div class="step-body">
+        <h6>No aparecen horarios disponibles al reservar</h6>
+        <p><strong>Causa 1:</strong> No hay servicios activos creados. Ir al panel admin → Servicios → verificar que haya al menos uno activo.</p>
+        <p><strong>Causa 2:</strong> Se seleccionó un domingo o fecha fuera del rango de 30 días. Probar con otra fecha.</p>
+        <p><strong>Causa 3:</strong> Todos los slots del día ya están ocupados. El cliente debe elegir otro día.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num" style="background:#64748b;">?</div>
+      <div class="step-body">
+        <h6>El cliente perdió el enlace de su cita</h6>
+        <p><strong>Solución:</strong> El barbero puede ver la cita en la Agenda, copiar el token desde la URL de gestión, y compartirlo. Alternativamente, puede cancelar la cita manualmente desde el panel admin y que el cliente reserve nuevamente.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num" style="background:#64748b;">?</div>
+      <div class="step-body">
+        <h6>Los ingresos del día no coinciden con lo esperado</h6>
+        <p><strong>Causa:</strong> Solo se registran ingresos de citas marcadas como "Atendido". Si se olvidó marcar una cita, el ingreso no se registró.</p>
+        <p><strong>Solución:</strong> Verificar en la agenda que todas las citas atendidas estén en estado "Atendido". Si alguna quedó en "Confirmado", cambiarla manualmente.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num" style="background:#64748b;">?</div>
+      <div class="step-body">
+        <h6>El historial de un cliente no aparece</h6>
+        <p><strong>Causa:</strong> El cliente se registró con nombres ligeramente distintos en diferentes citas (ej: "Carlos" vs "Carlos M." vs "carlitos").</p>
+        <p><strong>Solución:</strong> El historial agrupa por nombre exacto. Usar siempre el mismo nombre o apodo para el mismo cliente.</p>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <strong>Si hay dudas técnicas o el sistema no responde como se espera:</strong> cerrar el navegador, abrir de nuevo e ingresar otra vez. Si el problema persiste, reiniciar Laragon (clic derecho en el ícono de la bandeja → Quit → volver a abrir Laragon).
+    </div>
+  </div>
+</div>
+
+</div><!-- /col-lg-10 -->
+</div><!-- /row -->
+</div><!-- /container -->
+
+<div class="text-center py-4 text-muted" style="font-size:.78rem;border-top:1px solid #e2e8f0;margin-top:1rem;">
+  BarberApp v1.0 — Manual de Usuario &nbsp;|&nbsp;
+  <a href="https://github.com/DaniHND/BarberApp" target="_blank" class="text-muted">
+    <i class="bi bi-github me-1"></i>github.com/DaniHND/BarberApp
+  </a>
+  &nbsp;|&nbsp; Junio 2026
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Resaltar nav activo al hacer scroll
+const links = document.querySelectorAll('.sidebar-nav .nav-link');
+const sections = document.querySelectorAll('.seccion');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.sidebar-nav a[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

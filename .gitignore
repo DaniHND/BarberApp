@@ -1,0 +1,13 @@
+# Credenciales y configuración local
+config/database.php
+
+# Backups de base de datos (contienen datos reales de clientes)
+database/barberapp_completo.sql
+
+# Logs y caché PHP
+*.log
+/storage/logs/
+
+# Archivos de sistema
+Thumbs.db
+.DS_Store

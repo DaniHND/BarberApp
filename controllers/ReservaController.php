@@ -5,23 +5,27 @@ class ReservaController extends BaseController {
     private Cita          $citaModel;
     private Cliente       $clienteModel;
     private Servicio      $servicioModel;
+    private Barbero       $barberoModel;
 
     public function __construct() {
         $this->configModel   = new Configuracion();
         $this->citaModel     = new Cita();
         $this->clienteModel  = new Cliente();
         $this->servicioModel = new Servicio();
+        $this->barberoModel  = new Barbero();
     }
 
     // GET /reservar
     public function mostrar(): void {
         $servicios = $this->servicioModel->getAll(soloActivos: true);
+        $barberos  = $this->barberoModel->getAll(soloActivos: true);
         $cfg       = $this->configModel->getAll();
 
         $this->renderPublico('public/reservar', [
-            'pageTitle' => 'Reserva tu cita',
-            'servicios' => $servicios,
-            'cfg'       => $cfg,
+            'pageTitle'  => 'Reserva tu cita',
+            'servicios'  => $servicios,
+            'barberos'   => $barberos,
+            'cfg'        => $cfg,
             'csrf_token' => $this->csrfToken(),
         ]);
     }
@@ -30,8 +34,9 @@ class ReservaController extends BaseController {
     public function horarios(): void {
         header('Content-Type: application/json; charset=utf-8');
 
-        $fecha      = $_GET['fecha']       ?? '';
+        $fecha      = $_GET['fecha']        ?? '';
         $servicioId = (int) ($_GET['servicio_id'] ?? 0);
+        $barberoId  = (int) ($_GET['barbero_id']  ?? 0);
 
         if (!$fecha || !$servicioId || strtotime($fecha) < strtotime('today')) {
             echo json_encode([]);
@@ -40,7 +45,7 @@ class ReservaController extends BaseController {
 
         $cfg       = $this->configModel->getAll();
         $excluirId = isset($_GET['excluir']) ? (int)$_GET['excluir'] : null;
-        $slots     = $this->citaModel->getSlotsDisponibles($fecha, $servicioId, $cfg, $excluirId);
+        $slots     = $this->citaModel->getSlotsDisponibles($fecha, $servicioId, $cfg, $excluirId, $barberoId);
         echo json_encode($slots);
         exit;
     }
@@ -49,32 +54,32 @@ class ReservaController extends BaseController {
     public function guardar(): void {
         $this->validateCsrf();
 
-        $nombre     = trim($_POST['nombre']       ?? '');
-        $telefono   = trim($_POST['telefono']     ?? '');
-        $servicioId = (int)  ($_POST['servicio_id']  ?? 0);
-        $fecha      = $_POST['fecha']              ?? '';
-        $horaInicio = $_POST['hora_inicio']        ?? '';
-        $horaFin    = $_POST['hora_fin']           ?? '';
+        $nombre     = trim($_POST['nombre']      ?? '');
+        $telefono   = trim($_POST['telefono']    ?? '');
+        $servicioId = (int)  ($_POST['servicio_id'] ?? 0);
+        $barberoId  = (int)  ($_POST['barbero_id']  ?? 0) ?: null;
+        $fecha      = $_POST['fecha']             ?? '';
+        $horaInicio = $_POST['hora_inicio']       ?? '';
+        $horaFin    = $_POST['hora_fin']          ?? '';
 
         $errores = [];
-        if ($nombre === '')                                                      $errores[] = 'El nombre es obligatorio.';
-        if (!$servicioId)                                                        $errores[] = 'Debes seleccionar un servicio.';
-        if (!$fecha || strtotime($fecha) < strtotime('today'))                   $errores[] = 'La fecha seleccionada no es válida.';
-        if (!$horaInicio || !$horaFin)                                           $errores[] = 'Debes seleccionar una hora disponible.';
+        if ($nombre === '')                                        $errores[] = 'El nombre es obligatorio.';
+        if (!$servicioId)                                         $errores[] = 'Debes seleccionar un servicio.';
+        if (!$fecha || strtotime($fecha) < strtotime('today'))    $errores[] = 'La fecha seleccionada no es válida.';
+        if (!$horaInicio || !$horaFin)                            $errores[] = 'Debes seleccionar una hora disponible.';
         if (empty($errores) && $this->citaModel->existeConflicto($fecha, $horaInicio, $horaFin)) {
             $errores[] = 'Esa hora ya fue reservada por otra persona. Elige otra.';
         }
 
         if (!empty($errores)) {
-            $servicios = $this->servicioModel->getAll(soloActivos: true);
-            $cfg       = $this->configModel->getAll();
             $this->renderPublico('public/reservar', [
-                'pageTitle' => 'Reserva tu cita',
-                'servicios' => $servicios,
-                'cfg'       => $cfg,
+                'pageTitle'  => 'Reserva tu cita',
+                'servicios'  => $this->servicioModel->getAll(soloActivos: true),
+                'barberos'   => $this->barberoModel->getAll(soloActivos: true),
+                'cfg'        => $this->configModel->getAll(),
                 'csrf_token' => $this->csrfToken(),
-                'errores'   => $errores,
-                'datos'     => $_POST,
+                'errores'    => $errores,
+                'datos'      => $_POST,
             ]);
             return;
         }
@@ -84,6 +89,7 @@ class ReservaController extends BaseController {
         $result = $this->citaModel->crear([
             'cliente_id'       => $clienteId,
             'servicio_id'      => $servicioId,
+            'barbero_id'       => $barberoId,
             'fecha'            => $fecha,
             'hora_inicio'      => $horaInicio,
             'hora_fin'         => $horaFin,
@@ -99,8 +105,8 @@ class ReservaController extends BaseController {
         $token = $_GET['token'] ?? '';
         $cita  = $token ? $this->citaModel->findByToken($token) : false;
 
-        $cfg       = $this->configModel->getAll();
-        $nueva     = !empty($_GET['nueva']);
+        $cfg  = $this->configModel->getAll();
+        $nueva = !empty($_GET['nueva']);
 
         $this->renderPublico('public/gestionar', [
             'pageTitle'  => 'Tu cita',

@@ -2,7 +2,13 @@
 class Cita extends BaseModel {
 
     // ── Disponibilidad ────────────────────────────────────
-    public function getSlotsDisponibles(string $fecha, int $servicioId, array $cfg, ?int $excluirId = null): array {
+    public function getSlotsDisponibles(
+        string $fecha,
+        int    $servicioId,
+        array  $cfg,
+        ?int   $excluirId = null,
+        int    $barberoId = 0
+    ): array {
         // Servicio activo
         $st = $this->db->prepare(
             'SELECT duracion_minutos FROM servicios WHERE id = ? AND activo = 1'
@@ -14,16 +20,44 @@ class Cita extends BaseModel {
         // Domingos: sin servicio
         if (date('N', strtotime($fecha)) === '7') return [];
 
-        $duracion     = (int) $svc['duracion_minutos'];
-        $tInicio      = strtotime($fecha . ' ' . ($cfg['horario_inicio'] ?? '08:00'));
-        $tFin         = strtotime($fecha . ' ' . ($cfg['horario_fin']    ?? '19:00'));
+        $duracion = (int) $svc['duracion_minutos'];
+
+        if ($barberoId > 0) {
+            // ── Modo barbero específico ────────────────────
+            $st = $this->db->prepare('SELECT 1 FROM barberos WHERE id = ? AND activo = 1');
+            $st->execute([$barberoId]);
+            if (!$st->fetch()) return [];
+
+            $st = $this->db->prepare('SELECT 1 FROM barbero_bloqueos WHERE barbero_id = ? AND fecha = ?');
+            $st->execute([$barberoId, $fecha]);
+            if ($st->fetch()) return [];
+
+            $diaSemana = (int) date('N', strtotime($fecha));
+            $st = $this->db->prepare(
+                'SELECT hora_inicio, hora_fin FROM barbero_horarios WHERE barbero_id = ? AND dia_semana = ?'
+            );
+            $st->execute([$barberoId, $diaSemana]);
+            $horario = $st->fetch(PDO::FETCH_ASSOC);
+            if (!$horario) return [];
+
+            $tInicio = strtotime($fecha . ' ' . $horario['hora_inicio']);
+            $tFin    = strtotime($fecha . ' ' . $horario['hora_fin']);
+
+            $sql    = "SELECT hora_inicio, hora_fin FROM citas WHERE fecha = ? AND barbero_id = ? AND estado IN ('reservado','confirmado')";
+            $params = [$fecha, $barberoId];
+        } else {
+            // ── Modo general (horario del local) ──────────
+            $tInicio = strtotime($fecha . ' ' . ($cfg['horario_inicio'] ?? '08:00'));
+            $tFin    = strtotime($fecha . ' ' . ($cfg['horario_fin']    ?? '19:00'));
+
+            $sql    = "SELECT hora_inicio, hora_fin FROM citas WHERE fecha = ? AND estado IN ('reservado','confirmado')";
+            $params = [$fecha];
+        }
+
         $intervalo    = (int) ($cfg['intervalo_citas'] ?? 30) * 60;
         $ahora        = time();
         $esMismaFecha = ($fecha === date('Y-m-d'));
 
-        // Citas activas del día (excluyendo la que se reprograma)
-        $sql = "SELECT hora_inicio, hora_fin FROM citas WHERE fecha = ? AND estado IN ('reservado','confirmado')";
-        $params = [$fecha];
         if ($excluirId !== null) { $sql .= ' AND id != ?'; $params[] = $excluirId; }
         $st = $this->db->prepare($sql);
         $st->execute($params);
@@ -83,12 +117,13 @@ class Cita extends BaseModel {
 
         $st = $this->db->prepare(
             'INSERT INTO citas
-                (cliente_id, servicio_id, fecha, hora_inicio, hora_fin, estado, nombre_cliente, telefono_cliente, token)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                (cliente_id, servicio_id, barbero_id, fecha, hora_inicio, hora_fin, estado, nombre_cliente, telefono_cliente, token)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
         $st->execute([
             $d['cliente_id']       ?? null,
             $d['servicio_id'],
+            $d['barbero_id']       ?? null,
             $d['fecha'],
             $d['hora_inicio'],
             $d['hora_fin'],

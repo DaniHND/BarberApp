@@ -1,10 +1,12 @@
-﻿<?php
+<?php
 $hoy      = date('Y-m-d');
 $maxFecha = date('Y-m-d', strtotime('+30 days'));
 $datos    = $datos ?? [];
+$barberos = $barberos ?? [];
 
 // Pre-fill from POST (error case)
 $preServicioId    = (int) ($datos['servicio_id']  ?? 0);
+$preBarberoId     = (int) ($datos['barbero_id']   ?? 0);
 $preFecha         = htmlspecialchars($datos['fecha']       ?? '', ENT_QUOTES);
 $preHoraInicio    = htmlspecialchars($datos['hora_inicio'] ?? '', ENT_QUOTES);
 $preHoraFin       = htmlspecialchars($datos['hora_fin']    ?? '', ENT_QUOTES);
@@ -13,37 +15,45 @@ $preTelefono      = htmlspecialchars($datos['telefono']    ?? '', ENT_QUOTES);
 $preHoraInicioFmt = $preHoraInicio ? date('g:i A', strtotime($preHoraInicio)) : '';
 $preHoraFinFmt    = $preHoraFin    ? date('g:i A', strtotime($preHoraFin))    : '';
 
-$pasoInicial = !empty($errores) ? 3 : 1;
+$pasoInicial = !empty($errores) ? 4 : 1;
 
 // Info del servicio pre-seleccionado (para Alpine.js)
 $svcPre = null;
 foreach ($servicios as $s) {
     if ((int)$s['id'] === $preServicioId) { $svcPre = $s; break; }
 }
+
+// Info del barbero pre-seleccionado
+$barberoPre = null;
+foreach ($barberos as $b) {
+    if ((int)$b['id'] === $preBarberoId) { $barberoPre = $b; break; }
+}
 ?>
 
-<div class="max-w-lg mx-auto px-4 py-6 pb-10">
+<div class="max-w-lg mx-auto px-4 py-6 pb-10" x-data="reserva()" x-init="init()">
 
-    <!-- Título de página -->
+    <!-- Título -->
     <div class="text-center mb-6">
         <h1 class="text-xl font-bold text-zinc-900">Reserva tu cita</h1>
         <p class="text-sm text-zinc-500 mt-1">Sin registro — solo tu nombre y ya</p>
     </div>
 
-    <!-- Indicadores de paso -->
-    <div class="flex items-center justify-center gap-0 mb-8" x-data x-cloak>
-        <?php foreach ([1 => 'Servicio', 2 => 'Fecha y hora', 3 => 'Confirmar'] as $n => $label): ?>
+    <!-- Indicadores de paso (dinámicos) -->
+    <div class="flex items-center justify-center gap-0 mb-8">
+        <?php foreach ([1 => 'Servicio', 2 => 'Barbero', 3 => 'Hora', 4 => 'Confirmar'] as $n => $label): ?>
         <div class="flex flex-col items-center">
-            <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
-                        <?= $pasoInicial >= $n ? 'bg-blue-500 text-white' : 'bg-stone-200 text-zinc-400' ?>">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors"
+                 :class="paso >= <?= $n ?> ? 'bg-blue-500 text-white' : 'bg-stone-200 text-zinc-400'">
                 <?= $n ?>
             </div>
-            <span class="text-xs mt-1 <?= $pasoInicial >= $n ? 'text-blue-600 font-medium' : 'text-zinc-400' ?> hidden sm:block">
+            <span class="text-xs mt-1 hidden sm:block transition-colors"
+                  :class="paso >= <?= $n ?> ? 'text-blue-600 font-medium' : 'text-zinc-400'">
                 <?= $label ?>
             </span>
         </div>
-        <?php if ($n < 3): ?>
-        <div class="w-12 h-0.5 mx-1 mb-4 <?= $pasoInicial > $n ? 'bg-blue-500' : 'bg-stone-200' ?>"></div>
+        <?php if ($n < 4): ?>
+        <div class="w-8 h-0.5 mx-1 mb-4 transition-colors"
+             :class="paso > <?= $n ?> ? 'bg-blue-500' : 'bg-stone-200'"></div>
         <?php endif; ?>
         <?php endforeach; ?>
     </div>
@@ -60,252 +70,339 @@ foreach ($servicios as $s) {
     </div>
     <?php endif; ?>
 
-    <!-- ══ Alpine.js component ══ -->
-    <div x-data="reserva()" x-init="init()">
+    <!-- ══════════════════════════════════════════════════
+         PASO 1: Servicio
+    ══════════════════════════════════════════════════ -->
+    <div x-show="paso === 1" x-cloak>
+        <h2 class="text-base font-bold text-zinc-800 mb-1">¿Qué servicio necesitas?</h2>
+        <p class="text-sm text-zinc-500 mb-4">Elige un servicio para continuar</p>
 
-        <!-- ── PASO 1: Servicio ──────────────────────────── -->
-        <div x-show="paso === 1" x-cloak>
-            <h2 class="text-base font-bold text-zinc-800 mb-1">¿Qué servicio necesitas?</h2>
-            <p class="text-sm text-zinc-500 mb-4">Elige un servicio para continuar</p>
-
-            <?php if (empty($servicios)): ?>
-            <div class="bg-white rounded-2xl border border-stone-200 p-8 text-center">
-                <i data-lucide="scissors" class="w-8 h-8 text-zinc-300 mx-auto mb-2"></i>
-                <p class="text-sm text-zinc-500">No hay servicios disponibles.</p>
-            </div>
-            <?php else: ?>
-            <div class="grid grid-cols-1 gap-3">
-                <?php foreach ($servicios as $s): ?>
-                <button type="button"
-                        @click="seleccionarServicio(<?= (int)$s['id'] ?>, '<?= addslashes(htmlspecialchars($s['nombre'])) ?>', <?= (float)$s['precio'] ?>, <?= (int)$s['duracion_minutos'] ?>)"
-                        class="slot-btn w-full p-5 rounded-2xl border-2 text-left transition-all active:scale-[.98]"
-                        :class="servicioId === <?= (int)$s['id'] ?>
-                            ? 'border-blue-500 bg-blue-50 shadow-md'
-                            : 'border-stone-200 bg-white hover:border-blue-300 hover:shadow-sm'">
-                    <div class="flex items-center justify-between gap-3">
-                        <div class="min-w-0 flex-1">
-                            <div class="font-bold text-zinc-800"><?= htmlspecialchars($s['nombre']) ?></div>
-                            <?php if ($s['descripcion']): ?>
-                            <div class="text-sm text-zinc-500 mt-0.5"><?= htmlspecialchars($s['descripcion']) ?></div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="text-right flex-shrink-0">
-                            <div class="text-lg font-black text-blue-600"><?= moneda((float)$s['precio']) ?></div>
-                            <div class="text-xs text-zinc-400"><?= duracionFmt((int)$s['duracion_minutos']) ?></div>
-                        </div>
-                    </div>
-                </button>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
+        <?php if (empty($servicios)): ?>
+        <div class="bg-white rounded-2xl border border-stone-200 p-8 text-center">
+            <i data-lucide="scissors" class="w-8 h-8 text-zinc-300 mx-auto mb-2"></i>
+            <p class="text-sm text-zinc-500">No hay servicios disponibles.</p>
         </div>
-
-        <!-- ── PASO 2: Fecha + Hora ──────────────────────── -->
-        <div x-show="paso === 2" x-cloak>
-
-            <!-- Chip de servicio seleccionado -->
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5">
-                    <i data-lucide="scissors" class="w-3.5 h-3.5 text-blue-600"></i>
-                    <span class="text-sm font-medium text-blue-800" x-text="servicioNombre"></span>
-                    <span class="text-xs text-blue-600" x-text="'· ' + precioFmt"></span>
-                </div>
-                <button type="button" @click="paso = 1"
-                        class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors underline">
-                    Cambiar
-                </button>
-            </div>
-
-            <!-- Selector de fecha -->
-            <div class="bg-white rounded-xl border border-stone-200 p-4 mb-4 shadow-sm">
-                <label class="block text-xs font-semibold text-zinc-600 mb-2">
-                    <i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1"></i>Selecciona una fecha
-                </label>
-                <input type="date"
-                       x-model="fecha"
-                       @change="cargarSlots()"
-                       min="<?= $hoy ?>"
-                       max="<?= $maxFecha ?>"
-                       class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
-                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <p class="text-xs text-zinc-400 mt-1.5">Lunes a sábado · Máximo 30 días</p>
-            </div>
-
-            <!-- Slots de hora -->
-            <div class="bg-white rounded-xl border border-stone-200 p-4 shadow-sm mb-4">
-                <div class="text-xs font-semibold text-zinc-600 mb-3">
-                    <i data-lucide="clock" class="w-3.5 h-3.5 inline mr-1"></i>Horas disponibles
-                </div>
-
-                <!-- Estado vacío: sin fecha -->
-                <div x-show="!fecha" class="text-center py-6">
-                    <i data-lucide="calendar-search" class="w-7 h-7 text-zinc-200 mx-auto mb-2"></i>
-                    <p class="text-xs text-zinc-400">Elige una fecha para ver los horarios</p>
-                </div>
-
-                <!-- Cargando -->
-                <div x-show="fecha && cargando" class="text-center py-6">
-                    <div class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                    <p class="text-xs text-zinc-400">Verificando disponibilidad…</p>
-                </div>
-
-                <!-- Sin slots disponibles (cerrado ese día) -->
-                <div x-show="fecha && !cargando && slots.length === 0 && fecha !== ''"
-                     class="text-center py-6">
-                    <i data-lucide="calendar-off" class="w-7 h-7 text-zinc-200 mx-auto mb-2"></i>
-                    <p class="text-xs text-zinc-400">No hay horarios disponibles ese día.</p>
-                    <p class="text-xs text-zinc-300 mt-0.5">Prueba con otra fecha</p>
-                </div>
-
-                <!-- Grid de slots -->
-                <div x-show="slots.length > 0 && !cargando"
-                     class="grid grid-cols-3 gap-2.5">
-                    <template x-for="slot in slots" :key="slot.hora_inicio">
-                        <button type="button"
-                                @click="seleccionarSlot(slot)"
-                                :disabled="!slot.disponible"
-                                class="slot-btn py-4 px-2 rounded-2xl border-2 text-center flex flex-col items-center gap-0.5 transition-all active:scale-[.97]"
-                                :class="horaInicio === slot.hora_inicio
-                                    ? 'border-blue-500 bg-blue-500 text-white shadow-md'
-                                    : slot.disponible
-                                        ? 'border-stone-200 bg-white hover:border-blue-400 hover:shadow-sm text-zinc-700'
-                                        : 'border-stone-100 bg-stone-50 text-zinc-300 cursor-not-allowed'">
-                            <span class="text-base font-black leading-none" x-text="slot.hora_inicio_fmt"></span>
-                            <span class="text-[10px] font-normal opacity-70 leading-none" x-text="slot.hora_fin_fmt"
-                                  :class="!slot.disponible ? 'line-through' : ''"></span>
-                        </button>
-                    </template>
-                </div>
-
-                <!-- Leyenda -->
-                <div x-show="slots.length > 0 && !cargando" class="flex items-center gap-4 mt-3 pt-3 border-t border-stone-100">
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded border-2 border-stone-200 bg-white"></div>
-                        <span class="text-xs text-zinc-400">Disponible</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded border-2 border-blue-500 bg-blue-500"></div>
-                        <span class="text-xs text-zinc-400">Seleccionado</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded border-2 border-stone-100 bg-stone-50"></div>
-                        <span class="text-xs text-zinc-400">Ocupado</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botón continuar -->
+        <?php else: ?>
+        <div class="grid grid-cols-1 gap-3">
+            <?php foreach ($servicios as $s): ?>
             <button type="button"
-                    @click="avanzarPaso3()"
-                    :disabled="!horaInicio"
-                    class="slot-btn w-full py-4 rounded-2xl font-bold text-base transition-all active:scale-[.98]"
-                    :class="horaInicio
-                        ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
-                        : 'bg-stone-200 text-zinc-400 cursor-not-allowed'">
-                <span x-text="horaInicio ? 'Continuar · ' + slotLabel : 'Selecciona una hora'"></span>
+                    @click="seleccionarServicio(<?= (int)$s['id'] ?>, '<?= addslashes(htmlspecialchars($s['nombre'])) ?>', <?= (float)$s['precio'] ?>, <?= (int)$s['duracion_minutos'] ?>)"
+                    class="slot-btn w-full p-5 rounded-2xl border-2 text-left transition-all active:scale-[.98]"
+                    :class="servicioId === <?= (int)$s['id'] ?>
+                        ? 'border-blue-500 bg-blue-50 shadow-md'
+                        : 'border-stone-200 bg-white hover:border-blue-300 hover:shadow-sm'">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-zinc-800"><?= htmlspecialchars($s['nombre']) ?></div>
+                        <?php if ($s['descripcion']): ?>
+                        <div class="text-sm text-zinc-500 mt-0.5"><?= htmlspecialchars($s['descripcion']) ?></div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <div class="text-lg font-black text-blue-600"><?= moneda((float)$s['precio']) ?></div>
+                        <div class="text-xs text-zinc-400"><?= duracionFmt((int)$s['duracion_minutos']) ?></div>
+                    </div>
+                </div>
+            </button>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         PASO 2: Barbero
+    ══════════════════════════════════════════════════ -->
+    <div x-show="paso === 2" x-cloak>
+
+        <!-- Chip de servicio -->
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5">
+                <i data-lucide="scissors" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span class="text-sm font-medium text-blue-800" x-text="servicioNombre"></span>
+                <span class="text-xs text-blue-600" x-text="'· ' + precioFmt"></span>
+            </div>
+            <button type="button" @click="paso = 1"
+                    class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors underline">
+                Cambiar
             </button>
         </div>
 
-        <!-- ── PASO 3: Datos + Confirmar ─────────────────── -->
-        <div x-show="paso === 3" x-cloak>
+        <h2 class="text-base font-bold text-zinc-800 mb-1">¿Con quién quieres ir?</h2>
+        <p class="text-sm text-zinc-500 mb-4">Elige un barbero o continúa sin preferencia</p>
 
-            <!-- Resumen de la selección -->
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-                <div class="text-xs font-semibold text-blue-700 mb-2 uppercase tracking-wide">Tu selección</div>
-                <div class="space-y-1.5 text-sm text-blue-900">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="scissors" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
-                        <span x-text="servicioNombre" class="font-medium"></span>
-                        <span x-text="'— ' + precioFmt" class="text-blue-600 ml-auto"></span>
+        <div class="grid grid-cols-1 gap-3">
+
+            <!-- Sin preferencia -->
+            <button type="button"
+                    @click="seleccionarBarbero(0, 'Sin preferencia')"
+                    class="slot-btn w-full p-4 rounded-2xl border-2 text-left transition-all active:scale-[.98]"
+                    :class="barberoId === 0
+                        ? 'border-blue-500 bg-blue-50 shadow-md'
+                        : 'border-stone-200 bg-white hover:border-blue-300 hover:shadow-sm'">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="shuffle" class="w-4 h-4 text-zinc-500"></i>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="calendar" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
-                        <span x-text="fechaFmt(fecha)"></span>
+                    <div>
+                        <div class="font-bold text-zinc-800">Sin preferencia</div>
+                        <div class="text-xs text-zinc-400 mt-0.5">El primer barbero disponible te atenderá</div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="clock" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
-                        <span x-text="slotLabel"></span>
-                        <span x-text="'(' + servicioDuracion + ' min)'" class="text-blue-600 ml-1"></span>
+                    <div class="ml-auto" x-show="barberoId === 0">
+                        <div class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                        </div>
                     </div>
                 </div>
-                <button type="button" @click="paso = 2"
-                        class="text-xs text-blue-600 hover:text-blue-800 underline mt-2 block">
-                    Cambiar fecha/hora
-                </button>
+            </button>
+
+            <?php foreach ($barberos as $b): ?>
+            <button type="button"
+                    @click="seleccionarBarbero(<?= (int)$b['id'] ?>, '<?= addslashes(htmlspecialchars($b['nombre'])) ?>')"
+                    class="slot-btn w-full p-4 rounded-2xl border-2 text-left transition-all active:scale-[.98]"
+                    :class="barberoId === <?= (int)$b['id'] ?>
+                        ? 'border-blue-500 bg-blue-50 shadow-md'
+                        : 'border-stone-200 bg-white hover:border-blue-300 hover:shadow-sm'">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-blue-700 font-bold text-base">
+                            <?= strtoupper(mb_substr($b['nombre'], 0, 1)) ?>
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-zinc-800"><?= htmlspecialchars($b['nombre']) ?></div>
+                        <?php if ($b['descripcion']): ?>
+                        <div class="text-xs text-zinc-400 mt-0.5"><?= htmlspecialchars($b['descripcion']) ?></div>
+                        <?php endif; ?>
+                    </div>
+                    <div x-show="barberoId === <?= (int)$b['id'] ?>">
+                        <div class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </button>
+            <?php endforeach; ?>
+
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         PASO 3: Fecha + Hora
+    ══════════════════════════════════════════════════ -->
+    <div x-show="paso === 3" x-cloak>
+
+        <!-- Chips de servicio y barbero -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-3 py-1.5">
+                <i data-lucide="scissors" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span class="text-sm font-medium text-blue-800" x-text="servicioNombre"></span>
+                <span class="text-xs text-blue-600" x-text="'· ' + precioFmt"></span>
             </div>
-
-            <!-- Formulario de datos -->
-            <form method="POST" action="<?= url('reservar/guardar') ?>" class="space-y-4">
-                <input type="hidden" name="csrf_token"  value="<?= htmlspecialchars($csrf_token) ?>">
-                <input type="hidden" name="servicio_id"  :value="servicioId">
-                <input type="hidden" name="fecha"        :value="fecha">
-                <input type="hidden" name="hora_inicio"  :value="horaInicio">
-                <input type="hidden" name="hora_fin"     :value="horaFin">
-
-                <div class="bg-white rounded-xl border border-stone-200 p-4 shadow-sm space-y-4">
-                    <div class="text-xs font-semibold text-zinc-600 uppercase tracking-wide">Tus datos</div>
-
-                    <!-- Nombre -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-700 mb-1.5">
-                            Nombre o apodo <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="nombre" x-model="nombre"
-                               value="<?= $preNombre ?>"
-                               placeholder="¿Cómo te llamamos?"
-                               class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
-                                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                               autofocus required>
-                    </div>
-
-                    <!-- Teléfono -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-700 mb-1.5">
-                            Teléfono <span class="text-zinc-400 font-normal">(opcional)</span>
-                        </label>
-                        <input type="tel" name="telefono" x-model="telefono"
-                               value="<?= $preTelefono ?>"
-                               placeholder="Para recordatorios"
-                               class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
-                                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                </div>
-
-                <!-- Confirmar -->
-                <button type="submit"
-                        class="slot-btn w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4
-                               rounded-2xl shadow-md text-base flex items-center justify-center gap-2 active:scale-[.98] transition-all">
-                    <i data-lucide="calendar-check" class="w-4 h-4"></i>
-                    Confirmar reserva
-                </button>
-
-                <p class="text-xs text-zinc-400 text-center">
-                    Al confirmar aceptas la política de no-show de la barbería.
-                    Guarda el enlace de tu cita para poder cancelar o reprogramar.
-                </p>
-            </form>
+            <div class="flex items-center gap-2 bg-stone-50 border border-stone-200 rounded-full px-3 py-1.5">
+                <i data-lucide="user-check" class="w-3.5 h-3.5 text-zinc-500"></i>
+                <span class="text-sm font-medium text-zinc-700" x-text="barberoNombre"></span>
+            </div>
+            <button type="button" @click="paso = 2"
+                    class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors underline ml-auto">
+                Cambiar
+            </button>
         </div>
 
-    </div><!-- /Alpine -->
-</div>
+        <!-- Selector de fecha -->
+        <div class="bg-white rounded-xl border border-stone-200 p-4 mb-4 shadow-sm">
+            <label class="block text-xs font-semibold text-zinc-600 mb-2">
+                <i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1"></i>Selecciona una fecha
+            </label>
+            <input type="date"
+                   x-model="fecha"
+                   @change="cargarSlots()"
+                   min="<?= $hoy ?>"
+                   max="<?= $maxFecha ?>"
+                   class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <p class="text-xs text-zinc-400 mt-1.5">
+                Lunes a sábado · Máximo 30 días
+                <span x-show="barberoId > 0" class="text-blue-600">
+                    · horario de <span x-text="barberoNombre"></span>
+                </span>
+            </p>
+        </div>
+
+        <!-- Slots de hora -->
+        <div class="bg-white rounded-xl border border-stone-200 p-4 shadow-sm mb-4">
+            <div class="text-xs font-semibold text-zinc-600 mb-3">
+                <i data-lucide="clock" class="w-3.5 h-3.5 inline mr-1"></i>Horas disponibles
+            </div>
+
+            <div x-show="!fecha" class="text-center py-6">
+                <i data-lucide="calendar-search" class="w-7 h-7 text-zinc-200 mx-auto mb-2"></i>
+                <p class="text-xs text-zinc-400">Elige una fecha para ver los horarios</p>
+            </div>
+
+            <div x-show="fecha && cargando" class="text-center py-6">
+                <div class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p class="text-xs text-zinc-400">Verificando disponibilidad…</p>
+            </div>
+
+            <div x-show="fecha && !cargando && slots.length === 0 && fecha !== ''"
+                 class="text-center py-6">
+                <i data-lucide="calendar-off" class="w-7 h-7 text-zinc-200 mx-auto mb-2"></i>
+                <p class="text-xs text-zinc-400" x-text="barberoId > 0 ? barberoNombre + ' no trabaja ese día o tiene el día bloqueado.' : 'No hay horarios disponibles ese día.'"></p>
+                <p class="text-xs text-zinc-300 mt-0.5">Prueba con otra fecha</p>
+            </div>
+
+            <div x-show="slots.length > 0 && !cargando"
+                 class="grid grid-cols-3 gap-2.5">
+                <template x-for="slot in slots" :key="slot.hora_inicio">
+                    <button type="button"
+                            @click="seleccionarSlot(slot)"
+                            :disabled="!slot.disponible"
+                            class="slot-btn py-4 px-2 rounded-2xl border-2 text-center flex flex-col items-center gap-0.5 transition-all active:scale-[.97]"
+                            :class="horaInicio === slot.hora_inicio
+                                ? 'border-blue-500 bg-blue-500 text-white shadow-md'
+                                : slot.disponible
+                                    ? 'border-stone-200 bg-white hover:border-blue-400 hover:shadow-sm text-zinc-700'
+                                    : 'border-stone-100 bg-stone-50 text-zinc-300 cursor-not-allowed'">
+                        <span class="text-base font-black leading-none" x-text="slot.hora_inicio_fmt"></span>
+                        <span class="text-[10px] font-normal opacity-70 leading-none" x-text="slot.hora_fin_fmt"
+                              :class="!slot.disponible ? 'line-through' : ''"></span>
+                    </button>
+                </template>
+            </div>
+
+            <div x-show="slots.length > 0 && !cargando" class="flex items-center gap-4 mt-3 pt-3 border-t border-stone-100">
+                <div class="flex items-center gap-1.5">
+                    <div class="w-3 h-3 rounded border-2 border-stone-200 bg-white"></div>
+                    <span class="text-xs text-zinc-400">Disponible</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <div class="w-3 h-3 rounded border-2 border-blue-500 bg-blue-500"></div>
+                    <span class="text-xs text-zinc-400">Seleccionado</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <div class="w-3 h-3 rounded border-2 border-stone-100 bg-stone-50"></div>
+                    <span class="text-xs text-zinc-400">Ocupado</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón continuar -->
+        <button type="button"
+                @click="avanzarConfirmar()"
+                :disabled="!horaInicio"
+                class="slot-btn w-full py-4 rounded-2xl font-bold text-base transition-all active:scale-[.98]"
+                :class="horaInicio
+                    ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
+                    : 'bg-stone-200 text-zinc-400 cursor-not-allowed'">
+            <span x-text="horaInicio ? 'Continuar · ' + slotLabel : 'Selecciona una hora'"></span>
+        </button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         PASO 4: Datos + Confirmar
+    ══════════════════════════════════════════════════ -->
+    <div x-show="paso === 4" x-cloak>
+
+        <!-- Resumen de la selección -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+            <div class="text-xs font-semibold text-blue-700 mb-2 uppercase tracking-wide">Tu selección</div>
+            <div class="space-y-1.5 text-sm text-blue-900">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="scissors" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
+                    <span x-text="servicioNombre" class="font-medium"></span>
+                    <span x-text="'— ' + precioFmt" class="text-blue-600 ml-auto"></span>
+                </div>
+                <div class="flex items-center gap-2" x-show="barberoId > 0">
+                    <i data-lucide="user-check" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
+                    <span x-text="barberoNombre"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
+                    <span x-text="fechaFmt(fecha)"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="clock" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
+                    <span x-text="slotLabel"></span>
+                    <span x-text="'(' + servicioDuracion + ' min)'" class="text-blue-600 ml-1"></span>
+                </div>
+            </div>
+            <button type="button" @click="paso = 3"
+                    class="text-xs text-blue-600 hover:text-blue-800 underline mt-2 block">
+                Cambiar fecha/hora
+            </button>
+        </div>
+
+        <!-- Formulario de datos -->
+        <form method="POST" action="<?= url('reservar/guardar') ?>" class="space-y-4">
+            <input type="hidden" name="csrf_token"   value="<?= htmlspecialchars($csrf_token) ?>">
+            <input type="hidden" name="servicio_id"  :value="servicioId">
+            <input type="hidden" name="barbero_id"   :value="barberoId">
+            <input type="hidden" name="fecha"        :value="fecha">
+            <input type="hidden" name="hora_inicio"  :value="horaInicio">
+            <input type="hidden" name="hora_fin"     :value="horaFin">
+
+            <div class="bg-white rounded-xl border border-stone-200 p-4 shadow-sm space-y-4">
+                <div class="text-xs font-semibold text-zinc-600 uppercase tracking-wide">Tus datos</div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-700 mb-1.5">
+                        Nombre o apodo <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="nombre" x-model="nombre"
+                           value="<?= $preNombre ?>"
+                           placeholder="¿Cómo te llamamos?"
+                           class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           autofocus required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-700 mb-1.5">
+                        Teléfono <span class="text-zinc-400 font-normal">(opcional)</span>
+                    </label>
+                    <input type="tel" name="telefono" x-model="telefono"
+                           value="<?= $preTelefono ?>"
+                           placeholder="Para recordatorios"
+                           class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-base
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="slot-btn w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4
+                           rounded-2xl shadow-md text-base flex items-center justify-center gap-2 active:scale-[.98] transition-all">
+                <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                Confirmar reserva
+            </button>
+
+            <p class="text-xs text-zinc-400 text-center">
+                Al confirmar aceptas la política de no-show de la barbería.
+                Guarda el enlace de tu cita para poder cancelar o reprogramar.
+            </p>
+        </form>
+    </div>
+
+</div><!-- /Alpine -->
 
 <script>
 function reserva() {
     return {
-        paso:            <?= $pasoInicial ?>,
-        servicioId:      <?= $preServicioId ?>,
-        servicioNombre:  '<?= addslashes($svcPre['nombre'] ?? '') ?>',
-        servicioPrecio:  <?= (float) ($svcPre['precio'] ?? 0) ?>,
+        paso:             <?= $pasoInicial ?>,
+        servicioId:       <?= $preServicioId ?>,
+        servicioNombre:   '<?= addslashes($svcPre['nombre'] ?? '') ?>',
+        servicioPrecio:   <?= (float) ($svcPre['precio'] ?? 0) ?>,
         servicioDuracion: <?= (int) ($svcPre['duracion_minutos'] ?? 0) ?>,
-        fecha:           '<?= $preFecha ?>',
-        slots:           [],
-        horaInicio:      '<?= $preHoraInicio ?>',
-        horaFin:         '<?= $preHoraFin ?>',
-        horaInicioFmt:   '<?= $preHoraInicioFmt ?>',
-        horaFinFmt:      '<?= $preHoraFinFmt ?>',
-        nombre:          '<?= $preNombre ?>',
-        telefono:        '<?= $preTelefono ?>',
-        cargando:        false,
+        barberoId:        <?= $preBarberoId ?>,
+        barberoNombre:    '<?= addslashes($barberoPre['nombre'] ?? ($preBarberoId ? '' : 'Sin preferencia')) ?>',
+        fecha:            '<?= $preFecha ?>',
+        slots:            [],
+        horaInicio:       '<?= $preHoraInicio ?>',
+        horaFin:          '<?= $preHoraFin ?>',
+        horaInicioFmt:    '<?= $preHoraInicioFmt ?>',
+        horaFinFmt:       '<?= $preHoraFinFmt ?>',
+        nombre:           '<?= $preNombre ?>',
+        telefono:         '<?= $preTelefono ?>',
+        cargando:         false,
 
         init() {
             if (this.fecha && this.servicioId) this.cargarSlots();
@@ -316,10 +413,19 @@ function reserva() {
             this.servicioNombre  = nombre;
             this.servicioPrecio  = precio;
             this.servicioDuracion = duracion;
-            this.horaInicio = '';
-            this.horaFin    = '';
             this.paso = 2;
-            if (this.fecha) this.cargarSlots();
+        },
+
+        seleccionarBarbero(id, nombre) {
+            this.barberoId    = id;
+            this.barberoNombre = nombre;
+            this.fecha        = '';
+            this.slots        = [];
+            this.horaInicio   = '';
+            this.horaFin      = '';
+            this.horaInicioFmt = '';
+            this.horaFinFmt    = '';
+            this.paso = 3;
         },
 
         async cargarSlots() {
@@ -331,7 +437,9 @@ function reserva() {
             this.horaInicioFmt = '';
             this.horaFinFmt    = '';
             try {
-                const r = await fetch(`${baseUrl}/reservar/horarios?fecha=${this.fecha}&servicio_id=${this.servicioId}`);
+                let url = `${baseUrl}/reservar/horarios?fecha=${this.fecha}&servicio_id=${this.servicioId}`;
+                if (this.barberoId > 0) url += `&barbero_id=${this.barberoId}`;
+                const r = await fetch(url);
                 this.slots = await r.json();
             } catch(e) { this.slots = []; }
             this.cargando = false;
@@ -345,9 +453,9 @@ function reserva() {
             this.horaFinFmt    = slot.hora_fin_fmt;
         },
 
-        avanzarPaso3() {
+        avanzarConfirmar() {
             if (!this.horaInicio) return;
-            this.paso = 3;
+            this.paso = 4;
         },
 
         fechaFmt(f) {

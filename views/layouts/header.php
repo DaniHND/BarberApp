@@ -104,12 +104,18 @@
             <span class="text-zinc-600 text-xs font-semibold uppercase tracking-wider">Gestión</span>
         </div>
 
+        <a href="<?= url('barberos') ?>"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                  <?= ($activeNav ?? '') === 'barberos' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
+            <i data-lucide="user-check" class="w-4 h-4 flex-shrink-0"></i>
+            <span class="flex-1">Barberos</span>
+        </a>
+
         <a href="<?= url('servicios') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                   <?= ($activeNav ?? '') === 'servicios' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="scissors" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Servicios</span>
-            <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F2</span>
         </a>
 
         <a href="<?= url('clientes') ?>"

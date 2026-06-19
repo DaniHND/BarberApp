@@ -79,16 +79,14 @@
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                   <?= ($activeNav ?? '') === 'citas' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="calendar-days" class="w-4 h-4 flex-shrink-0"></i>
-            <span class="flex-1">Agenda de Citas</span>
-            <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F4</span>
+            Agenda de Citas
         </a>
 
         <a href="<?= url('espera') ?>"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                   <?= ($activeNav ?? '') === 'espera' ? 'bg-blue-500 text-white' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' ?>">
             <i data-lucide="users" class="w-4 h-4 flex-shrink-0"></i>
-            <span class="flex-1">Lista de Espera</span>
-            <span class="text-xs bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded font-normal">F4</span>
+            Lista de Espera
         </a>
 
         <!-- Enlace página pública -->

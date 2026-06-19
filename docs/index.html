@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="h-full">
 <head>
 <meta charset="UTF-8">
@@ -178,7 +178,7 @@ tailwind.config = {
       <!-- ─── DASHBOARD ─── -->
       <section id="page-dashboard" class="page">
         <!-- KPI: 2 cols mobile, 4 desktop -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div class="bg-white rounded-xl border border-stone-200 p-4">
             <div class="flex items-start justify-between">
               <div><p class="text-xs text-zinc-500 mb-1">Citas hoy</p><p class="text-2xl md:text-3xl font-bold text-zinc-900">7</p><p class="text-xs text-zinc-400 mt-1">citas para hoy</p></div>
@@ -205,8 +205,8 @@ tailwind.config = {
           </div>
         </div>
         <!-- Charts: 1 col mobile, 3 desktop -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <div class="md:col-span-2 bg-white rounded-xl border border-stone-200 p-5">
+        <div class="grid grid lg:grid-cols-3 gap-4 mb-4">
+          <div class="lg:col-span-2 bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Citas — últimos 7 días</span></div>
               <span class="text-xs text-zinc-400">Total: 18</span>
@@ -228,7 +228,7 @@ tailwind.config = {
           </div>
         </div>
         <!-- Agenda + Espera: 1 col mobile, 2 desktop -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid lg:grid-cols-2 gap-4">
           <div class="bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Agenda de hoy</span></div>
@@ -292,20 +292,92 @@ tailwind.config = {
 
       <!-- ─── LISTA DE ESPERA ─── -->
       <section id="page-espera" class="page">
-        <div class="flex items-center justify-between mb-5">
-          <div><h2 class="text-lg font-bold text-zinc-900">Lista de Espera</h2><p class="text-sm text-zinc-500">Clientes esperando turno</p></div>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i><span class="hidden sm:inline">Agregar a espera</span></button>
-        </div>
-        <div class="grid grid-cols-3 gap-3 md:gap-4 mb-5">
-          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">2</p><p class="text-xs text-zinc-500 mt-1">en espera</p></div>
-          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-2xl font-bold text-zinc-900">~18m</p><p class="text-xs text-zinc-500 mt-1">tiempo prom.</p></div>
-          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">5</p><p class="text-xs text-zinc-500 mt-1">atendidos hoy</p></div>
-        </div>
-        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
-          <div class="px-5 py-3 border-b border-stone-100"><span class="text-sm font-semibold text-zinc-800">Cola actual</span></div>
-          <div class="divide-y divide-stone-100">
-            <div class="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-5">1</span><div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600 flex-shrink-0">JM</div><div class="flex-1 min-w-0"><p class="text-sm font-medium text-zinc-900">Julio Matute</p><p class="text-xs text-zinc-500">10:15 AM · 47 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors flex-shrink-0 hidden sm:block">Retirar</button></div>
-            <div class="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-5">2</span><div class="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600 flex-shrink-0">AR</div><div class="flex-1 min-w-0"><p class="text-sm font-medium text-zinc-900">Ana Rodríguez</p><p class="text-xs text-zinc-500">10:42 AM · 20 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors flex-shrink-0 hidden sm:block">Retirar</button></div>
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="lg:col-span-1">
+            <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+              <div class="px-5 py-3.5 border-b border-stone-100 flex items-center gap-2">
+                <i data-lucide="user-plus" class="w-4 h-4 text-blue-500"></i>
+                <h3 class="text-sm font-semibold text-zinc-800">Agregar a la espera</h3>
+              </div>
+              <div class="p-5 space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-zinc-700 mb-1.5">Nombre <span class="text-red-500">*</span></label>
+                  <input type="text" placeholder="Nombre del cliente" class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-zinc-700 mb-1.5">Teléfono <span class="text-zinc-400 font-normal">(opcional)</span></label>
+                  <input type="tel" placeholder="Número de contacto" class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-zinc-700 mb-1.5">Servicio <span class="text-zinc-400 font-normal">(opcional)</span></label>
+                  <select class="w-full border border-zinc-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                    <option>Sin especificar</option>
+                    <option>Arreglo de Barba — L. 100.00</option>
+                    <option>Corte + Barba — L. 220.00</option>
+                    <option>Corte Clásico — L. 150.00</option>
+                    <option>Corte Niño — L. 100.00</option>
+                    <option>Degradado — L. 180.00</option>
+                  </select>
+                </div>
+                <button class="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors shadow-sm">
+                  <i data-lucide="plus" class="w-4 h-4"></i>Agregar a la espera
+                </button>
+              </div>
+              <div class="px-5 pb-4">
+                <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-700">
+                  <i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i>
+                  Clientes sin cita previa. Se atienden en orden de llegada.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+              <div class="px-5 py-3.5 border-b border-stone-100 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-zinc-800 flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4 text-blue-500"></i>En espera ahora
+                </h3>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full">2 esperando</span>
+                  <span class="text-xs text-zinc-400">11:02</span>
+                </div>
+              </div>
+              <div class="divide-y divide-stone-50">
+                <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-stone-50/50 transition-colors">
+                  <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">1</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-semibold text-zinc-800 text-sm">Julio Matute</div>
+                    <div class="text-xs text-zinc-400 mt-0.5 flex items-center gap-2 flex-wrap">
+                      <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i>Llegó a las 10:15</span>
+                      <span class="text-red-400">· 47 min esperando</span>
+                    </div>
+                    <div class="text-xs text-zinc-300 mt-0.5">Sin servicio especificado</div>
+                  </div>
+                  <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <button class="flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-colors shadow-sm"><i data-lucide="check" class="w-4 h-4"></i>Atendido</button>
+                    <button class="p-2.5 rounded-xl text-zinc-400 hover:text-red-500 hover:bg-red-50 transition-colors border border-stone-200"><i data-lucide="x" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-stone-50/50 transition-colors">
+                  <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">2</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-semibold text-zinc-800 text-sm">Ana Rodríguez</div>
+                    <div class="text-xs text-zinc-400 mt-0.5 flex items-center gap-2 flex-wrap">
+                      <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i>Llegó a las 10:42</span>
+                      <span>· 20 min esperando</span>
+                    </div>
+                    <div class="text-xs text-blue-600 mt-0.5 font-medium">Degradado</div>
+                  </div>
+                  <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <button class="flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-colors shadow-sm"><i data-lucide="check" class="w-4 h-4"></i>Atendido</button>
+                    <button class="p-2.5 rounded-xl text-zinc-400 hover:text-red-500 hover:bg-red-50 transition-colors border border-stone-200"><i data-lucide="x" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="px-5 py-3 border-t border-stone-100 bg-stone-50 text-xs text-zinc-400">
+                Orden de llegada · La página se actualiza al cambiar de estado
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -313,63 +385,86 @@ tailwind.config = {
       <!-- ─── BARBEROS ─── -->
       <section id="page-barberos" class="page">
         <div class="flex items-center justify-between mb-5">
-          <div><h2 class="text-lg font-bold text-zinc-900">Barberos</h2><p class="text-sm text-zinc-500">Gestiona el equipo y sus horarios</p></div>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i><span class="hidden sm:inline">Agregar barbero</span></button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-          <!-- Marco -->
-          <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-3"><div class="w-11 h-11 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">M</div><div><p class="font-semibold text-zinc-900">Marco Rodríguez</p><p class="text-xs text-zinc-500">Especialista en degradados y fade</p></div></div>
-              <div class="w-10 h-6 bg-green-500 rounded-full relative cursor-pointer flex-shrink-0"><div class="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></div></div>
-            </div>
-            <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horario semanal</p>
-            <div class="overflow-x-auto">
-              <table class="w-full text-xs text-center min-w-[300px]">
-                <thead><tr><td class="pb-2 text-left text-zinc-400 w-14"></td><td class="pb-2 text-zinc-500">Lun</td><td class="pb-2 text-zinc-500">Mar</td><td class="pb-2 text-zinc-500">Mié</td><td class="pb-2 text-zinc-500">Jue</td><td class="pb-2 text-zinc-500">Vie</td><td class="pb-2 text-zinc-500">Sáb</td><td class="pb-2 text-zinc-500">Dom</td></tr></thead>
-                <tbody>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td class="text-zinc-300">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td class="text-zinc-300">—</td></tr>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td class="text-zinc-300">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">1:00<br>PM</span></td><td class="text-zinc-300">—</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="flex flex-wrap gap-2 mt-4">
-              <button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 flex items-center gap-1.5 transition-colors"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Editar horario</button>
-              <button class="text-xs border border-amber-200 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-50 flex items-center gap-1.5 transition-colors"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>Bloquear fecha</button>
-            </div>
+          <div>
+            <h2 class="text-base font-bold text-zinc-900">Barberos</h2>
+            <p class="text-xs text-zinc-500 mt-0.5">Gestiona el equipo y sus horarios de disponibilidad</p>
           </div>
-          <!-- Luis -->
-          <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-3"><div class="w-11 h-11 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">L</div><div><p class="font-semibold text-zinc-900">Luis Méndez</p><p class="text-xs text-zinc-500">Experto en cortes clásicos y niños</p></div></div>
-              <div class="w-10 h-6 bg-green-500 rounded-full relative cursor-pointer flex-shrink-0"><div class="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></div></div>
-            </div>
-            <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horario semanal</p>
-            <div class="overflow-x-auto">
-              <table class="w-full text-xs text-center min-w-[300px]">
-                <thead><tr><td class="pb-2 text-left text-zinc-400 w-14"></td><td class="pb-2 text-zinc-500">Lun</td><td class="pb-2 text-zinc-500">Mar</td><td class="pb-2 text-zinc-500">Mié</td><td class="pb-2 text-zinc-500">Jue</td><td class="pb-2 text-zinc-500">Vie</td><td class="pb-2 text-zinc-500">Sáb</td><td class="pb-2 text-zinc-500">Dom</td></tr></thead>
-                <tbody>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td class="text-zinc-300">—</td></tr>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">2:00<br>PM</span></td><td class="text-zinc-300">—</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="flex flex-wrap gap-2 mt-4">
-              <button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 flex items-center gap-1.5 transition-colors"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Editar horario</button>
-              <button class="text-xs border border-amber-200 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-50 flex items-center gap-1.5 transition-colors"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>Bloquear fecha</button>
-            </div>
-          </div>
+          <button class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm">
+            <i data-lucide="user-plus" class="w-4 h-4"></i><span class="hidden sm:inline">Agregar barbero</span>
+          </button>
         </div>
-        <!-- Fechas bloqueadas -->
-        <div class="bg-white rounded-xl border border-stone-200 p-5">
-          <div class="flex items-center gap-2 mb-4"><i data-lucide="calendar-x" class="w-4 h-4 text-red-400"></i><span class="text-sm font-semibold text-zinc-800">Fechas bloqueadas</span></div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-4 py-3"><div><p class="text-sm font-medium text-zinc-800">Marco Rodríguez</p><p class="text-xs text-red-500 flex items-center gap-1 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>25 jun 2026 — Vacaciones</p></div><button class="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
-            <div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-4 py-3"><div><p class="text-sm font-medium text-zinc-800">Luis Méndez</p><p class="text-xs text-red-500 flex items-center gap-1 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>30 jun 2026 — Cita médica</p></div><button class="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+        <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-stone-100">
+                  <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Barbero</th>
+                  <th class="text-center px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide hidden sm:table-cell">Horario</th>
+                  <th class="text-center px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Estado</th>
+                  <th class="px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wide text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-50">
+                <tr class="hover:bg-stone-50 transition-colors">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0"><span class="text-blue-700 font-bold text-sm">M</span></div>
+                      <div><div class="font-medium text-zinc-800">Marco Rodríguez</div><div class="text-xs text-zinc-400 mt-0.5">Especialista en degradados y fade</div></div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-3.5 text-center hidden sm:table-cell">
+                    <span class="inline-flex items-center gap-1.5 text-xs text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full cursor-pointer transition-colors">
+                      <i data-lucide="calendar-cog" class="w-3.5 h-3.5"></i>Gestionar horario
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5 text-center">
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold bg-green-100 text-green-700 px-2.5 py-1 rounded-full">
+                      <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Activo
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center justify-end gap-1">
+                      <button class="sm:hidden p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"><i data-lucide="calendar-cog" class="w-4 h-4"></i></button>
+                      <button class="p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                      <button class="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 transition-colors"><i data-lucide="eye-off" class="w-4 h-4"></i></button>
+                      <button class="p-1.5 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="hover:bg-stone-50 transition-colors">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0"><span class="text-blue-700 font-bold text-sm">L</span></div>
+                      <div><div class="font-medium text-zinc-800">Luis Méndez</div><div class="text-xs text-zinc-400 mt-0.5">Experto en cortes clásicos y niños</div></div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-3.5 text-center hidden sm:table-cell">
+                    <span class="inline-flex items-center gap-1.5 text-xs text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full cursor-pointer transition-colors">
+                      <i data-lucide="calendar-cog" class="w-3.5 h-3.5"></i>Gestionar horario
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5 text-center">
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold bg-green-100 text-green-700 px-2.5 py-1 rounded-full">
+                      <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Activo
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center justify-end gap-1">
+                      <button class="sm:hidden p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"><i data-lucide="calendar-cog" class="w-4 h-4"></i></button>
+                      <button class="p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                      <button class="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 transition-colors"><i data-lucide="eye-off" class="w-4 h-4"></i></button>
+                      <button class="p-1.5 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-5 py-3 border-t border-stone-100 bg-stone-50 text-xs text-zinc-400">
+            2 barberos registrados · 2 activos
           </div>
         </div>
       </section>
-
       <!-- ─── SERVICIOS ─── -->
       <section id="page-servicios" class="page">
         <div class="flex items-start justify-between mb-5">
@@ -450,8 +545,8 @@ tailwind.config = {
           <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Citas atendidas</p><p class="text-xl md:text-2xl font-bold text-zinc-900">18</p><p class="text-xs text-zinc-400 mt-1">en Junio</p></div><div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="calendar-check" class="w-4 h-4 text-purple-400"></i></div></div></div>
           <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Promedio/cita</p><p class="text-xl md:text-2xl font-bold text-purple-600">L. 142</p><p class="text-xs text-zinc-400 mt-1">ticket prom.</p></div><div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="calculator" class="w-4 h-4 text-purple-400"></i></div></div></div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <div class="md:col-span-2 bg-white rounded-xl border border-stone-200 p-5">
+        <div class="grid grid lg:grid-cols-3 gap-4 mb-4">
+          <div class="lg:col-span-2 bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
             <div class="flex items-center gap-2 mb-4"><i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Ingresos diarios — Junio 2026</span></div>
             <canvas id="chart-ingresos" height="120"></canvas>
           </div>
@@ -717,9 +812,9 @@ function initCharts(){
     ctxC._done=true;
     new Chart(ctxC,{type:'line',
       data:{labels:['13/06','14/06','15/06','16/06','17/06','18/06','19/06'],
-        datasets:[{data:[0,1,0,1,5,6,2],borderColor:'#f97316',
-          backgroundColor:'rgba(249,115,22,.12)',tension:.4,fill:true,
-          pointBackgroundColor:'#f97316',pointRadius:4}]},
+        datasets:[{data:[0,1,0,1,5,6,2],borderColor:'#f59e0b',
+          backgroundColor:'rgba(245,158,11,0.08)',tension:.4,fill:true,
+          pointBackgroundColor:'#f59e0b',pointRadius:4}]},
       options:{responsive:true,plugins:{legend:{display:false}},
         scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
   }

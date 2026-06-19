@@ -1,1580 +1,692 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BarberApp — Demo del Sistema</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: { colors: { barber: { 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb' } } } }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
-:root {
-  --azul:  #2563eb;
-  --azul2: #1d4ed8;
-  --rojo:  #dc2626;
-  --verde: #16a34a;
-  --sidebar-w: 256px;
-  --sidebar-bg: #18181b;
-  --sidebar-border: #3f3f46;
-}
-body { font-family:'Segoe UI',system-ui,sans-serif; background:#f5f5f4; }
-
-/* ── BARBER STRIPE ── */
-.stripe {
-  height:4px;
-  background:repeating-linear-gradient(90deg,
-    var(--rojo) 0,var(--rojo) 18px,#fff 18px,#fff 26px,
-    var(--azul) 26px,var(--azul) 44px,#fff 44px,#fff 52px);
-}
-
-/* ── LOGIN ── */
-#s-login {
-  min-height:100vh;
-  background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#18181b 100%);
-  display:flex; align-items:center; justify-content:center; flex-direction:column;
-}
-.login-card {
-  background:#fff; border-radius:18px;
-  box-shadow:0 24px 60px rgba(0,0,0,.35);
-  padding:2.4rem; width:380px; max-width:95vw;
-}
-.login-logo {
-  width:58px; height:58px; background:var(--azul); border-radius:14px;
-  display:flex; align-items:center; justify-content:center; margin:0 auto .9rem;
-}
-.login-logo i { font-size:1.75rem; color:#fff; }
-.cred-box {
-  background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;
-  padding:.6rem .9rem; font-size:.75rem; color:#475569; margin-top:.75rem;
-}
-
-/* ── APP SHELL ── */
-#app { display:none; min-height:100vh; }
-#sidebar {
-  position:fixed; top:0; left:0; height:100vh; width:var(--sidebar-w);
-  background:var(--sidebar-bg); color:#fff; z-index:200;
-  display:flex; flex-direction:column; transition:.3s;
-  overflow-y:auto;
-}
-.sb-brand { padding:1rem 1.25rem; border-bottom:1px solid var(--sidebar-border); }
-.sb-brand h5 { margin:0; font-size:.875rem; font-weight:700; }
-.sb-brand small { color:#71717a; font-size:.7rem; }
-.sb-nav { flex:1; padding:.5rem .75rem; }
-.sb-nav a {
-  display:flex; align-items:center; gap:.65rem; padding:.55rem .75rem;
-  color:#a1a1aa; text-decoration:none; font-size:.875rem;
-  border-radius:8px; margin:1px 0; transition:.15s;
-}
-.sb-nav a:hover { background:#27272a; color:#fff; }
-.sb-nav a.active { background:#2563eb; color:#fff; }
-.sb-nav .sec { font-size:.65rem; text-transform:uppercase; letter-spacing:.08em;
-  color:#52525b; padding:.85rem .75rem .25rem; }
-.sb-user { padding:.75rem 1rem; border-top:1px solid var(--sidebar-border);
-  font-size:.78rem; color:#71717a; display:flex; align-items:center; gap:.55rem; }
-
-#main { margin-left:var(--sidebar-w); padding:1.5rem; min-height:100vh; }
-
-/* ── TOPBAR ── */
-.topbar { background:#fff; border-radius:0; padding:.75rem 1.5rem;
-  display:flex; align-items:center; justify-content:space-between;
-  border-bottom:1px solid #e7e5e4; margin-bottom:1.5rem;
-  position:sticky; top:0; z-index:10; }
-.topbar h4 { margin:0; font-size:.875rem; font-weight:700; color:#18181b; }
-
-/* ── KPI ── */
-.kpi { background:#fff; border-radius:12px; padding:1.15rem 1.3rem;
-  box-shadow:0 1px 4px rgba(0,0,0,.07); border-left:4px solid; }
-.kpi-val { font-size:1.85rem; font-weight:800; line-height:1; }
-.kpi-lbl { font-size:.76rem; color:#64748b; margin-top:.15rem; }
-.kpi-ico { font-size:1.6rem; opacity:.13; }
-
-/* ── CARD ── */
-.card { border:none; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
-.card-header { border-radius:12px 12px 0 0!important; font-weight:600; background:#fff!important; }
-
-/* ── SCREENS ── */
-.screen { display:none; }
-.screen.active { display:block; }
-
-/* ── BADGE ESTADOS ── */
-.est-pendiente   { background:#fef3c7; color:#92400e; }
-.est-confirmado  { background:#dbeafe; color:#1e40af; }
-.est-en_camino   { background:#ede9fe; color:#5b21b6; }
-.est-atendido    { background:#d1fae5; color:#065f46; }
-.est-cancelado   { background:#fee2e2; color:#991b1b; }
-.est-no_asistio  { background:#f1f5f9; color:#475569; }
-.badge-est { border-radius:20px; padding:.18rem .6rem; font-size:.72rem; font-weight:600; }
-
-/* ── AGENDA DAY ── */
-.agenda-slot {
-  display:flex; align-items:stretch; gap:.6rem;
-  background:#fff; border-radius:10px; padding:.75rem 1rem;
-  border-left:4px solid; box-shadow:0 1px 3px rgba(0,0,0,.06); margin-bottom:.55rem;
-}
-.agenda-hora { font-size:.75rem; color:#64748b; width:60px; flex-shrink:0; padding-top:.1rem; }
-.agenda-info { flex:1; }
-.agenda-nombre { font-weight:600; font-size:.88rem; }
-.agenda-sub { font-size:.75rem; color:#64748b; }
-
-/* ── SERVICIO / BARBERO CARDS ── */
-.item-card {
-  background:#fff; border-radius:10px; padding:1rem 1.1rem;
-  box-shadow:0 1px 4px rgba(0,0,0,.07);
-  display:flex; align-items:center; gap:.9rem;
-}
-.item-ico {
-  width:42px; height:42px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.1rem; flex-shrink:0;
-}
-.toggle-btn {
-  width:44px; height:24px; border-radius:12px; border:none; cursor:pointer;
-  transition:.2s; position:relative;
-}
-.toggle-btn::after {
-  content:''; position:absolute; width:18px; height:18px; border-radius:50%;
-  background:#fff; top:3px; transition:.2s;
-}
-.toggle-btn.on  { background:#16a34a; }
-.toggle-btn.off { background:#cbd5e1; }
-.toggle-btn.on::after  { left:23px; }
-.toggle-btn.off::after { left:3px; }
-
-/* ── RANKING ── */
-.rank-row { background:#fff; border-radius:10px; padding:.85rem 1.1rem;
-  display:flex; align-items:center; gap:.9rem;
-  box-shadow:0 1px 3px rgba(0,0,0,.06); margin-bottom:.5rem; }
-.rank-num { font-size:1.1rem; font-weight:800; color:#cbd5e1; width:26px; text-align:center; flex-shrink:0; }
-.rank-av  { width:40px; height:40px; border-radius:50%; background:var(--azul);
-  color:#fff; font-weight:700; font-size:.95rem;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.vip-badge { background:#fef3c7; color:#92400e; border-radius:20px; padding:.12rem .5rem; font-size:.67rem; font-weight:700; }
-.frec-badge { background:#dbeafe; color:#1e40af; border-radius:20px; padding:.12rem .5rem; font-size:.67rem; font-weight:700; }
-
-/* ── REPORTE CHART ── */
-.chart-bar-wrap { display:flex; align-items:flex-end; gap:6px; height:130px; margin-bottom:.35rem; }
-.chart-bar { flex:1; border-radius:6px 6px 0 0; background:var(--azul2); min-width:18px; transition:opacity .2s; }
-.chart-bar:hover { opacity:.75; }
-.chart-labels { display:flex; gap:6px; }
-.chart-label { flex:1; text-align:center; font-size:.65rem; color:#94a3b8; }
-
-/* ── HORARIO GRID ── */
-.hor-grid { display:grid; grid-template-columns:80px repeat(7,1fr); gap:4px; font-size:.73rem; }
-.hor-head { text-align:center; font-weight:600; color:#64748b; padding:.3rem; }
-.hor-cell { background:#f8fafc; border-radius:5px; padding:.35rem .3rem; text-align:center; border:1px solid #e2e8f0; }
-.hor-cell.activo { background:#dbeafe; border-color:#93c5fd; color:#1d4ed8; font-weight:600; }
-
-/* ── CONFIGURACION ── */
-.cfg-row { background:#fff; border-radius:10px; padding:1rem 1.2rem;
-  display:flex; align-items:center; justify-content:space-between;
-  box-shadow:0 1px 3px rgba(0,0,0,.06); margin-bottom:.5rem; }
-
-/* ── RESERVA PÚBLICA (4 pasos) ── */
-.step-ind { display:flex; align-items:center; margin-bottom:1.5rem; }
-.s-dot {
-  width:34px; height:34px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800; font-size:.8rem; flex-shrink:0; transition:all .2s;
-}
-.s-dot.active  { background:var(--azul2); color:#fff; }
-.s-dot.done    { background:var(--verde); color:#fff; }
-.s-dot.pending { background:#e2e8f0; color:#94a3b8; }
-.s-line { flex:1; height:2px; background:#e2e8f0; max-width:50px; }
-.s-line.done { background:var(--verde); }
-.svc-pick { border:2px solid #e2e8f0; border-radius:10px; padding:.9rem; cursor:pointer; transition:all .15s; background:#fff; }
-.svc-pick:hover, .svc-pick.sel { border-color:var(--azul2); background:#eff6ff; }
-.brb-pick { border:2px solid #e2e8f0; border-radius:10px; padding:.8rem; cursor:pointer; transition:all .15s; background:#fff; text-align:center; }
-.brb-pick:hover, .brb-pick.sel { border-color:#7c3aed; background:#faf5ff; }
-.slot-btn { border:2px solid #e2e8f0; border-radius:8px; padding:.45rem .6rem; font-size:.76rem; font-weight:600; background:#fff; cursor:pointer; transition:all .15s; min-width:78px; text-align:center; }
-.slot-btn:hover, .slot-btn.sel { border-color:var(--azul2); background:var(--azul2); color:#fff; }
-.slot-btn.ocup { background:#f8fafc; color:#cbd5e1; border-color:#f1f5f9; cursor:not-allowed; text-decoration:line-through; }
-
-/* ── TOAST ── */
-#toast-box { position:fixed; bottom:1.5rem; right:1.5rem; z-index:9999; }
-.toast-msg { background:#16a34a; color:#fff; border-radius:8px; padding:.7rem 1rem;
-  margin-top:.5rem; font-size:.85rem; box-shadow:0 4px 12px rgba(0,0,0,.2);
-  animation:slideIn .3s ease; display:flex; align-items:center; gap:.5rem; }
-@keyframes slideIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-
-@media(max-width:768px){
-  #sidebar { display:none; }
-  #main { margin-left:0; padding:1rem; }
-}
+  body { font-family:'Segoe UI',system-ui,sans-serif; }
+  .page { display:none; }
+  .page.active { display:block; }
+  .nav-link.active { background:#3b82f6; color:#fff; }
+  .nav-link { color:#a1a1aa; }
+  .nav-link:hover { background:#27272a; color:#fff; }
+  .badge-atendido  { background:#dcfce7; color:#166534; }
+  .badge-confirmado{ background:#dbeafe; color:#1e40af; }
+  .badge-pendiente { background:#fef9c3; color:#854d0e; }
+  .badge-cancelado { background:#fee2e2; color:#991b1b; }
+  .badge-encamino  { background:#f3e8ff; color:#6b21a8; }
+  .badge-vip   { background:#fef3c7; color:#92400e; }
+  .badge-frecuente { background:#dbeafe; color:#1e40af; }
+  .badge-regular   { background:#f4f4f5; color:#52525b; }
+  .step-active { background:#3b82f6; color:#fff; }
+  .step-done   { background:#22c55e; color:#fff; }
+  .step-next   { background:#e4e4e7; color:#71717a; }
+  .srv-card { border:2px solid transparent; cursor:pointer; transition:.15s; }
+  .srv-card:hover { border-color:#93c5fd; }
+  .srv-card.selected { border-color:#3b82f6; background:#eff6ff; }
+  .barb-card { border:2px solid transparent; cursor:pointer; transition:.15s; }
+  .barb-card:hover { border-color:#93c5fd; }
+  .barb-card.selected { border-color:#3b82f6; background:#eff6ff; }
+  .slot-btn { cursor:pointer; transition:.15s; }
+  .slot-btn:hover { background:#dbeafe; border-color:#93c5fd; }
+  .slot-btn.selected { background:#3b82f6; color:#fff; border-color:#2563eb; }
 </style>
 </head>
-<body>
+<body class="h-full bg-stone-100">
 
-<!-- ══ LOGIN ═══════════════════════════════════════ -->
-<div id="s-login">
-  <div class="stripe w-100" style="position:absolute;top:0;"></div>
-  <div class="login-card">
-    <div class="login-logo"><i class="bi bi-scissors"></i></div>
-    <h4 class="text-center fw-bold mb-1" style="color:var(--azul);">BarberApp</h4>
-    <p class="text-center text-muted mb-4" style="font-size:.82rem;">Panel de Administración</p>
-
-    <div class="mb-3">
-      <label class="form-label small fw-semibold">Usuario</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-person"></i></span>
-        <input id="lu" type="text" class="form-control" value="admin">
+<!-- ══════════════════════════════════════════════════════
+     LOGIN
+═══════════════════════════════════════════════════════ -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center bg-stone-100">
+  <div class="bg-white rounded-2xl shadow-sm border border-stone-200 w-full max-w-sm p-8">
+    <div class="flex flex-col items-center mb-8">
+      <div class="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center mb-4">
+        <i data-lucide="scissors" class="w-6 h-6 text-white"></i>
       </div>
+      <h1 class="text-xl font-bold text-zinc-900">BarberApp</h1>
+      <p class="text-sm text-zinc-500 mt-1">Acceso al panel de administración</p>
     </div>
-    <div class="mb-4">
-      <label class="form-label small fw-semibold">Contraseña</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-lock"></i></span>
-        <input id="lp" type="password" class="form-control" value="Admin123">
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-zinc-700 mb-1.5">Usuario</label>
+        <input id="inp-user" type="text" value="admin" placeholder="Usuario"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
+      <div>
+        <label class="block text-sm font-medium text-zinc-700 mb-1.5">Contraseña</label>
+        <input id="inp-pass" type="password" value="Admin123" placeholder="Contraseña"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+      <button onclick="doLogin()"
+        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg py-2.5 text-sm transition-colors mt-2">
+        Iniciar sesión
+      </button>
     </div>
-    <button class="btn btn-primary w-100 fw-semibold" onclick="doLogin()">
-      <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
-    </button>
-    <div class="cred-box">
-      <i class="bi bi-info-circle me-1"></i>
-      Demo — usuario: <strong>admin</strong> / contraseña: <strong>Admin123</strong>
-    </div>
+    <p class="text-center text-xs text-zinc-400 mt-6">Demo — admin / Admin123</p>
   </div>
-  <div class="stripe w-100" style="position:absolute;bottom:0;"></div>
 </div>
 
-<!-- ══ APP ═════════════════════════════════════════ -->
-<div id="app">
+<!-- ══════════════════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════════════════ -->
+<div id="app-shell" style="display:none" class="h-full">
 
-  <!-- SIDEBAR -->
-  <nav id="sidebar">
-    <div class="sb-brand">
-      <div class="d-flex align-items-center gap-2">
-        <div style="background:#2563eb;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <i class="bi bi-scissors text-white" style="font-size:.95rem;"></i>
-        </div>
-        <div>
-          <h5 style="color:#fff;">BarberApp</h5>
-          <small>Panel de Administración</small>
-        </div>
+  <!-- Sidebar -->
+  <aside class="fixed inset-y-0 left-0 z-30 w-64 bg-zinc-900 flex flex-col">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-zinc-800 flex-shrink-0">
+      <div class="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i data-lucide="scissors" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <span class="text-white font-bold text-sm leading-tight block">BarberApp</span>
+        <span class="text-zinc-500 text-xs">Panel de Administración</span>
       </div>
     </div>
-    <div class="sb-nav">
-      <a href="#" onclick="goto('dashboard')" id="nav-dashboard" class="active">
-        <i class="bi bi-speedometer2"></i> Dashboard
+    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+      <a href="#" onclick="return goto('dashboard')" id="nav-dashboard"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>Dashboard
       </a>
-      <div class="sec">Agenda</div>
-      <a href="#" onclick="goto('agenda')" id="nav-agenda">
-        <i class="bi bi-calendar-week"></i> Agenda del día
+      <div class="pt-4 pb-1 px-3">
+        <span class="text-zinc-600 text-xs font-semibold uppercase tracking-wider">Atención</span>
+      </div>
+      <a href="#" onclick="return goto('citas')" id="nav-citas"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="calendar-days" class="w-4 h-4 flex-shrink-0"></i>Agenda de Citas
       </a>
-      <a href="#" onclick="goto('citas')" id="nav-citas">
-        <i class="bi bi-list-check"></i> Todas las citas
+      <a href="#" onclick="return goto('espera')" id="nav-espera"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="users" class="w-4 h-4 flex-shrink-0"></i>Lista de Espera
       </a>
-      <div class="sec">Gestión</div>
-      <a href="#" onclick="goto('servicios')" id="nav-servicios">
-        <i class="bi bi-scissors"></i> Servicios
+      <a href="#" onclick="return goto('reservar')" id="nav-reservar"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="external-link" class="w-4 h-4 flex-shrink-0"></i>Página de Reservas
       </a>
-      <a href="#" onclick="goto('barberos')" id="nav-barberos">
-        <i class="bi bi-person-badge"></i> Barberos
+      <div class="pt-4 pb-1 px-3">
+        <span class="text-zinc-600 text-xs font-semibold uppercase tracking-wider">Gestión</span>
+      </div>
+      <a href="#" onclick="return goto('barberos')" id="nav-barberos"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="user-check" class="w-4 h-4 flex-shrink-0"></i>Barberos
       </a>
-      <a href="#" onclick="goto('clientes')" id="nav-clientes">
-        <i class="bi bi-people"></i> Clientes Frecuentes
+      <a href="#" onclick="return goto('servicios')" id="nav-servicios"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="scissors" class="w-4 h-4 flex-shrink-0"></i>Servicios
       </a>
-      <div class="sec">Análisis</div>
-      <a href="#" onclick="goto('reportes')" id="nav-reportes">
-        <i class="bi bi-bar-chart-line"></i> Reportes
+      <a href="#" onclick="return goto('clientes')" id="nav-clientes"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="heart-handshake" class="w-4 h-4 flex-shrink-0"></i>Clientes Frecuentes
       </a>
-      <div class="sec">Sistema</div>
-      <a href="#" onclick="goto('reservar')" id="nav-reservar">
-        <i class="bi bi-phone"></i> Ver reserva pública
+      <div class="pt-4 pb-1 px-3">
+        <span class="text-zinc-600 text-xs font-semibold uppercase tracking-wider">Análisis</span>
+      </div>
+      <a href="#" onclick="return goto('reportes')" id="nav-reportes"
+         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="bar-chart-3" class="w-4 h-4 flex-shrink-0"></i>Reportes
       </a>
-      <a href="#" onclick="goto('config')" id="nav-config">
-        <i class="bi bi-gear"></i> Configuración
+    </nav>
+    <div class="border-t border-zinc-800 px-3 py-3 flex-shrink-0">
+      <div class="flex items-center gap-3 px-3 py-2 mb-1">
+        <div class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+          <i data-lucide="user" class="w-4 h-4 text-blue-400"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-white text-sm font-medium">Administrador</div>
+          <div class="text-zinc-500 text-xs">admin</div>
+        </div>
+      </div>
+      <a href="#" onclick="doLogout(); return false;"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:bg-red-950 hover:text-red-400 transition-colors w-full">
+        <i data-lucide="log-out" class="w-4 h-4 flex-shrink-0"></i>Cerrar sesión
       </a>
     </div>
-    <div class="sb-user">
-      <div style="width:32px;height:32px;background:rgba(37,99,235,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <i class="bi bi-person" style="color:#60a5fa;font-size:.9rem;"></i>
-      </div>
-      <div style="flex:1;min-width:0;">
-        <div style="color:#fff;font-size:.8rem;font-weight:600;">Administrador</div>
-        <div style="font-size:.7rem;color:#71717a;">admin</div>
-      </div>
-      <a href="#" onclick="doLogout()" title="Cerrar sesión" style="color:#52525b;text-decoration:none;">
-        <i class="bi bi-box-arrow-right"></i>
-      </a>
-    </div>
-  </nav>
+  </aside>
 
-  <!-- MAIN -->
-  <div id="main">
+  <!-- Main -->
+  <div class="ml-64 flex flex-col min-h-screen">
+    <header class="sticky top-0 z-10 bg-white border-b border-stone-200 px-4 py-3 flex items-center gap-4 shadow-sm">
+      <h1 id="page-title" class="text-sm font-semibold text-zinc-800 flex-1">Dashboard</h1>
+      <span class="text-xs text-zinc-400">Viernes, 19 de Junio de 2026</span>
+    </header>
+    <main class="flex-1 p-6">
 
-    <!-- ══ DASHBOARD ══════════════════════════════ -->
-    <div id="s-dashboard" class="screen active">
-      <div class="topbar">
-        <h4><i class="bi bi-speedometer2 me-2"></i>Dashboard</h4>
-        <span class="text-muted small">Jueves, 18 de junio de 2026</span>
-      </div>
-
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
-          <div class="kpi d-flex align-items-center justify-content-between" style="border-color:#2563eb;">
-            <div><div class="kpi-val text-primary">7</div><div class="kpi-lbl">Citas hoy</div></div>
-            <i class="bi bi-calendar-check kpi-ico text-primary"></i>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="kpi d-flex align-items-center justify-content-between" style="border-color:#16a34a;">
-            <div><div class="kpi-val text-success">L 510</div><div class="kpi-lbl">Ingresos hoy</div></div>
-            <i class="bi bi-cash-coin kpi-ico text-success"></i>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="kpi d-flex align-items-center justify-content-between" style="border-color:#f59e0b;">
-            <div><div class="kpi-val text-warning">3</div><div class="kpi-lbl">Pendientes</div></div>
-            <i class="bi bi-hourglass-split kpi-ico text-warning"></i>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="kpi d-flex align-items-center justify-content-between" style="border-color:#8b5cf6;">
-            <div><div class="kpi-val" style="color:#7c3aed;">2</div><div class="kpi-lbl">Barberos activos</div></div>
-            <i class="bi bi-person-badge kpi-ico" style="color:#7c3aed;"></i>
-          </div>
-        </div>
-      </div>
-
-      <div class="row g-3">
-        <!-- Agenda hoy -->
-        <div class="col-lg-7">
-          <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between py-3 px-4">
-              <span><i class="bi bi-calendar3 me-2 text-primary"></i>Agenda de hoy</span>
-              <button class="btn btn-sm btn-primary" onclick="goto('agenda')">Ver completa</button>
+      <!-- ─── DASHBOARD ─── -->
+      <section id="page-dashboard" class="page">
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-stone-200 p-4">
+            <div class="flex items-start justify-between">
+              <div><p class="text-xs text-zinc-500 mb-1">Citas hoy</p><p class="text-3xl font-bold text-zinc-900">7</p><p class="text-xs text-zinc-400 mt-1">citas para hoy</p></div>
+              <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center"><i data-lucide="calendar-check" class="w-5 h-5 text-blue-400"></i></div>
             </div>
-            <div class="card-body p-3">
-              <div class="agenda-slot" style="border-color:#f59e0b;">
-                <div class="agenda-hora">8:30 AM</div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Carlos Mejía</div>
-                  <div class="agenda-sub"><i class="bi bi-scissors me-1"></i>Degradado · <i class="bi bi-person-badge me-1"></i>Marco</div>
-                </div>
-                <span class="badge-est est-atendido align-self-center">Atendido</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#3b82f6;">
-                <div class="agenda-hora">9:30 AM</div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Andrés García</div>
-                  <div class="agenda-sub"><i class="bi bi-scissors me-1"></i>Corte Clásico · <i class="bi bi-person-badge me-1"></i>Luis</div>
-                </div>
-                <span class="badge-est est-atendido align-self-center">Atendido</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#8b5cf6;">
-                <div class="agenda-hora">10:30 AM</div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Roberto Flores</div>
-                  <div class="agenda-sub"><i class="bi bi-scissors me-1"></i>Corte + Barba · <i class="bi bi-person-badge me-1"></i>Marco</div>
-                </div>
-                <span class="badge-est est-en_camino align-self-center">En camino</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#f59e0b;">
-                <div class="agenda-hora">11:00 AM</div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Miguel Torres</div>
-                  <div class="agenda-sub"><i class="bi bi-scissors me-1"></i>Barba · <i class="bi bi-shuffle me-1"></i>Sin preferencia</div>
-                </div>
-                <span class="badge-est est-pendiente align-self-center">Pendiente</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#e2e8f0;">
-                <div class="agenda-hora">2:00 PM</div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">José Pineda</div>
-                  <div class="agenda-sub"><i class="bi bi-scissors me-1"></i>Corte de Niño · <i class="bi bi-person-badge me-1"></i>Luis</div>
-                </div>
-                <span class="badge-est est-confirmado align-self-center">Confirmado</span>
-              </div>
+          </div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4">
+            <div class="flex items-start justify-between">
+              <div><p class="text-xs text-zinc-500 mb-1">En espera</p><p class="text-3xl font-bold text-zinc-900">2</p><p class="text-xs text-zinc-400 mt-1">en cola ahora</p></div>
+              <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center"><i data-lucide="clock" class="w-5 h-5 text-purple-400"></i></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4">
+            <div class="flex items-start justify-between">
+              <div><p class="text-xs text-zinc-500 mb-1">Servicios activos</p><p class="text-3xl font-bold text-zinc-900">5</p><p class="text-xs text-zinc-400 mt-1">disponibles para reserva</p></div>
+              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center"><i data-lucide="scissors" class="w-5 h-5 text-green-400"></i></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4">
+            <div class="flex items-start justify-between">
+              <div><p class="text-xs text-zinc-500 mb-1">Ingresos hoy</p><p class="text-3xl font-bold text-zinc-900">L. 510</p><p class="text-xs text-zinc-400 mt-1">19/06/2026</p></div>
+              <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center"><i data-lucide="banknote" class="w-5 h-5 text-emerald-400"></i></div>
             </div>
           </div>
         </div>
-
-        <!-- Panel derecho -->
-        <div class="col-lg-5">
-          <!-- Ingresos semana -->
-          <div class="card mb-3">
-            <div class="card-header py-3 px-4">
-              <i class="bi bi-bar-chart me-2 text-success"></i>Ingresos — últimos 7 días
+        <div class="grid grid-cols-3 gap-4 mb-4">
+          <div class="col-span-2 bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Citas — últimos 7 días</span></div>
+              <span class="text-xs text-zinc-400">Total: 18</span>
             </div>
-            <div class="card-body px-4 pb-3 pt-2">
-              <div class="chart-bar-wrap">
-                <div class="chart-bar" style="height:45%;background:#bfdbfe;" title="L 240"></div>
-                <div class="chart-bar" style="height:70%;" title="L 360"></div>
-                <div class="chart-bar" style="height:55%;background:#bfdbfe;" title="L 280"></div>
-                <div class="chart-bar" style="height:90%;" title="L 480"></div>
-                <div class="chart-bar" style="height:60%;" title="L 310"></div>
-                <div class="chart-bar" style="height:75%;" title="L 390"></div>
-                <div class="chart-bar" style="height:100%;background:var(--rojo);" title="L 510 hoy"></div>
-              </div>
-              <div class="chart-labels">
-                <div class="chart-label">Jue</div>
-                <div class="chart-label">Vie</div>
-                <div class="chart-label">Sáb</div>
-                <div class="chart-label">Lun</div>
-                <div class="chart-label">Mar</div>
-                <div class="chart-label">Mié</div>
-                <div class="chart-label fw-bold" style="color:var(--rojo);">Hoy</div>
-              </div>
-              <div class="mt-2 pt-2 border-top d-flex justify-content-between" style="font-size:.8rem;">
-                <span class="text-muted">Total semana</span>
-                <span class="fw-bold text-success">L 2,570</span>
-              </div>
-            </div>
+            <canvas id="chart-citas" height="120"></canvas>
           </div>
-
-          <!-- Top servicios -->
-          <div class="card">
-            <div class="card-header py-3 px-4">
-              <i class="bi bi-trophy me-2 text-warning"></i>Top servicios del mes
+          <div class="bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2"><i data-lucide="star" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Top servicios</span></div>
+              <a href="#" onclick="return goto('servicios')" class="text-xs text-blue-500 hover:underline">Ver todos</a>
             </div>
-            <div class="card-body p-3">
-              <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
-                <div style="font-size:.84rem;"><span class="me-2 fw-bold" style="color:#f59e0b;">1°</span>Degradado</div>
-                <span class="badge bg-primary">18 citas</span>
-              </div>
-              <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
-                <div style="font-size:.84rem;"><span class="me-2 fw-bold text-muted">2°</span>Corte Clásico</div>
-                <span class="badge bg-secondary">14 citas</span>
-              </div>
-              <div class="d-flex align-items-center justify-content-between py-2">
-                <div style="font-size:.84rem;"><span class="me-2 fw-bold text-muted">3°</span>Corte + Barba</div>
-                <span class="badge bg-secondary">9 citas</span>
-              </div>
+            <div class="space-y-3">
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Arreglo de Barba</span><span class="text-zinc-500">18 citas</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-blue-500 rounded-full" style="width:100%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Corte Clásico</span><span class="text-zinc-500">14 citas</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-red-400 rounded-full" style="width:78%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Degradado</span><span class="text-zinc-500">11 citas</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-green-400 rounded-full" style="width:61%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Corte Niño</span><span class="text-zinc-500">8 citas</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-purple-400 rounded-full" style="width:44%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Corte + Barba</span><span class="text-zinc-500">5 citas</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-orange-400 rounded-full" style="width:28%"></div></div></div>
             </div>
           </div>
         </div>
-      </div>
-    </div><!-- /dashboard -->
-
-    <!-- ══ AGENDA DEL DÍA ════════════════════════ -->
-    <div id="s-agenda" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-calendar-week me-2"></i>Agenda del día</h4>
-        <span class="text-muted small">Jueves, 18 jun 2026</span>
-      </div>
-
-      <div class="row g-3">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between py-3 px-4">
-              <span><i class="bi bi-clock me-2 text-primary"></i>Citas programadas — 18 jun 2026</span>
-              <span class="badge bg-primary rounded-pill">7 citas</span>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Agenda de hoy</span></div>
+              <span class="text-xs text-zinc-400">19/06/2026</span>
             </div>
-            <div class="card-body p-3">
-              <div class="agenda-slot" style="border-color:#16a34a;">
-                <div class="agenda-hora">8:30 AM<br><small class="text-success fw-bold">30 min</small></div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Carlos Mejía</div>
-                  <div class="agenda-sub">Degradado · Marco Rodríguez · <i class="bi bi-telephone me-1"></i>9876-1234</div>
-                </div>
-                <span class="badge-est est-atendido align-self-center">Atendido</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#16a34a;">
-                <div class="agenda-hora">9:30 AM<br><small class="text-success fw-bold">30 min</small></div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Andrés García</div>
-                  <div class="agenda-sub">Corte Clásico · Luis Méndez</div>
-                </div>
-                <span class="badge-est est-atendido align-self-center">Atendido</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#8b5cf6;">
-                <div class="agenda-hora">10:30 AM<br><small style="color:#8b5cf6;" class="fw-bold">45 min</small></div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Roberto Flores</div>
-                  <div class="agenda-sub">Corte + Barba · Marco Rodríguez · <i class="bi bi-telephone me-1"></i>9711-5566</div>
-                </div>
-                <div class="d-flex flex-column gap-1 align-self-center">
-                  <span class="badge-est est-en_camino">En camino</span>
-                  <div class="d-flex gap-1 mt-1">
-                    <button class="btn btn-success btn-sm py-0 px-2" onclick="toast('Marcado como Atendido','success')" style="font-size:.7rem;">Atendido</button>
-                    <button class="btn btn-danger btn-sm py-0 px-2" onclick="toast('Cita cancelada','danger')" style="font-size:.7rem;">Cancelar</button>
-                  </div>
-                </div>
-              </div>
-              <div class="agenda-slot" style="border-color:#f59e0b;">
-                <div class="agenda-hora">11:00 AM<br><small class="text-warning fw-bold">20 min</small></div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Miguel Torres</div>
-                  <div class="agenda-sub">Barba · Sin preferencia de barbero</div>
-                </div>
-                <div class="d-flex flex-column gap-1 align-self-center">
-                  <span class="badge-est est-pendiente">Pendiente</span>
-                  <div class="d-flex gap-1 mt-1">
-                    <button class="btn btn-primary btn-sm py-0 px-2" onclick="toast('Cita confirmada','success')" style="font-size:.7rem;">Confirmar</button>
-                    <button class="btn btn-danger btn-sm py-0 px-2" onclick="toast('Cita cancelada','danger')" style="font-size:.7rem;">Cancelar</button>
-                  </div>
-                </div>
-              </div>
-              <div class="agenda-slot" style="border-color:#3b82f6;">
-                <div class="agenda-hora">2:00 PM<br><small class="text-primary fw-bold">20 min</small></div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">José Pineda</div>
-                  <div class="agenda-sub">Corte de Niño · Luis Méndez · <i class="bi bi-telephone me-1"></i>9522-8877</div>
-                </div>
-                <span class="badge-est est-confirmado align-self-center">Confirmado</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#3b82f6;">
-                <div class="agenda-hora">3:00 PM<br><small class="text-primary fw-bold">45 min</small></div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Pedro Alvarado</div>
-                  <div class="agenda-sub">Corte + Barba · Marco Rodríguez</div>
-                </div>
-                <span class="badge-est est-confirmado align-self-center">Confirmado</span>
-              </div>
-              <div class="agenda-slot" style="border-color:#e2e8f0;">
-                <div class="agenda-hora">4:30 PM<br><small class="text-muted fw-bold">30 min</small></div>
-                <div class="agenda-info">
-                  <div class="agenda-nombre">Luis Aguilera</div>
-                  <div class="agenda-sub">Degradado · Marco Rodríguez</div>
-                </div>
-                <span class="badge-est est-pendiente align-self-center">Pendiente</span>
-              </div>
+            <div class="space-y-2">
+              <div class="flex items-center gap-3 p-2.5 rounded-lg bg-stone-50"><div class="w-1 h-10 rounded-full bg-green-400 flex-shrink-0"></div><div class="flex-1 min-w-0"><div class="flex justify-between items-center"><span class="text-sm font-medium text-zinc-800">Carlos Mejía</span><span class="text-xs px-2 py-0.5 rounded-full badge-atendido">Atendido</span></div><p class="text-xs text-zinc-500">8:30 AM · Degradado · Marco</p></div></div>
+              <div class="flex items-center gap-3 p-2.5 rounded-lg bg-stone-50"><div class="w-1 h-10 rounded-full bg-purple-400 flex-shrink-0"></div><div class="flex-1 min-w-0"><div class="flex justify-between items-center"><span class="text-sm font-medium text-zinc-800">Roberto Flores</span><span class="text-xs px-2 py-0.5 rounded-full badge-encamino">En camino</span></div><p class="text-xs text-zinc-500">10:30 AM · Corte + Barba · Marco</p></div></div>
+              <div class="flex items-center gap-3 p-2.5 rounded-lg bg-stone-50"><div class="w-1 h-10 rounded-full bg-yellow-400 flex-shrink-0"></div><div class="flex-1 min-w-0"><div class="flex justify-between items-center"><span class="text-sm font-medium text-zinc-800">Miguel Torres</span><span class="text-xs px-2 py-0.5 rounded-full badge-pendiente">Pendiente</span></div><p class="text-xs text-zinc-500">11:00 AM · Barba · Sin preferencia</p></div></div>
+              <div class="flex items-center gap-3 p-2.5 rounded-lg bg-stone-50"><div class="w-1 h-10 rounded-full bg-blue-300 flex-shrink-0"></div><div class="flex-1 min-w-0"><div class="flex justify-between items-center"><span class="text-sm font-medium text-zinc-800">José Pineda</span><span class="text-xs px-2 py-0.5 rounded-full badge-confirmado">Confirmado</span></div><p class="text-xs text-zinc-500">2:00 PM · Corte de Niño · Luis</p></div></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Lista de espera</span></div>
+              <span class="text-xs bg-stone-100 text-zinc-600 px-2 py-0.5 rounded-full">2</span>
+            </div>
+            <div class="space-y-2">
+              <div class="flex items-center gap-3 p-3 rounded-lg bg-stone-50"><div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 flex-shrink-0">JM</div><div class="flex-1"><p class="text-sm font-medium text-zinc-800">Julio Matute</p><p class="text-xs text-zinc-500">Ingresó: 10:15 AM</p></div><button class="text-xs bg-blue-500 text-white px-2.5 py-1 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button></div>
+              <div class="flex items-center gap-3 p-3 rounded-lg bg-stone-50"><div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-xs font-bold text-purple-600 flex-shrink-0">AR</div><div class="flex-1"><p class="text-sm font-medium text-zinc-800">Ana Rodríguez</p><p class="text-xs text-zinc-500">Ingresó: 10:42 AM</p></div><button class="text-xs bg-blue-500 text-white px-2.5 py-1 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button></div>
             </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card mb-3">
-            <div class="card-header py-3 px-4"><i class="bi bi-person-badge me-2" style="color:#7c3aed;"></i>Disponibilidad barberos</div>
-            <div class="card-body p-3">
-              <div class="d-flex align-items-center gap-3 py-2 border-bottom">
-                <div style="width:38px;height:38px;border-radius:50%;background:#1e3a8a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;">M</div>
-                <div style="font-size:.84rem;">
-                  <div class="fw-semibold">Marco Rodríguez</div>
-                  <div class="text-muted" style="font-size:.72rem;">4 citas hoy · L 510</div>
-                </div>
-                <span class="ms-auto badge bg-success">Libre</span>
-              </div>
-              <div class="d-flex align-items-center gap-3 py-2">
-                <div style="width:38px;height:38px;border-radius:50%;background:#dc2626;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;">L</div>
-                <div style="font-size:.84rem;">
-                  <div class="fw-semibold">Luis Méndez</div>
-                  <div class="text-muted" style="font-size:.72rem;">3 citas hoy · L 230</div>
-                </div>
-                <span class="ms-auto badge bg-warning text-dark">Ocupado</span>
-              </div>
+      </section>
+
+      <!-- ─── AGENDA DE CITAS ─── -->
+      <section id="page-citas" class="page">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-3">
+            <button class="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-zinc-600"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+            <div><p class="font-semibold text-zinc-900">Viernes, 19 de Junio de 2026</p><p class="text-xs text-blue-500">Hoy · 11:02</p></div>
+            <button class="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-zinc-600"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+          </div>
+          <input type="date" value="2026-06-19" class="border border-stone-200 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="grid grid-cols-5 gap-3 mb-5">
+          <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Total</span><i data-lucide="calendar" class="w-3.5 h-3.5 text-zinc-300"></i></div><p class="text-2xl font-bold text-zinc-900">7</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Reservados</span><i data-lucide="clock" class="w-3.5 h-3.5 text-blue-300"></i></div><p class="text-2xl font-bold text-blue-600">2</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Confirmados</span><i data-lucide="user-check" class="w-3.5 h-3.5 text-green-300"></i></div><p class="text-2xl font-bold text-green-600">2</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Atendidos</span><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-300"></i></div><p class="text-2xl font-bold text-emerald-600">2</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">No presentados</span><i data-lucide="user-x" class="w-3.5 h-3.5 text-red-300"></i></div><p class="text-2xl font-bold text-red-500">1</p></div>
+        </div>
+        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
+          <div class="px-5 py-3 border-b border-stone-100 flex items-center gap-2">
+            <i data-lucide="calendar" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Vista de agenda</span>
+          </div>
+          <div class="divide-y divide-stone-50">
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">8</span><div class="flex-1 py-3 pr-4"></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">9</span><div class="flex-1 py-2 pr-4 space-y-1"><div class="bg-green-100 border-l-4 border-green-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-green-800">Carlos Mejía — Atendido</p><p class="text-xs text-green-600">8:30 AM · Degradado · Marco Rodríguez</p></div><div class="bg-green-100 border-l-4 border-green-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-green-800">Andrés García — Atendido</p><p class="text-xs text-green-600">9:30 AM · Corte Clásico · Luis Méndez</p></div></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">10</span><div class="flex-1 py-2 pr-4"><div class="bg-purple-100 border-l-4 border-purple-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-purple-800">Roberto Flores — En camino</p><p class="text-xs text-purple-600">10:30 AM · Corte + Barba · Marco Rodríguez</p></div></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">11</span><div class="flex-1 py-2 pr-4"><div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-yellow-800">Miguel Torres — Pendiente</p><p class="text-xs text-yellow-600">11:00 AM · Barba · Sin preferencia</p></div></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">12</span><div class="flex-1 py-3 pr-4"></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">13</span><div class="flex-1 py-3 pr-4"></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">14</span><div class="flex-1 py-2 pr-4"><div class="bg-blue-50 border-l-4 border-blue-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-blue-800">José Pineda — Confirmado</p><p class="text-xs text-blue-600">2:00 PM · Corte de Niño · Luis Méndez</p></div></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">15</span><div class="flex-1 py-2 pr-4"><div class="bg-blue-50 border-l-4 border-blue-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-blue-800">Pedro Alvarado — Confirmado</p><p class="text-xs text-blue-600">3:00 PM · Corte + Barba · Marco Rodríguez</p></div></div></div>
+            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">16</span><div class="flex-1 py-2 pr-4"><div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-yellow-800">Luis Aguilera — Pendiente</p><p class="text-xs text-yellow-600">4:30 PM · Degradado · Marco Rodríguez</p></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── LISTA DE ESPERA ─── -->
+      <section id="page-espera" class="page">
+        <div class="flex items-center justify-between mb-5">
+          <div><h2 class="text-lg font-bold text-zinc-900">Lista de Espera</h2><p class="text-sm text-zinc-500">Clientes esperando turno en la barbería</p></div>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i>Agregar a espera</button>
+        </div>
+        <div class="grid grid-cols-3 gap-4 mb-5">
+          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">2</p><p class="text-xs text-zinc-500 mt-1">en espera ahora</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">~18 min</p><p class="text-xs text-zinc-500 mt-1">tiempo promedio</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">5</p><p class="text-xs text-zinc-500 mt-1">atendidos hoy</p></div>
+        </div>
+        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
+          <div class="px-5 py-3 border-b border-stone-100"><span class="text-sm font-semibold text-zinc-800">Cola actual</span></div>
+          <div class="divide-y divide-stone-100">
+            <div class="flex items-center gap-4 px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-6">1</span><div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600 flex-shrink-0">JM</div><div class="flex-1"><p class="text-sm font-medium text-zinc-900">Julio Matute</p><p class="text-xs text-zinc-500">Ingresó: 10:15 AM · Espera: 47 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors">Retirar</button></div>
+            <div class="flex items-center gap-4 px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-6">2</span><div class="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600 flex-shrink-0">AR</div><div class="flex-1"><p class="text-sm font-medium text-zinc-900">Ana Rodríguez</p><p class="text-xs text-zinc-500">Ingresó: 10:42 AM · Espera: 20 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors">Retirar</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── BARBEROS ─── -->
+      <section id="page-barberos" class="page">
+        <div class="flex items-center justify-between mb-5">
+          <div><h2 class="text-lg font-bold text-zinc-900">Barberos</h2><p class="text-sm text-zinc-500">Gestiona tu equipo de barberos y sus horarios</p></div>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i>Agregar barbero</button>
+        </div>
+        <div class="grid grid-cols-2 gap-5 mb-5">
+          <div class="bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3"><div class="w-11 h-11 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">M</div><div><p class="font-semibold text-zinc-900">Marco Rodríguez</p><p class="text-xs text-zinc-500">Especialista en degradados y fade</p></div></div>
+              <div class="w-10 h-6 bg-green-500 rounded-full relative cursor-pointer flex-shrink-0"><div class="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></div></div>
+            </div>
+            <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horario semanal</p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-center">
+                <thead><tr class="text-zinc-500"><td class="pb-2 text-left text-zinc-400 text-xs w-12"></td><td class="pb-2">Lun</td><td class="pb-2">Mar</td><td class="pb-2">Mié</td><td class="pb-2">Jue</td><td class="pb-2">Vie</td><td class="pb-2">Sáb</td><td class="pb-2">Dom</td></tr></thead>
+                <tbody>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td class="text-zinc-300 text-base">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td class="text-zinc-300 text-base">—</td></tr>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td class="text-zinc-300 text-base">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">1:00<br>PM</span></td><td class="text-zinc-300 text-base">—</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 flex items-center gap-1.5 transition-colors"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Editar horario</button>
+              <button class="text-xs border border-amber-200 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-50 flex items-center gap-1.5 transition-colors"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>Bloquear fecha</button>
             </div>
           </div>
-          <div class="card">
-            <div class="card-header py-3 px-4"><i class="bi bi-list-ol me-2 text-primary"></i>Lista de espera</div>
-            <div class="card-body p-3">
-              <div class="d-flex align-items-center justify-content-between py-1 border-bottom" style="font-size:.82rem;">
-                <span><i class="bi bi-person me-1 text-muted"></i>Julio Matute</span>
-                <button class="btn btn-sm btn-outline-success py-0 px-2" onclick="toast('Cita creada para Julio','success')" style="font-size:.7rem;">+ Citar</button>
-              </div>
-              <div class="d-flex align-items-center justify-content-between py-1" style="font-size:.82rem;">
-                <span><i class="bi bi-person me-1 text-muted"></i>Ana Rodríguez</span>
-                <button class="btn btn-sm btn-outline-success py-0 px-2" onclick="toast('Cita creada para Ana','success')" style="font-size:.7rem;">+ Citar</button>
-              </div>
+          <div class="bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3"><div class="w-11 h-11 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">L</div><div><p class="font-semibold text-zinc-900">Luis Méndez</p><p class="text-xs text-zinc-500">Experto en cortes clásicos y niños</p></div></div>
+              <div class="w-10 h-6 bg-green-500 rounded-full relative cursor-pointer flex-shrink-0"><div class="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></div></div>
+            </div>
+            <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horario semanal</p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-center">
+                <thead><tr class="text-zinc-500"><td class="pb-2 text-left text-zinc-400 text-xs w-12"></td><td class="pb-2">Lun</td><td class="pb-2">Mar</td><td class="pb-2">Mié</td><td class="pb-2">Jue</td><td class="pb-2">Vie</td><td class="pb-2">Sáb</td><td class="pb-2">Dom</td></tr></thead>
+                <tbody>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td class="text-zinc-300 text-base">—</td></tr>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">2:00<br>PM</span></td><td class="text-zinc-300 text-base">—</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 flex items-center gap-1.5 transition-colors"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Editar horario</button>
+              <button class="text-xs border border-amber-200 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-50 flex items-center gap-1.5 transition-colors"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>Bloquear fecha</button>
             </div>
           </div>
         </div>
-      </div>
-    </div><!-- /agenda -->
-
-    <!-- ══ TODAS LAS CITAS ═══════════════════════ -->
-    <div id="s-citas" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-list-check me-2"></i>Todas las citas</h4>
-        <button class="btn btn-sm btn-primary" onclick="toast('Cita manual registrada','success')">
-          <i class="bi bi-plus-lg me-1"></i>Nueva cita
-        </button>
-      </div>
-
-      <!-- Filtros -->
-      <div class="card mb-3">
-        <div class="card-body p-3">
-          <div class="row g-2 align-items-end">
-            <div class="col-auto">
-              <label class="form-label small mb-1">Fecha</label>
-              <input type="date" class="form-control form-control-sm" value="2026-06-18">
-            </div>
-            <div class="col-auto">
-              <label class="form-label small mb-1">Barbero</label>
-              <select class="form-select form-select-sm">
-                <option>Todos</option>
-                <option>Marco Rodríguez</option>
-                <option>Luis Méndez</option>
-              </select>
-            </div>
-            <div class="col-auto">
-              <label class="form-label small mb-1">Estado</label>
-              <select class="form-select form-select-sm">
-                <option>Todos</option>
-                <option>Pendiente</option>
-                <option>Confirmado</option>
-                <option>Atendido</option>
-                <option>Cancelado</option>
-              </select>
-            </div>
-            <div class="col-auto">
-              <button class="btn btn-sm btn-outline-primary" onclick="toast('Filtros aplicados','success')">
-                <i class="bi bi-funnel me-1"></i>Filtrar
-              </button>
-            </div>
+        <div class="bg-white rounded-xl border border-stone-200 p-5">
+          <div class="flex items-center gap-2 mb-4"><i data-lucide="calendar-x" class="w-4 h-4 text-red-400"></i><span class="text-sm font-semibold text-zinc-800">Fechas bloqueadas</span></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-4 py-3"><div><p class="text-sm font-medium text-zinc-800">Marco Rodríguez</p><p class="text-xs text-red-500 flex items-center gap-1 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>25 jun 2026 — Vacaciones</p></div><button class="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+            <div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-4 py-3"><div><p class="text-sm font-medium text-zinc-800">Luis Méndez</p><p class="text-xs text-red-500 flex items-center gap-1 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>30 jun 2026 — Cita médica</p></div><button class="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="card">
-        <div class="card-body p-0">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr style="font-size:.8rem;">
-                <th>Cliente</th>
-                <th>Servicio</th>
-                <th>Barbero</th>
-                <th>Fecha / Hora</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+      <!-- ─── SERVICIOS ─── -->
+      <section id="page-servicios" class="page">
+        <div class="flex items-start justify-between mb-5">
+          <div><h2 class="text-lg font-bold text-zinc-900">Servicios de la barbería</h2><p class="text-sm text-zinc-500">Gestiona los cortes y servicios que ofreces</p></div>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i>Nuevo servicio</button>
+        </div>
+        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
+          <table class="w-full">
+            <thead><tr class="border-b border-stone-100">
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Servicio</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Precio</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Duración</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Estado</th>
+              <th class="text-right px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Acciones</th>
+            </tr></thead>
+            <tbody class="divide-y divide-stone-100">
+              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Arreglo de Barba</p><p class="text-xs text-zinc-400">Perfilado, hidratación y arreglo de barba</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 100.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte + Barba</p><p class="text-xs text-zinc-400">Corte completo más arreglo y perfilado de barba</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 220.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>1 h</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte Clásico</p><p class="text-xs text-zinc-400">Corte tradicional con tijera y máquina</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 150.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte Niño</p><p class="text-xs text-zinc-400">Corte para niños menores de 12 años</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 100.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Degradado</p><p class="text-xs text-zinc-400">Fade degradado en los costados con blend</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 180.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>45 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+            </tbody>
+          </table>
+          <div class="px-5 py-3 border-t border-stone-100 text-xs text-zinc-400">5 servicios registrados · 5 activos</div>
+        </div>
+      </section>
+
+      <!-- ─── CLIENTES FRECUENTES ─── -->
+      <section id="page-clientes" class="page">
+        <div class="flex items-start justify-between mb-5">
+          <div><h2 class="text-lg font-bold text-zinc-900">Clientes Frecuentes</h2><p class="text-sm text-zinc-500">Registrados automáticamente al atender citas</p></div>
+          <span class="flex items-center gap-1.5 bg-stone-100 text-zinc-600 text-sm px-3 py-2 rounded-lg border border-stone-200"><i data-lucide="users" class="w-4 h-4"></i>8 clientes</span>
+        </div>
+        <div class="flex items-center gap-5 mb-4 text-xs text-zinc-500">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400"></span>VIP — 10+ visitas</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span>Frecuente — 5-9 visitas</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-zinc-300"></span>Regular — 1-4 visitas</span>
+        </div>
+        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
+          <table class="w-full">
+            <thead><tr class="border-b border-stone-100">
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider w-8">#</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Cliente</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Teléfono</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Visitas</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Primera visita</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Última visita</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Servicio favorito</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Historial</th>
+            </tr></thead>
+            <tbody class="divide-y divide-stone-100">
+              <tr class="hover:bg-stone-50 transition-colors">
+                <td class="px-5 py-4 text-sm text-zinc-500">1</td>
+                <td class="px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">C</div><div><p class="text-sm font-medium text-zinc-900">Carlos Mejía</p><span class="text-xs badge-vip px-1.5 py-0.5 rounded-full">VIP</span></div></div></td>
+                <td class="px-5 py-4 text-sm text-zinc-600">9876-1234</td>
+                <td class="px-5 py-4 text-sm font-semibold text-zinc-900">12</td>
+                <td class="px-5 py-4 text-sm text-zinc-600">Lunes, 2 Mar 2026</td>
+                <td class="px-5 py-4 text-sm text-zinc-600">Viernes, 19 Jun 2026</td>
+                <td class="px-5 py-4"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Degradado</span></td>
+                <td class="px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1 transition-colors"><i data-lucide="clock" class="w-3 h-3"></i>Ver historial</button></td>
               </tr>
-            </thead>
-            <tbody style="font-size:.83rem;">
-              <tr>
-                <td><div class="fw-semibold">Carlos Mejía</div><div class="text-muted" style="font-size:.72rem;">9876-1234</div></td>
-                <td>Degradado <span class="text-muted">(L 120)</span></td>
-                <td>Marco R.</td>
-                <td>18 jun · 8:30 AM</td>
-                <td><span class="badge-est est-atendido">Atendido</span></td>
-                <td><button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Abriendo cita…','success')"><i class="bi bi-eye"></i></button></td>
+              <tr class="hover:bg-stone-50 transition-colors">
+                <td class="px-5 py-4 text-sm text-zinc-500">2</td>
+                <td class="px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">R</div><div><p class="text-sm font-medium text-zinc-900">Roberto Flores</p><span class="text-xs badge-frecuente px-1.5 py-0.5 rounded-full">Frecuente</span></div></div></td>
+                <td class="px-5 py-4 text-sm text-zinc-600">9711-5566</td>
+                <td class="px-5 py-4 text-sm font-semibold text-zinc-900">7</td>
+                <td class="px-5 py-4 text-sm text-zinc-600">Martes, 10 Feb 2026</td>
+                <td class="px-5 py-4 text-sm text-zinc-600">Viernes, 19 Jun 2026</td>
+                <td class="px-5 py-4"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Corte + Barba</span></td>
+                <td class="px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1 transition-colors"><i data-lucide="clock" class="w-3 h-3"></i>Ver historial</button></td>
               </tr>
-              <tr>
-                <td><div class="fw-semibold">Andrés García</div></td>
-                <td>Corte Clásico <span class="text-muted">(L 90)</span></td>
-                <td>Luis M.</td>
-                <td>18 jun · 9:30 AM</td>
-                <td><span class="badge-est est-atendido">Atendido</span></td>
-                <td><button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Abriendo cita…','success')"><i class="bi bi-eye"></i></button></td>
-              </tr>
-              <tr>
-                <td><div class="fw-semibold">Roberto Flores</div><div class="text-muted" style="font-size:.72rem;">9711-5566</div></td>
-                <td>Corte + Barba <span class="text-muted">(L 150)</span></td>
-                <td>Marco R.</td>
-                <td>18 jun · 10:30 AM</td>
-                <td><span class="badge-est est-en_camino">En camino</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="btn btn-sm btn-success py-0 px-2" onclick="toast('Marcado Atendido','success')" title="Atendido"><i class="bi bi-check-lg"></i></button>
-                    <button class="btn btn-sm btn-danger py-0 px-2" onclick="toast('Cita cancelada','danger')" title="Cancelar"><i class="bi bi-x-lg"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><div class="fw-semibold">Miguel Torres</div></td>
-                <td>Barba <span class="text-muted">(L 70)</span></td>
-                <td><span class="text-muted fst-italic">Sin preferencia</span></td>
-                <td>18 jun · 11:00 AM</td>
-                <td><span class="badge-est est-pendiente">Pendiente</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="btn btn-sm btn-primary py-0 px-2" onclick="toast('Confirmado','success')" title="Confirmar"><i class="bi bi-check-circle"></i></button>
-                    <button class="btn btn-sm btn-danger py-0 px-2" onclick="toast('Cancelado','danger')" title="Cancelar"><i class="bi bi-x-lg"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><div class="fw-semibold">José Pineda</div><div class="text-muted" style="font-size:.72rem;">9522-8877</div></td>
-                <td>Corte de Niño <span class="text-muted">(L 70)</span></td>
-                <td>Luis M.</td>
-                <td>18 jun · 2:00 PM</td>
-                <td><span class="badge-est est-confirmado">Confirmado</span></td>
-                <td><button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Abriendo cita…','success')"><i class="bi bi-eye"></i></button></td>
-              </tr>
-              <tr>
-                <td><div class="fw-semibold">Pedro Alvarado</div></td>
-                <td>Corte + Barba <span class="text-muted">(L 150)</span></td>
-                <td>Marco R.</td>
-                <td>18 jun · 3:00 PM</td>
-                <td><span class="badge-est est-confirmado">Confirmado</span></td>
-                <td><button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Abriendo cita…','success')"><i class="bi bi-eye"></i></button></td>
-              </tr>
-              <tr>
-                <td><div class="fw-semibold">Luis Aguilera</div></td>
-                <td>Degradado <span class="text-muted">(L 120)</span></td>
-                <td>Marco R.</td>
-                <td>18 jun · 4:30 PM</td>
-                <td><span class="badge-est est-pendiente">Pendiente</span></td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <button class="btn btn-sm btn-primary py-0 px-2" onclick="toast('Confirmado','success')"><i class="bi bi-check-circle"></i></button>
-                    <button class="btn btn-sm btn-danger py-0 px-2" onclick="toast('Cancelado','danger')"><i class="bi bi-x-lg"></i></button>
-                  </div>
-                </td>
+              <tr class="hover:bg-stone-50 transition-colors">
+                <td class="px-5 py-4 text-sm text-zinc-500">3</td>
+                <td class="px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">A</div><div><p class="text-sm font-medium text-zinc-900">Andrés García</p><span class="text-xs badge-regular px-1.5 py-0.5 rounded-full">Regular</span></div></div></td>
+                <td class="px-5 py-4 text-sm text-zinc-600">—</td>
+                <td class="px-5 py-4 text-sm font-semibold text-zinc-900">3</td>
+                <td class="px-5 py-4 text-sm text-zinc-600">Jueves, 18 Jun 2026</td>
+                <td class="px-5 py-4 text-sm text-zinc-600">Jueves, 18 Jun 2026</td>
+                <td class="px-5 py-4"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Corte Clásico</span></td>
+                <td class="px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1 transition-colors"><i data-lucide="clock" class="w-3 h-3"></i>Ver historial</button></td>
               </tr>
             </tbody>
           </table>
+          <div class="px-5 py-3 border-t border-stone-100 text-xs text-zinc-400">Ordenados por número de visitas · Se actualiza automáticamente al atender citas</div>
         </div>
-      </div>
-    </div><!-- /citas -->
+      </section>
 
-    <!-- ══ SERVICIOS ════════════════════════════ -->
-    <div id="s-servicios" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-scissors me-2"></i>Servicios</h4>
-        <button class="btn btn-sm btn-primary" onclick="toast('Formulario nuevo servicio abierto','success')">
-          <i class="bi bi-plus-lg me-1"></i>Agregar servicio
-        </button>
-      </div>
-
-      <div class="row g-3">
-        <div class="col-md-6 col-lg-4">
-          <div class="item-card">
-            <div class="item-ico" style="background:#dbeafe;color:#1d4ed8;"><i class="bi bi-scissors"></i></div>
-            <div style="flex:1;">
-              <div class="fw-semibold">Corte Clásico</div>
-              <div class="text-muted" style="font-size:.75rem;">L 90 · 30 min</div>
-            </div>
-            <div class="d-flex flex-column align-items-end gap-2">
-              <button class="toggle-btn on" onclick="toggleBtn(this)"></button>
-              <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Editando Corte Clásico','success')"><i class="bi bi-pencil"></i></button>
-              </div>
+      <!-- ─── REPORTES ─── -->
+      <section id="page-reportes" class="page">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-lg font-bold text-zinc-900">Reportes</h2>
+          <div class="flex items-center gap-2">
+            <button class="p-2 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-zinc-600"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+            <span class="text-sm font-medium text-zinc-800 border border-stone-200 bg-white px-4 py-2 rounded-lg">Junio 2026</span>
+            <button class="p-2 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-zinc-600"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-4 mb-5">
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Ingresos hoy</p><p class="text-2xl font-bold text-green-600">L. 510.00</p><p class="text-xs text-zinc-400 mt-1">4 citas atendidas</p></div><div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center"><i data-lucide="banknote" class="w-4 h-4 text-green-400"></i></div></div></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Ingresos del mes</p><p class="text-2xl font-bold text-blue-600">L. 2,570</p><p class="text-xs text-zinc-400 mt-1">Junio 2026</p></div><div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center"><i data-lucide="trending-up" class="w-4 h-4 text-blue-400"></i></div></div></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Citas atendidas</p><p class="text-2xl font-bold text-zinc-900">18</p><p class="text-xs text-zinc-400 mt-1">en Junio</p></div><div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center"><i data-lucide="calendar-check" class="w-4 h-4 text-purple-400"></i></div></div></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Promedio por cita</p><p class="text-2xl font-bold text-purple-600">L. 142.8</p><p class="text-xs text-zinc-400 mt-1">ticket promedio</p></div><div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center"><i data-lucide="calculator" class="w-4 h-4 text-purple-400"></i></div></div></div>
+        </div>
+        <div class="grid grid-cols-3 gap-4 mb-4">
+          <div class="col-span-2 bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center gap-2 mb-4"><i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Ingresos diarios — Junio 2026</span></div>
+            <canvas id="chart-ingresos" height="120"></canvas>
+          </div>
+          <div class="bg-white rounded-xl border border-stone-200 p-5">
+            <div class="flex items-center gap-2 mb-4"><i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i><span class="text-sm font-semibold text-zinc-800">Top servicios del mes</span></div>
+            <div class="space-y-3">
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Arreglo de Barba</span><span class="text-zinc-500">18 citas · L. 1,800</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-blue-500 rounded-full" style="width:100%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Degradado</span><span class="text-zinc-500">11 citas · L. 1,980</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-red-400 rounded-full" style="width:80%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Corte Clásico</span><span class="text-zinc-500">14 citas · L. 2,100</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-green-400 rounded-full" style="width:60%"></div></div></div>
             </div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-4">
-          <div class="item-card">
-            <div class="item-ico" style="background:#dbeafe;color:#1d4ed8;"><i class="bi bi-stars"></i></div>
-            <div style="flex:1;">
-              <div class="fw-semibold">Degradado</div>
-              <div class="text-muted" style="font-size:.75rem;">L 120 · 45 min</div>
-            </div>
-            <div class="d-flex flex-column align-items-end gap-2">
-              <button class="toggle-btn on" onclick="toggleBtn(this)"></button>
-              <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Editando Degradado','success')"><i class="bi bi-pencil"></i></button>
+        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-stone-100">
+            <div class="flex items-center gap-2"><i data-lucide="list" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Últimas citas cobradas</span></div>
+            <span class="text-xs text-zinc-400">Últimas 15</span>
+          </div>
+          <table class="w-full">
+            <thead><tr class="border-b border-stone-100"><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Cliente</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Servicio</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Barbero</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Fecha</th><th class="text-right px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Monto</th></tr></thead>
+            <tbody class="divide-y divide-stone-100">
+              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Carlos Mejía</td><td class="px-5 py-3 text-sm text-zinc-600">Degradado</td><td class="px-5 py-3 text-sm text-zinc-600">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500">19/06/2026 · 8:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 180.00</td></tr>
+              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Andrés García</td><td class="px-5 py-3 text-sm text-zinc-600">Corte Clásico</td><td class="px-5 py-3 text-sm text-zinc-600">Luis Méndez</td><td class="px-5 py-3 text-sm text-zinc-500">18/06/2026 · 9:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 150.00</td></tr>
+              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Pedro Alvarado</td><td class="px-5 py-3 text-sm text-zinc-600">Corte + Barba</td><td class="px-5 py-3 text-sm text-zinc-600">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500">18/06/2026 · 3:00 PM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 220.00</td></tr>
+              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Roberto Flores</td><td class="px-5 py-3 text-sm text-zinc-600">Corte + Barba</td><td class="px-5 py-3 text-sm text-zinc-600">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500">17/06/2026 · 10:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 220.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ─── PÁGINA DE RESERVAS ─── -->
+      <section id="page-reservar" class="page">
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-zinc-900 rounded-t-2xl px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2"><div class="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center"><i data-lucide="scissors" class="w-4 h-4 text-white"></i></div><span class="text-white font-bold text-sm">BarberApp</span></div>
+            <button class="text-zinc-400 text-xs flex items-center gap-1.5 hover:text-white transition-colors"><i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i>Nueva cita</button>
+          </div>
+          <div id="reserva-wrap" class="bg-white rounded-b-2xl border border-stone-200 border-t-0 overflow-hidden">
+
+            <!-- Step 1 -->
+            <div id="rv-step1">
+              <div class="p-8 text-center border-b border-stone-100"><h1 class="text-2xl font-bold text-zinc-900 mb-1">Reserva tu cita</h1><p class="text-sm text-zinc-500">Sin registro — solo tu nombre y ya</p></div>
+              <div class="flex items-center justify-center gap-3 py-5 px-8 border-b border-stone-100">
+                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-active flex items-center justify-center text-xs font-bold">1</div><span class="text-xs font-semibold text-blue-600">Servicio</span></div>
+                <div class="h-px w-8 bg-stone-200"></div>
+                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-next flex items-center justify-center text-xs font-bold">2</div><span class="text-xs text-zinc-400">Barbero</span></div>
+                <div class="h-px w-8 bg-stone-200"></div>
+                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-next flex items-center justify-center text-xs font-bold">3</div><span class="text-xs text-zinc-400">Hora</span></div>
+                <div class="h-px w-8 bg-stone-200"></div>
+                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-next flex items-center justify-center text-xs font-bold">4</div><span class="text-xs text-zinc-400">Confirmar</span></div>
               </div>
+              <div class="p-6">
+                <h2 class="text-base font-semibold text-zinc-900 mb-1">¿Qué servicio necesitas?</h2>
+                <p class="text-xs text-zinc-500 mb-4">Elige un servicio para continuar</p>
+                <div class="space-y-2">
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Arreglo de Barba','L. 100.00','30 min')"><div><p class="text-sm font-semibold text-zinc-900">Arreglo de Barba</p><p class="text-xs text-zinc-500">Perfilado, hidratación y arreglo de barba</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 100.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte + Barba','L. 220.00','1 h')"><div><p class="text-sm font-semibold text-zinc-900">Corte + Barba</p><p class="text-xs text-zinc-500">Corte completo más arreglo y perfilado de barba</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 220.00</p><p class="text-xs text-zinc-400">1 h</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte Clásico','L. 150.00','30 min')"><div><p class="text-sm font-semibold text-zinc-900">Corte Clásico</p><p class="text-xs text-zinc-500">Corte tradicional con tijera y máquina</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 150.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte Niño','L. 100.00','30 min')"><div><p class="text-sm font-semibold text-zinc-900">Corte Niño</p><p class="text-xs text-zinc-500">Corte para niños menores de 12 años</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 100.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Degradado','L. 180.00','45 min')"><div><p class="text-sm font-semibold text-zinc-900">Degradado</p><p class="text-xs text-zinc-500">Fade degradado en los costados con blend</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 180.00</p><p class="text-xs text-zinc-400">45 min</p></div></div>
+                </div>
+                <div class="flex justify-end mt-5">
+                  <button id="btn-s1" onclick="rvStep(2)" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors opacity-40 pointer-events-none">Continuar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="rv-step2" style="display:none" class="p-6">
+              <button onclick="rvStep(1)" class="text-xs text-zinc-400 flex items-center gap-1 mb-5 hover:text-zinc-600"><i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>Volver</button>
+              <h2 class="text-base font-semibold text-zinc-900 mb-1">Elige tu barbero</h2>
+              <p class="text-xs text-zinc-500 mb-4">O elige <span class="text-blue-500 cursor-pointer" onclick="selBarb(null,'Sin preferencia')">sin preferencia</span></p>
+              <div class="space-y-3">
+                <div class="barb-card rounded-xl border border-stone-200 p-4 flex items-center gap-4" onclick="selBarb(this,'Marco Rodríguez')"><div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">M</div><div class="flex-1"><p class="text-sm font-semibold text-zinc-900">Marco Rodríguez</p><p class="text-xs text-zinc-500">Especialista en degradados y fade</p><p class="text-xs text-zinc-400 mt-1">Lun–Mar, Jue–Vie 8 AM–5 PM · Sáb 9 AM–1 PM</p></div></div>
+                <div class="barb-card rounded-xl border border-stone-200 p-4 flex items-center gap-4" onclick="selBarb(this,'Luis Méndez')"><div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">L</div><div class="flex-1"><p class="text-sm font-semibold text-zinc-900">Luis Méndez</p><p class="text-xs text-zinc-500">Experto en cortes clásicos y niños</p><p class="text-xs text-zinc-400 mt-1">Lun–Sáb 9 AM–4 PM</p></div></div>
+              </div>
+              <div class="flex justify-end mt-5">
+                <button id="btn-s2" onclick="rvStep(3)" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors opacity-40 pointer-events-none">Continuar</button>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="rv-step3" style="display:none" class="p-6">
+              <button onclick="rvStep(2)" class="text-xs text-zinc-400 flex items-center gap-1 mb-5 hover:text-zinc-600"><i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>Volver</button>
+              <h2 class="text-base font-semibold text-zinc-900 mb-1">Elige fecha y hora</h2>
+              <p class="text-xs text-zinc-500 mb-4">Selecciona un horario disponible</p>
+              <input type="date" value="2026-06-19" class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horarios AM</p>
+              <div class="grid grid-cols-4 gap-2 mb-4">
+                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">8:00 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'8:30 AM')">8:30 AM</div>
+                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">9:00 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'9:30 AM')">9:30 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'10:00 AM')">10:00 AM</div>
+                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">10:30 AM</div>
+                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">11:00 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'11:30 AM')">11:30 AM</div>
+              </div>
+              <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horarios PM</p>
+              <div class="grid grid-cols-4 gap-2">
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'12:00 PM')">12:00 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'12:30 PM')">12:30 PM</div>
+                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">2:00 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'2:30 PM')">2:30 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'3:00 PM')">3:00 PM</div>
+                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">3:30 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'4:00 PM')">4:00 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'4:30 PM')">4:30 PM</div>
+              </div>
+              <p class="text-xs text-zinc-400 mt-3"><span class="bg-stone-100 px-1.5 rounded">Gris</span> = ocupado o pasado</p>
+              <div class="flex justify-end mt-5">
+                <button id="btn-s3" onclick="rvStep(4)" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors opacity-40 pointer-events-none">Continuar</button>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div id="rv-step4" style="display:none" class="p-6">
+              <button onclick="rvStep(3)" class="text-xs text-zinc-400 flex items-center gap-1 mb-5 hover:text-zinc-600"><i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>Volver</button>
+              <h2 class="text-base font-semibold text-zinc-900 mb-4">Confirma tu cita</h2>
+              <div class="bg-stone-50 rounded-xl border border-stone-200 p-4 mb-5 space-y-2.5">
+                <div class="flex justify-between text-sm"><span class="text-zinc-500">Servicio</span><span id="rv-srv" class="font-semibold text-zinc-900">—</span></div>
+                <div class="flex justify-between text-sm"><span class="text-zinc-500">Barbero</span><span id="rv-barb" class="font-semibold text-zinc-900">—</span></div>
+                <div class="flex justify-between text-sm"><span class="text-zinc-500">Fecha</span><span class="font-semibold text-zinc-900">Viernes, 19 jun 2026</span></div>
+                <div class="flex justify-between text-sm"><span class="text-zinc-500">Hora</span><span id="rv-slot" class="font-semibold text-zinc-900">—</span></div>
+                <div class="border-t border-stone-200 pt-2.5 flex justify-between text-sm"><span class="text-zinc-500">Precio</span><span id="rv-price" class="font-bold text-blue-600">—</span></div>
+              </div>
+              <div class="space-y-3 mb-5">
+                <div><label class="block text-sm font-medium text-zinc-700 mb-1.5">Tu nombre</label><input type="text" placeholder="Ej. Juan Martínez" class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></div>
+                <div><label class="block text-sm font-medium text-zinc-700 mb-1.5">Teléfono (opcional)</label><input type="tel" placeholder="Ej. 9999-8888" class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></div>
+              </div>
+              <button onclick="rvConfirm()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl text-sm transition-colors">Confirmar reserva</button>
+            </div>
+
+            <!-- Step 5: success -->
+            <div id="rv-step5" style="display:none" class="p-8 text-center">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="check" class="w-8 h-8 text-green-600"></i></div>
+              <h2 class="text-xl font-bold text-zinc-900 mb-2">¡Cita confirmada!</h2>
+              <p class="text-sm text-zinc-500 mb-6">Tu cita ha sido registrada exitosamente. Te esperamos.</p>
+              <button onclick="rvReset()" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors">Nueva reserva</button>
             </div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-4">
-          <div class="item-card">
-            <div class="item-ico" style="background:#dbeafe;color:#1d4ed8;"><i class="bi bi-person-bounding-box"></i></div>
-            <div style="flex:1;">
-              <div class="fw-semibold">Barba</div>
-              <div class="text-muted" style="font-size:.75rem;">L 70 · 20 min</div>
-            </div>
-            <div class="d-flex flex-column align-items-end gap-2">
-              <button class="toggle-btn on" onclick="toggleBtn(this)"></button>
-              <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Editando Barba','success')"><i class="bi bi-pencil"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-4">
-          <div class="item-card">
-            <div class="item-ico" style="background:#fee2e2;color:#dc2626;"><i class="bi bi-gem"></i></div>
-            <div style="flex:1;">
-              <div class="fw-semibold">Corte + Barba</div>
-              <div class="text-muted" style="font-size:.75rem;">L 150 · 45 min</div>
-            </div>
-            <div class="d-flex flex-column align-items-end gap-2">
-              <button class="toggle-btn on" onclick="toggleBtn(this)"></button>
-              <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Editando Corte + Barba','success')"><i class="bi bi-pencil"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-4">
-          <div class="item-card">
-            <div class="item-ico" style="background:#dbeafe;color:#1d4ed8;"><i class="bi bi-emoji-smile"></i></div>
-            <div style="flex:1;">
-              <div class="fw-semibold">Corte de Niño</div>
-              <div class="text-muted" style="font-size:.75rem;">L 70 · 20 min</div>
-            </div>
-            <div class="d-flex flex-column align-items-end gap-2">
-              <button class="toggle-btn on" onclick="toggleBtn(this)"></button>
-              <div class="d-flex gap-1">
-                <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="toast('Editando Corte de Niño','success')"><i class="bi bi-pencil"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Agregar -->
-        <div class="col-md-6 col-lg-4">
-          <div class="item-card" style="border:2px dashed #bfdbfe;background:#f0f7ff;cursor:pointer;justify-content:center;flex-direction:column;text-align:center;gap:.4rem;" onclick="toast('Formulario nuevo servicio abierto','success')">
-            <i class="bi bi-plus-circle" style="font-size:1.6rem;color:var(--azul2);"></i>
-            <div style="font-size:.82rem;color:var(--azul2);font-weight:600;">Agregar servicio</div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /servicios -->
+      </section>
 
-    <!-- ══ BARBEROS ══════════════════════════════ -->
-    <div id="s-barberos" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-person-badge me-2"></i>Barberos</h4>
-        <button class="btn btn-sm btn-primary" onclick="toast('Formulario nuevo barbero abierto','success')">
-          <i class="bi bi-plus-lg me-1"></i>Agregar barbero
-        </button>
-      </div>
-
-      <div class="row g-3 mb-4">
-        <!-- Marco -->
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-body p-4">
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;font-weight:800;font-size:1.3rem;display:flex;align-items:center;justify-content:center;">M</div>
-                <div style="flex:1;">
-                  <div class="fw-bold">Marco Rodríguez</div>
-                  <div class="text-muted" style="font-size:.78rem;">Especialista en degradados y fade</div>
-                </div>
-                <button class="toggle-btn on" onclick="toggleBtn(this)"></button>
-              </div>
-              <div class="mb-3">
-                <div class="fw-semibold mb-2" style="font-size:.8rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Horario semanal</div>
-                <div class="hor-grid">
-                  <div class="hor-head"></div>
-                  <div class="hor-head">Lun</div>
-                  <div class="hor-head">Mar</div>
-                  <div class="hor-head">Mié</div>
-                  <div class="hor-head">Jue</div>
-                  <div class="hor-head">Vie</div>
-                  <div class="hor-head">Sáb</div>
-                  <div class="hor-head">Dom</div>
-                  <div class="hor-cell" style="font-size:.65rem;color:#94a3b8;text-align:right;border:none;background:transparent;">Entrada</div>
-                  <div class="hor-cell activo">8:00 AM</div>
-                  <div class="hor-cell activo">8:00 AM</div>
-                  <div class="hor-cell">—</div>
-                  <div class="hor-cell activo">8:00 AM</div>
-                  <div class="hor-cell activo">8:00 AM</div>
-                  <div class="hor-cell activo">9:00 AM</div>
-                  <div class="hor-cell">—</div>
-                  <div class="hor-cell" style="font-size:.65rem;color:#94a3b8;text-align:right;border:none;background:transparent;">Salida</div>
-                  <div class="hor-cell activo">5:00 PM</div>
-                  <div class="hor-cell activo">5:00 PM</div>
-                  <div class="hor-cell">—</div>
-                  <div class="hor-cell activo">5:00 PM</div>
-                  <div class="hor-cell activo">5:00 PM</div>
-                  <div class="hor-cell activo">1:00 PM</div>
-                  <div class="hor-cell">—</div>
-                </div>
-              </div>
-              <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-outline-primary" onclick="toast('Editando horario de Marco','success')"><i class="bi bi-clock me-1"></i>Editar horario</button>
-                <button class="btn btn-sm btn-outline-warning" onclick="toast('Bloqueo de fecha agregado','success')"><i class="bi bi-calendar-x me-1"></i>Bloquear fecha</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Luis -->
-        <div class="col-md-6">
-          <div class="card h-100">
-            <div class="card-body p-4">
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-weight:800;font-size:1.3rem;display:flex;align-items:center;justify-content:center;">L</div>
-                <div style="flex:1;">
-                  <div class="fw-bold">Luis Méndez</div>
-                  <div class="text-muted" style="font-size:.78rem;">Experto en cortes clásicos y niños</div>
-                </div>
-                <button class="toggle-btn on" onclick="toggleBtn(this)"></button>
-              </div>
-              <div class="mb-3">
-                <div class="fw-semibold mb-2" style="font-size:.8rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Horario semanal</div>
-                <div class="hor-grid">
-                  <div class="hor-head"></div>
-                  <div class="hor-head">Lun</div>
-                  <div class="hor-head">Mar</div>
-                  <div class="hor-head">Mié</div>
-                  <div class="hor-head">Jue</div>
-                  <div class="hor-head">Vie</div>
-                  <div class="hor-head">Sáb</div>
-                  <div class="hor-head">Dom</div>
-                  <div class="hor-cell" style="font-size:.65rem;color:#94a3b8;text-align:right;border:none;background:transparent;">Entrada</div>
-                  <div class="hor-cell activo">9:00 AM</div>
-                  <div class="hor-cell activo">9:00 AM</div>
-                  <div class="hor-cell activo">9:00 AM</div>
-                  <div class="hor-cell activo">9:00 AM</div>
-                  <div class="hor-cell activo">9:00 AM</div>
-                  <div class="hor-cell activo">9:00 AM</div>
-                  <div class="hor-cell">—</div>
-                  <div class="hor-cell" style="font-size:.65rem;color:#94a3b8;text-align:right;border:none;background:transparent;">Salida</div>
-                  <div class="hor-cell activo">4:00 PM</div>
-                  <div class="hor-cell activo">4:00 PM</div>
-                  <div class="hor-cell activo">4:00 PM</div>
-                  <div class="hor-cell activo">4:00 PM</div>
-                  <div class="hor-cell activo">4:00 PM</div>
-                  <div class="hor-cell activo">2:00 PM</div>
-                  <div class="hor-cell">—</div>
-                </div>
-              </div>
-              <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-outline-primary" onclick="toast('Editando horario de Luis','success')"><i class="bi bi-clock me-1"></i>Editar horario</button>
-                <button class="btn btn-sm btn-outline-warning" onclick="toast('Bloqueo de fecha agregado','success')"><i class="bi bi-calendar-x me-1"></i>Bloquear fecha</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bloqueos -->
-      <div class="card">
-        <div class="card-header py-3 px-4">
-          <i class="bi bi-calendar-x me-2 text-danger"></i>Fechas bloqueadas
-        </div>
-        <div class="card-body p-3">
-          <div class="row g-2">
-            <div class="col-sm-6 col-md-4">
-              <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:9px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:.84rem;">
-                <div>
-                  <div class="fw-semibold">Marco Rodríguez</div>
-                  <div class="text-danger" style="font-size:.75rem;"><i class="bi bi-calendar-x me-1"></i>25 jun 2026 — Vacaciones</div>
-                </div>
-                <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="toast('Bloqueo eliminado','danger')"><i class="bi bi-trash"></i></button>
-              </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-              <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:9px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:.84rem;">
-                <div>
-                  <div class="fw-semibold">Luis Méndez</div>
-                  <div class="text-danger" style="font-size:.75rem;"><i class="bi bi-calendar-x me-1"></i>30 jun 2026 — Cita médica</div>
-                </div>
-                <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="toast('Bloqueo eliminado','danger')"><i class="bi bi-trash"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /barberos -->
-
-    <!-- ══ CLIENTES FRECUENTES ════════════════════ -->
-    <div id="s-clientes" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-people me-2"></i>Clientes Frecuentes</h4>
-        <span class="text-muted small">Ranking por visitas</span>
-      </div>
-
-      <div class="row g-3">
-        <div class="col-lg-7">
-          <div class="card">
-            <div class="card-header py-3 px-4">
-              <i class="bi bi-trophy me-2 text-warning"></i>Top clientes del mes
-            </div>
-            <div class="card-body p-3">
-
-              <div class="rank-row" style="border:2px solid #fef3c7;background:#fffdf0;">
-                <div class="rank-num" style="color:#f59e0b;">1</div>
-                <div class="rank-av" style="background:#1e3a8a;">C</div>
-                <div style="flex:1;">
-                  <div class="fw-bold" style="font-size:.88rem;">Carlos Mejía</div>
-                  <div class="text-muted" style="font-size:.75rem;">Degradado · Última visita: hoy</div>
-                </div>
-                <div class="text-end">
-                  <span class="vip-badge">VIP</span>
-                  <div class="fw-bold mt-1" style="font-size:.8rem;">12 visitas</div>
-                </div>
-              </div>
-
-              <div class="rank-row">
-                <div class="rank-num">2</div>
-                <div class="rank-av" style="background:#dc2626;">A</div>
-                <div style="flex:1;">
-                  <div class="fw-bold" style="font-size:.88rem;">Andrés García</div>
-                  <div class="text-muted" style="font-size:.75rem;">Corte Clásico · Última visita: hoy</div>
-                </div>
-                <div class="text-end">
-                  <span class="vip-badge">VIP</span>
-                  <div class="fw-bold mt-1" style="font-size:.8rem;">10 visitas</div>
-                </div>
-              </div>
-
-              <div class="rank-row">
-                <div class="rank-num">3</div>
-                <div class="rank-av" style="background:#7c3aed;">P</div>
-                <div style="flex:1;">
-                  <div class="fw-bold" style="font-size:.88rem;">Pedro Alvarado</div>
-                  <div class="text-muted" style="font-size:.75rem;">Corte + Barba · Última: 14 jun</div>
-                </div>
-                <div class="text-end">
-                  <span class="frec-badge">Frecuente</span>
-                  <div class="fw-bold mt-1" style="font-size:.8rem;">7 visitas</div>
-                </div>
-              </div>
-
-              <div class="rank-row">
-                <div class="rank-num">4</div>
-                <div class="rank-av" style="background:#16a34a;">R</div>
-                <div style="flex:1;">
-                  <div class="fw-bold" style="font-size:.88rem;">Roberto Flores</div>
-                  <div class="text-muted" style="font-size:.75rem;">Corte + Barba · Última: hoy</div>
-                </div>
-                <div class="text-end">
-                  <span class="frec-badge">Frecuente</span>
-                  <div class="fw-bold mt-1" style="font-size:.8rem;">6 visitas</div>
-                </div>
-              </div>
-
-              <div class="rank-row">
-                <div class="rank-num">5</div>
-                <div class="rank-av" style="background:#64748b;">J</div>
-                <div style="flex:1;">
-                  <div class="fw-bold" style="font-size:.88rem;">José Pineda</div>
-                  <div class="text-muted" style="font-size:.75rem;">Corte de Niño · Última: 10 jun</div>
-                </div>
-                <div class="text-end">
-                  <span style="background:#f1f5f9;color:#475569;border-radius:20px;padding:.12rem .5rem;font-size:.67rem;font-weight:700;">Regular</span>
-                  <div class="fw-bold mt-1" style="font-size:.8rem;">4 visitas</div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-5">
-          <div class="card">
-            <div class="card-header py-3 px-4"><i class="bi bi-bar-chart me-2 text-primary"></i>Distribución</div>
-            <div class="card-body p-4">
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <div style="width:14px;height:14px;border-radius:3px;background:#f59e0b;flex-shrink:0;"></div>
-                <div style="flex:1;font-size:.84rem;">VIP (8+ visitas)</div>
-                <span class="fw-bold">2</span>
-              </div>
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <div style="width:14px;height:14px;border-radius:3px;background:#3b82f6;flex-shrink:0;"></div>
-                <div style="flex:1;font-size:.84rem;">Frecuente (4–7 visitas)</div>
-                <span class="fw-bold">2</span>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <div style="width:14px;height:14px;border-radius:3px;background:#94a3b8;flex-shrink:0;"></div>
-                <div style="flex:1;font-size:.84rem;">Regular (1–3 visitas)</div>
-                <span class="fw-bold">8</span>
-              </div>
-              <hr>
-              <div class="text-center" style="font-size:.8rem;color:#64748b;">
-                <div class="fw-bold" style="font-size:1.5rem;color:var(--azul);">12</div>
-                clientes registrados este mes
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /clientes -->
-
-    <!-- ══ REPORTES ══════════════════════════════ -->
-    <div id="s-reportes" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-bar-chart-line me-2"></i>Reportes de ingresos</h4>
-        <span class="text-muted small">Junio 2026</span>
-      </div>
-
-      <!-- KPIs del mes -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-          <div class="kpi" style="border-color:#16a34a;">
-            <div class="kpi-val text-success">L 8,420</div>
-            <div class="kpi-lbl">Ingresos del mes</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="kpi" style="border-color:#2563eb;">
-            <div class="kpi-val text-primary">74</div>
-            <div class="kpi-lbl">Citas atendidas</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="kpi" style="border-color:#f59e0b;">
-            <div class="kpi-val text-warning">L 113</div>
-            <div class="kpi-lbl">Promedio por cita</div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="kpi" style="border-color:#8b5cf6;">
-            <div class="kpi-val" style="color:#7c3aed;">L 421</div>
-            <div class="kpi-lbl">Mejor día (lunes 9)</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row g-3">
-        <div class="col-lg-8">
-          <div class="card">
-            <div class="card-header py-3 px-4"><i class="bi bi-bar-chart me-2 text-success"></i>Ingresos diarios — jun 2026</div>
-            <div class="card-body p-4">
-              <div class="chart-bar-wrap" style="height:160px;">
-                <div class="chart-bar" style="height:55%;"></div>
-                <div class="chart-bar" style="height:80%;"></div>
-                <div class="chart-bar" style="height:45%;background:#bfdbfe;"></div>
-                <div class="chart-bar" style="height:100%;"></div>
-                <div class="chart-bar" style="height:75%;"></div>
-                <div class="chart-bar" style="height:40%;background:#bfdbfe;"></div>
-                <div class="chart-bar" style="height:65%;"></div>
-                <div class="chart-bar" style="height:88%;"></div>
-                <div class="chart-bar" style="height:50%;background:#bfdbfe;"></div>
-                <div class="chart-bar" style="height:70%;"></div>
-                <div class="chart-bar" style="height:60%;"></div>
-                <div class="chart-bar" style="height:82%;"></div>
-                <div class="chart-bar" style="height:42%;background:#bfdbfe;"></div>
-                <div class="chart-bar" style="height:72%;"></div>
-                <div class="chart-bar" style="height:55%;"></div>
-                <div class="chart-bar" style="height:66%;"></div>
-                <div class="chart-bar" style="height:90%;"></div>
-                <div class="chart-bar" style="height:48%;background:#bfdbfe;"></div>
-                <div class="chart-bar" style="height:58%;background:var(--rojo);"></div>
-              </div>
-              <div class="chart-labels">
-                <div class="chart-label">2</div>
-                <div class="chart-label">3</div>
-                <div class="chart-label">4</div>
-                <div class="chart-label">5</div>
-                <div class="chart-label">6</div>
-                <div class="chart-label">7</div>
-                <div class="chart-label">9</div>
-                <div class="chart-label">10</div>
-                <div class="chart-label">11</div>
-                <div class="chart-label">12</div>
-                <div class="chart-label">13</div>
-                <div class="chart-label">14</div>
-                <div class="chart-label">15</div>
-                <div class="chart-label">16</div>
-                <div class="chart-label">17</div>
-                <div class="chart-label">18</div>
-                <div class="chart-label">19</div>
-                <div class="chart-label">20</div>
-                <div class="chart-label fw-bold" style="color:var(--rojo);">hoy</div>
-              </div>
-              <div class="mt-2" style="font-size:.72rem;color:#94a3b8;text-align:center;">
-                <i class="bi bi-square-fill me-1" style="color:#bfdbfe;"></i>Sábado &nbsp;
-                <i class="bi bi-square-fill me-1" style="color:var(--azul2);"></i>Día normal &nbsp;
-                <i class="bi bi-square-fill me-1" style="color:var(--rojo);"></i>Hoy
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="card mb-3">
-            <div class="card-header py-3 px-4"><i class="bi bi-trophy me-2 text-warning"></i>Por servicio</div>
-            <div class="card-body p-3">
-              <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="font-size:.83rem;">
-                <span>Degradado</span>
-                <div class="text-end">
-                  <div class="fw-bold">L 2,160</div>
-                  <div class="text-muted" style="font-size:.7rem;">18 citas</div>
-                </div>
-              </div>
-              <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="font-size:.83rem;">
-                <span>Corte + Barba</span>
-                <div class="text-end">
-                  <div class="fw-bold">L 1,950</div>
-                  <div class="text-muted" style="font-size:.7rem;">13 citas</div>
-                </div>
-              </div>
-              <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="font-size:.83rem;">
-                <span>Corte Clásico</span>
-                <div class="text-end">
-                  <div class="fw-bold">L 1,260</div>
-                  <div class="text-muted" style="font-size:.7rem;">14 citas</div>
-                </div>
-              </div>
-              <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="font-size:.83rem;">
-                <span>Barba</span>
-                <div class="text-end">
-                  <div class="fw-bold">L 980</div>
-                  <div class="text-muted" style="font-size:.7rem;">14 citas</div>
-                </div>
-              </div>
-              <div class="d-flex align-items-center justify-content-between py-2" style="font-size:.83rem;">
-                <span>Corte de Niño</span>
-                <div class="text-end">
-                  <div class="fw-bold">L 1,050</div>
-                  <div class="text-muted" style="font-size:.7rem;">15 citas</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header py-3 px-4"><i class="bi bi-person-badge me-2" style="color:#7c3aed;"></i>Por barbero</div>
-            <div class="card-body p-3">
-              <div class="d-flex align-items-center gap-3 py-2 border-bottom">
-                <div style="width:34px;height:34px;border-radius:50%;background:#1e3a8a;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem;">M</div>
-                <div style="flex:1;font-size:.83rem;"><div class="fw-semibold">Marco R.</div><div class="text-muted" style="font-size:.72rem;">44 citas</div></div>
-                <div class="fw-bold text-success">L 4,980</div>
-              </div>
-              <div class="d-flex align-items-center gap-3 py-2">
-                <div style="width:34px;height:34px;border-radius:50%;background:#dc2626;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem;">L</div>
-                <div style="flex:1;font-size:.83rem;"><div class="fw-semibold">Luis M.</div><div class="text-muted" style="font-size:.72rem;">30 citas</div></div>
-                <div class="fw-bold text-success">L 3,440</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /reportes -->
-
-    <!-- ══ VER RESERVA PÚBLICA ════════════════════ -->
-    <div id="s-reservar" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-phone me-2"></i>Vista del cliente — Reserva pública</h4>
-        <span class="badge bg-secondary">Sin backend · Simulación</span>
-      </div>
-
-      <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-          <div class="card">
-            <div class="card-header py-3 px-4">
-              <div class="stripe mb-0" style="border-radius:4px;height:4px;margin-bottom:.5rem;"></div>
-              <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-scissors" style="color:var(--rojo);"></i>
-                <span>Barbería El Filo — Reserva tu cita</span>
-              </div>
-            </div>
-            <div class="card-body p-4" id="reserva-demo">
-
-              <!-- Step indicator -->
-              <div class="step-ind" id="step-ind">
-                <div class="s-dot active" id="dot1">1</div>
-                <div class="s-line" id="line1"></div>
-                <div class="s-dot pending" id="dot2">2</div>
-                <div class="s-line" id="line2"></div>
-                <div class="s-dot pending" id="dot3">3</div>
-                <div class="s-line" id="line3"></div>
-                <div class="s-dot pending" id="dot4">4</div>
-              </div>
-
-              <!-- Paso 1 -->
-              <div id="rp1">
-                <h6 class="fw-bold mb-3"><i class="bi bi-scissors me-2" style="color:var(--azul2);"></i>Elige tu servicio</h6>
-                <div class="row g-2">
-                  <div class="col-6"><div class="svc-pick" onclick="rpNext(1,'Corte Clásico','90','30')"><div class="fw-semibold" style="font-size:.85rem;">Corte Clásico</div><div class="text-muted" style="font-size:.72rem;">30 min</div><span style="background:var(--azul2);color:#fff;border-radius:20px;padding:.1rem .5rem;font-size:.7rem;font-weight:700;">L 90</span></div></div>
-                  <div class="col-6"><div class="svc-pick" onclick="rpNext(1,'Degradado','120','45')"><div class="fw-semibold" style="font-size:.85rem;">Degradado</div><div class="text-muted" style="font-size:.72rem;">45 min</div><span style="background:var(--azul2);color:#fff;border-radius:20px;padding:.1rem .5rem;font-size:.7rem;font-weight:700;">L 120</span></div></div>
-                  <div class="col-6"><div class="svc-pick" onclick="rpNext(1,'Barba','70','20')"><div class="fw-semibold" style="font-size:.85rem;">Barba</div><div class="text-muted" style="font-size:.72rem;">20 min</div><span style="background:var(--azul2);color:#fff;border-radius:20px;padding:.1rem .5rem;font-size:.7rem;font-weight:700;">L 70</span></div></div>
-                  <div class="col-6"><div class="svc-pick" onclick="rpNext(1,'Corte + Barba','150','45')"><div class="fw-semibold" style="font-size:.85rem;">Corte + Barba</div><div class="text-muted" style="font-size:.72rem;">45 min</div><span style="background:var(--rojo);color:#fff;border-radius:20px;padding:.1rem .5rem;font-size:.7rem;font-weight:700;">L 150</span></div></div>
-                  <div class="col-6"><div class="svc-pick" onclick="rpNext(1,'Corte de Niño','70','20')"><div class="fw-semibold" style="font-size:.85rem;">Corte de Niño</div><div class="text-muted" style="font-size:.72rem;">20 min</div><span style="background:var(--azul2);color:#fff;border-radius:20px;padding:.1rem .5rem;font-size:.7rem;font-weight:700;">L 70</span></div></div>
-                </div>
-              </div>
-
-              <!-- Paso 2 -->
-              <div id="rp2" style="display:none;">
-                <h6 class="fw-bold mb-3"><i class="bi bi-person-badge me-2" style="color:#7c3aed;"></i>Elige tu barbero</h6>
-                <div class="row g-2">
-                  <div class="col-4"><div class="brb-pick" onclick="rpNext(2,'Sin preferencia')">
-                    <div style="width:44px;height:44px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;font-size:1.2rem;color:#94a3b8;"><i class="bi bi-shuffle"></i></div>
-                    <div style="font-size:.75rem;font-weight:600;">Sin preferencia</div>
-                  </div></div>
-                  <div class="col-4"><div class="brb-pick" onclick="rpNext(2,'Marco R.')">
-                    <div style="width:44px;height:44px;border-radius:50%;background:#1e3a8a;color:#fff;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;">M</div>
-                    <div style="font-size:.75rem;font-weight:600;">Marco R.</div>
-                    <div class="text-muted" style="font-size:.67rem;">Degradados</div>
-                  </div></div>
-                  <div class="col-4"><div class="brb-pick" onclick="rpNext(2,'Luis M.')">
-                    <div style="width:44px;height:44px;border-radius:50%;background:#dc2626;color:#fff;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;">L</div>
-                    <div style="font-size:.75rem;font-weight:600;">Luis M.</div>
-                    <div class="text-muted" style="font-size:.67rem;">Clásico</div>
-                  </div></div>
-                </div>
-                <button class="btn btn-sm btn-outline-secondary mt-3" onclick="rpBack(2)"><i class="bi bi-arrow-left me-1"></i>Volver</button>
-              </div>
-
-              <!-- Paso 3 -->
-              <div id="rp3" style="display:none;">
-                <h6 class="fw-bold mb-3"><i class="bi bi-calendar3 me-2" style="color:#0ea5e9;"></i>Fecha y hora</h6>
-                <div class="mb-3">
-                  <input type="date" class="form-control" id="rp-fecha" onchange="rpSlots()">
-                </div>
-                <div id="rp-slots-wrap" style="display:none;">
-                  <div class="fw-semibold mb-2" style="font-size:.82rem;">Horarios disponibles</div>
-                  <div class="d-flex flex-wrap gap-2" id="rp-slots"></div>
-                </div>
-                <div id="rp-no-slots" style="display:none;font-size:.82rem;color:#94a3b8;padding:.5rem 0;"><i class="bi bi-calendar-x me-1"></i>Sin horarios para este día.</div>
-                <button class="btn btn-sm btn-outline-secondary mt-3" onclick="rpBack(3)"><i class="bi bi-arrow-left me-1"></i>Volver</button>
-                <button class="btn btn-sm btn-primary mt-3 ms-2" id="rp3-next" style="display:none;" onclick="rpNext(3,'')">Continuar <i class="bi bi-arrow-right ms-1"></i></button>
-              </div>
-
-              <!-- Paso 4 -->
-              <div id="rp4" style="display:none;">
-                <h6 class="fw-bold mb-3"><i class="bi bi-check2-circle me-2" style="color:var(--verde);"></i>Confirma tu cita</h6>
-                <div id="rp-resumen" class="mb-3 p-3" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;font-size:.83rem;"></div>
-                <div class="mb-3">
-                  <label class="form-label small fw-semibold">Nombre <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="rp-nombre" placeholder="Tu nombre o apodo">
-                </div>
-                <div class="mb-3">
-                  <label class="form-label small fw-semibold">Teléfono <span class="text-muted fw-normal">(opcional)</span></label>
-                  <input type="tel" class="form-control" id="rp-tel" placeholder="+504 9999-0000">
-                </div>
-                <div class="d-flex gap-2">
-                  <button class="btn btn-sm btn-outline-secondary" onclick="rpBack(4)"><i class="bi bi-arrow-left me-1"></i>Volver</button>
-                  <button class="btn btn-success flex-grow-1 fw-bold" onclick="rpConfirm()"><i class="bi bi-check-circle-fill me-2"></i>Confirmar</button>
-                </div>
-              </div>
-
-              <!-- Confirmado -->
-              <div id="rp-ok" style="display:none;text-align:center;">
-                <div style="font-size:2.5rem;">✅</div>
-                <h6 class="fw-bold text-success mt-2">¡Cita confirmada!</h6>
-                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:.5rem 1rem;font-family:monospace;font-size:.8rem;color:#1d4ed8;margin:.75rem 0;" id="rp-token"></div>
-                <div class="text-muted mb-3" style="font-size:.75rem;">Enlace personal para gestionar la cita</div>
-                <button class="btn btn-sm btn-outline-primary" onclick="rpReset()"><i class="bi bi-arrow-clockwise me-1"></i>Hacer otra reserva</button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /reservar -->
-
-    <!-- ══ CONFIGURACIÓN ══════════════════════════ -->
-    <div id="s-config" class="screen">
-      <div class="topbar">
-        <h4><i class="bi bi-gear me-2"></i>Configuración</h4>
-        <button class="btn btn-sm btn-primary" onclick="toast('Configuración guardada','success')">
-          <i class="bi bi-floppy me-1"></i>Guardar cambios
-        </button>
-      </div>
-
-      <div class="row g-3">
-        <div class="col-md-6">
-          <div class="card mb-3">
-            <div class="card-header py-3 px-4"><i class="bi bi-shop me-2 text-primary"></i>Datos del negocio</div>
-            <div class="card-body p-4">
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Nombre de la barbería</label>
-                <input type="text" class="form-control" value="Barbería El Filo">
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Teléfono de contacto</label>
-                <input type="tel" class="form-control" value="+504 9999-1234">
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Dirección</label>
-                <input type="text" class="form-control" value="Col. El Parque, Tegucigalpa">
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Moneda</label>
-                <select class="form-select">
-                  <option selected>Lempiras (L)</option>
-                  <option>Dólares ($)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card mb-3">
-            <div class="card-header py-3 px-4"><i class="bi bi-clock me-2 text-primary"></i>Horario del local</div>
-            <div class="card-body p-4">
-              <div class="row g-2 mb-3">
-                <div class="col-6">
-                  <label class="form-label small fw-semibold">Apertura Lun–Vie</label>
-                  <input type="time" class="form-control" value="08:00">
-                </div>
-                <div class="col-6">
-                  <label class="form-label small fw-semibold">Cierre Lun–Vie</label>
-                  <input type="time" class="form-control" value="18:00">
-                </div>
-              </div>
-              <div class="row g-2 mb-3">
-                <div class="col-6">
-                  <label class="form-label small fw-semibold">Apertura Sábados</label>
-                  <input type="time" class="form-control" value="09:00">
-                </div>
-                <div class="col-6">
-                  <label class="form-label small fw-semibold">Cierre Sábados</label>
-                  <input type="time" class="form-control" value="14:00">
-                </div>
-              </div>
-              <div class="cfg-row" style="padding:.75rem 1rem;margin-bottom:0;">
-                <div style="font-size:.84rem;"><div class="fw-semibold">Domingos</div><div class="text-muted" style="font-size:.75rem;">Cerrado actualmente</div></div>
-                <button class="toggle-btn off" onclick="toggleBtn(this)"></button>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header py-3 px-4"><i class="bi bi-shield-lock me-2 text-primary"></i>Seguridad</div>
-            <div class="card-body p-4">
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Contraseña actual</label>
-                <input type="password" class="form-control" placeholder="••••••••">
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Nueva contraseña</label>
-                <input type="password" class="form-control" placeholder="••••••••">
-              </div>
-              <button class="btn btn-outline-danger btn-sm" onclick="toast('Contraseña actualizada','success')">Cambiar contraseña</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /config -->
-
-  </div><!-- /main -->
-</div><!-- /app -->
-
-<!-- TOAST -->
-<div id="toast-box"></div>
+    </main>
+    <footer class="text-center py-4 text-xs text-zinc-400 border-t border-stone-200">BarberApp 1.0 · 2026</footer>
+  </div>
+</div>
 
 <script>
-// ── Login ──
-function doLogin() {
-  const u = document.getElementById('lu').value;
-  const p = document.getElementById('lp').value;
-  if (u === 'admin' && p === 'Admin123') {
-    document.getElementById('s-login').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-  } else {
-    toast('Credenciales incorrectas. Use admin / Admin123','danger');
-  }
-}
-document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+var rvSrv='', rvBarb='', rvSlot='', rvPrice='';
+var pages=['dashboard','citas','espera','barberos','servicios','clientes','reportes','reservar'];
+var titles={dashboard:'Dashboard',citas:'Agenda de Citas',espera:'Lista de Espera',barberos:'Barberos',servicios:'Servicios',clientes:'Clientes Frecuentes',reportes:'Reportes',reservar:'Página de Reservas'};
 
-function doLogout() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('s-login').style.display = 'flex';
+function doLogin(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-shell').style.display='';
+  goto('dashboard');
+  lucide.createIcons();
+  initCharts();
 }
-
-// ── Navigation ──
-function goto(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.sb-nav a').forEach(a => a.classList.remove('active'));
-  document.getElementById('s-' + id).classList.add('active');
-  const nav = document.getElementById('nav-' + id);
-  if (nav) nav.classList.add('active');
+function doLogout(){
+  document.getElementById('app-shell').style.display='none';
+  document.getElementById('login-screen').style.display='';
+}
+function goto(page){
+  pages.forEach(function(p){
+    var pg=document.getElementById('page-'+p);
+    if(pg){ if(p===page){pg.classList.add('active');}else{pg.classList.remove('active');} }
+    var nav=document.getElementById('nav-'+p);
+    if(nav){ if(p===page){nav.classList.add('active');}else{nav.classList.remove('active');} }
+  });
+  var t=document.getElementById('page-title');
+  if(t) t.textContent=titles[page]||page;
   return false;
 }
-
-// ── Toggle ──
-function toggleBtn(btn) {
-  btn.classList.toggle('on');
-  btn.classList.toggle('off');
-  const on = btn.classList.contains('on');
-  toast(on ? 'Activado correctamente' : 'Desactivado correctamente', on ? 'success' : 'warning');
-}
-
-// ── Toast ──
-function toast(msg, type = 'success') {
-  const colors = { success:'#16a34a', danger:'#dc2626', warning:'#b45309' };
-  const box = document.getElementById('toast-box');
-  const el = document.createElement('div');
-  el.className = 'toast-msg';
-  el.style.background = colors[type] || colors.success;
-  el.innerHTML = '<i class="bi bi-' + (type==='success'?'check-circle':'exclamation-circle') + '"></i> ' + msg;
-  box.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
-}
-
-// ── Reserva pública (demo) ──
-let rp = { svc:'', precio:'', dur:30, brb:'', fecha:'', slot:'', slotFmt:'' };
-
-function rpNext(step, val, precio, dur) {
-  if (step === 1) { rp.svc = val; rp.precio = precio; rp.dur = parseInt(dur||30); }
-  if (step === 2) { rp.brb = val; }
-  if (step === 3) { /* slot already set */ }
-
-  const show = step + 1;
-  document.getElementById('rp' + step).style.display = 'none';
-  document.getElementById('rp' + show).style.display = 'block';
-
-  // dots
-  for (let i = 1; i <= 4; i++) {
-    const dot = document.getElementById('dot' + i);
-    if (i < show) { dot.className = 's-dot done'; dot.innerHTML = '<i class="bi bi-check-lg" style="font-size:.65rem;"></i>'; }
-    else if (i === show) { dot.className = 's-dot active'; dot.textContent = i; }
-    else { dot.className = 's-dot pending'; dot.textContent = i; }
-    if (i < 4) document.getElementById('line' + i).className = 's-line' + (i < show ? ' done' : '');
+function initCharts(){
+  var ctxC=document.getElementById('chart-citas');
+  if(ctxC&&!ctxC._done){
+    ctxC._done=true;
+    new Chart(ctxC,{type:'line',data:{labels:['13/06','14/06','15/06','16/06','17/06','18/06','19/06'],datasets:[{label:'Citas',data:[0,1,0,1,5,6,2],borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.12)',tension:.4,fill:true,pointBackgroundColor:'#f97316',pointRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
   }
-
-  if (show === 4) {
-    document.getElementById('rp-resumen').innerHTML =
-      '<div class="mb-1"><i class="bi bi-scissors me-2" style="color:var(--azul2);"></i>' + rp.svc + ' — <strong>L ' + rp.precio + '</strong></div>' +
-      '<div class="mb-1"><i class="bi bi-person-badge me-2" style="color:#7c3aed;"></i>' + rp.brb + '</div>' +
-      '<div class="mb-1"><i class="bi bi-calendar3 me-2" style="color:#0ea5e9;"></i>' + rp.fecha + '</div>' +
-      '<div><i class="bi bi-clock me-2" style="color:var(--verde);"></i>' + rp.slotFmt + '</div>';
+  var ctxI=document.getElementById('chart-ingresos');
+  if(ctxI&&!ctxI._done){
+    ctxI._done=true;
+    var days=[],data=[];
+    for(var i=1;i<=19;i++){days.push(i);data.push(i===18?300:i===19?180:i===17?90:i===16?220:i===15?150:0);}
+    new Chart(ctxI,{type:'bar',data:{labels:days,datasets:[{data:data,backgroundColor:'#f97316',borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return'L.'+v;}}},x:{grid:{display:false}}}}});
   }
 }
-
-function rpBack(step) {
-  document.getElementById('rp' + step).style.display = 'none';
-  document.getElementById('rp' + (step-1)).style.display = 'block';
-  for (let i = 1; i <= 4; i++) {
-    const dot = document.getElementById('dot' + i);
-    const target = step - 1;
-    if (i < target) { dot.className = 's-dot done'; dot.innerHTML = '<i class="bi bi-check-lg" style="font-size:.65rem;"></i>'; }
-    else if (i === target) { dot.className = 's-dot active'; dot.textContent = i; }
-    else { dot.className = 's-dot pending'; dot.textContent = i; }
-    if (i < 4) document.getElementById('line' + i).className = 's-line' + (i < target ? ' done' : '');
+function selSrv(el,name,price,dur){
+  document.querySelectorAll('.srv-card').forEach(function(c){c.classList.remove('selected');});
+  el.classList.add('selected');
+  rvSrv=name; rvPrice=price;
+  var b=document.getElementById('btn-s1');
+  b.classList.remove('opacity-40','pointer-events-none');
+}
+function selBarb(el,name){
+  document.querySelectorAll('.barb-card').forEach(function(c){c.classList.remove('selected');});
+  if(el) el.classList.add('selected');
+  rvBarb=name;
+  var b=document.getElementById('btn-s2');
+  b.classList.remove('opacity-40','pointer-events-none');
+}
+function selSlot(el,time){
+  document.querySelectorAll('.slot-btn.selected').forEach(function(c){c.classList.remove('selected');});
+  el.classList.add('selected');
+  rvSlot=time;
+  var b=document.getElementById('btn-s3');
+  b.classList.remove('opacity-40','pointer-events-none');
+}
+function rvStep(n){
+  [1,2,3,4,5].forEach(function(i){
+    var el=document.getElementById('rv-step'+i);
+    if(el) el.style.display=i===n?'':'none';
+  });
+  if(n===4){
+    document.getElementById('rv-srv').textContent=rvSrv||'—';
+    document.getElementById('rv-barb').textContent=rvBarb||'Sin preferencia';
+    document.getElementById('rv-slot').textContent=rvSlot||'—';
+    document.getElementById('rv-price').textContent=rvPrice||'—';
   }
 }
-
-function rpSlots() {
-  const f = document.getElementById('rp-fecha').value;
-  if (!f) return;
-  rp.fecha = f;
-  const d = new Date(f + 'T00:00:00');
-  const dia = d.getDay();
-  const wrap = document.getElementById('rp-slots-wrap');
-  const noSlots = document.getElementById('rp-no-slots');
-  const slotsEl = document.getElementById('rp-slots');
-  const nextBtn = document.getElementById('rp3-next');
-
-  if (dia === 0) { wrap.style.display='none'; noSlots.style.display='block'; nextBtn.style.display='none'; return; }
-
-  let ini = 8*60, fin = 18*60;
-  if (dia === 6) fin = 14*60;
-
-  const ahora = new Date();
-  const esHoy = f === new Date().toISOString().split('T')[0];
-  const ocup = new Set([2, 5]);
-  const fmt = (h, m) => { const ap = h>=12?'PM':'AM'; const h12 = h%12||12; return h12+':'+(m<10?'0':'')+m+' '+ap; };
-
-  slotsEl.innerHTML = '';
-  let idx = 0, count = 0;
-  for (let t = ini; t + rp.dur <= fin; t += 30, idx++) {
-    const hi = Math.floor(t/60), mi = t%60;
-    const hf = Math.floor((t+rp.dur)/60), mf = (t+rp.dur)%60;
-    if (esHoy) {
-      const dt = new Date(f+'T'+(hi<10?'0':'')+hi+':'+(mi<10?'0':'')+mi);
-      if (dt < ahora) continue;
-    }
-    const oc = ocup.has(idx);
-    const btn = document.createElement('button');
-    btn.className = 'slot-btn' + (oc?' ocup':'');
-    btn.disabled = oc;
-    btn.innerHTML = fmt(hi,mi) + '<br><span style="font-size:.65rem;opacity:.7;">' + fmt(hf,mf) + '</span>';
-    if (!oc) {
-      btn.onclick = () => {
-        document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('sel'));
-        btn.classList.add('sel');
-        rp.slotFmt = fmt(hi,mi) + ' – ' + fmt(hf,mf);
-        nextBtn.style.display = 'inline-block';
-      };
-    }
-    slotsEl.appendChild(btn);
-    count++;
-  }
-  wrap.style.display = count ? 'block' : 'none';
-  noSlots.style.display = count ? 'none' : 'block';
-  nextBtn.style.display = 'none';
+function rvConfirm(){ rvStep(5); }
+function rvReset(){
+  rvSrv=''; rvBarb=''; rvSlot=''; rvPrice='';
+  document.querySelectorAll('.srv-card').forEach(function(c){c.classList.remove('selected');});
+  document.querySelectorAll('.barb-card').forEach(function(c){c.classList.remove('selected');});
+  document.querySelectorAll('.slot-btn').forEach(function(c){c.classList.remove('selected');});
+  ['btn-s1','btn-s2','btn-s3'].forEach(function(id){
+    var b=document.getElementById(id);
+    if(b){b.classList.add('opacity-40','pointer-events-none');}
+  });
+  rvStep(1);
 }
-
-function rpConfirm() {
-  const n = document.getElementById('rp-nombre').value.trim();
-  if (!n) { toast('Ingresa tu nombre para confirmar','danger'); return; }
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  const token = Array.from({length:20}, () => chars[Math.floor(Math.random()*36)]).join('');
-  document.getElementById('rp4').style.display = 'none';
-  document.getElementById('step-ind').style.display = 'none';
-  document.getElementById('rp-token').textContent = 'localhost/BarberApp/gestionar/' + token;
-  document.getElementById('rp-ok').style.display = 'block';
-}
-
-function rpReset() {
-  rp = { svc:'', precio:'', dur:30, brb:'', fecha:'', slot:'', slotFmt:'' };
-  ['rp2','rp3','rp4','rp-ok'].forEach(id => document.getElementById(id).style.display='none');
-  document.getElementById('rp1').style.display = 'block';
-  document.getElementById('step-ind').style.display = 'flex';
-  document.getElementById('rp-fecha').value = '';
-  document.getElementById('rp-nombre').value = '';
-  document.getElementById('rp-tel').value = '';
-  document.getElementById('rp3-next').style.display = 'none';
-  for (let i = 1; i <= 4; i++) {
-    const dot = document.getElementById('dot' + i);
-    dot.className = 's-dot ' + (i===1?'active':'pending');
-    dot.textContent = i;
-    if (i < 4) document.getElementById('line' + i).className = 's-line';
-  }
-}
+document.addEventListener('DOMContentLoaded',function(){ lucide.createIcons(); });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

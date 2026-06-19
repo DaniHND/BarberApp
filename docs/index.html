@@ -8,13 +8,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 :root {
-  --azul:  #1e3a8a;
-  --azul2: #2563eb;
+  --azul:  #2563eb;
+  --azul2: #1d4ed8;
   --rojo:  #dc2626;
   --verde: #16a34a;
-  --sidebar-w: 240px;
+  --sidebar-w: 256px;
+  --sidebar-bg: #18181b;
+  --sidebar-border: #3f3f46;
 }
-body { font-family:'Segoe UI',system-ui,sans-serif; background:#f1f5f9; }
+body { font-family:'Segoe UI',system-ui,sans-serif; background:#f5f5f4; }
 
 /* ── BARBER STRIPE ── */
 .stripe {
@@ -49,32 +51,34 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#f1f5f9; }
 #app { display:none; min-height:100vh; }
 #sidebar {
   position:fixed; top:0; left:0; height:100vh; width:var(--sidebar-w);
-  background:var(--azul); color:#fff; z-index:200;
+  background:var(--sidebar-bg); color:#fff; z-index:200;
   display:flex; flex-direction:column; transition:.3s;
   overflow-y:auto;
 }
-.sb-brand { padding:1rem; border-bottom:1px solid rgba(255,255,255,.1); }
-.sb-brand h5 { margin:0; font-size:.95rem; font-weight:700; }
-.sb-brand small { color:rgba(255,255,255,.5); font-size:.7rem; }
-.sb-nav { flex:1; padding:.5rem 0; }
+.sb-brand { padding:1rem 1.25rem; border-bottom:1px solid var(--sidebar-border); }
+.sb-brand h5 { margin:0; font-size:.875rem; font-weight:700; }
+.sb-brand small { color:#71717a; font-size:.7rem; }
+.sb-nav { flex:1; padding:.5rem .75rem; }
 .sb-nav a {
-  display:flex; align-items:center; gap:.6rem; padding:.52rem 1rem;
-  color:rgba(255,255,255,.72); text-decoration:none; font-size:.875rem;
-  border-radius:6px; margin:1px 8px; transition:.15s;
+  display:flex; align-items:center; gap:.65rem; padding:.55rem .75rem;
+  color:#a1a1aa; text-decoration:none; font-size:.875rem;
+  border-radius:8px; margin:1px 0; transition:.15s;
 }
-.sb-nav a:hover, .sb-nav a.active { background:rgba(255,255,255,.13); color:#fff; }
-.sb-nav .sec { font-size:.67rem; text-transform:uppercase; letter-spacing:.08em;
-  color:rgba(255,255,255,.32); padding:.75rem 1rem .2rem; }
-.sb-user { padding:.8rem 1rem; border-top:1px solid rgba(255,255,255,.1);
-  font-size:.78rem; color:rgba(255,255,255,.6); display:flex; align-items:center; gap:.55rem; }
+.sb-nav a:hover { background:#27272a; color:#fff; }
+.sb-nav a.active { background:#2563eb; color:#fff; }
+.sb-nav .sec { font-size:.65rem; text-transform:uppercase; letter-spacing:.08em;
+  color:#52525b; padding:.85rem .75rem .25rem; }
+.sb-user { padding:.75rem 1rem; border-top:1px solid var(--sidebar-border);
+  font-size:.78rem; color:#71717a; display:flex; align-items:center; gap:.55rem; }
 
 #main { margin-left:var(--sidebar-w); padding:1.5rem; min-height:100vh; }
 
 /* ── TOPBAR ── */
-.topbar { background:#fff; border-radius:10px; padding:.7rem 1.2rem;
+.topbar { background:#fff; border-radius:0; padding:.75rem 1.5rem;
   display:flex; align-items:center; justify-content:space-between;
-  box-shadow:0 1px 4px rgba(0,0,0,.07); margin-bottom:1.4rem; }
-.topbar h4 { margin:0; font-size:1.05rem; font-weight:700; color:var(--azul); }
+  border-bottom:1px solid #e7e5e4; margin-bottom:1.5rem;
+  position:sticky; top:0; z-index:10; }
+.topbar h4 { margin:0; font-size:.875rem; font-weight:700; color:#18181b; }
 
 /* ── KPI ── */
 .kpi { background:#fff; border-radius:12px; padding:1.15rem 1.3rem;
@@ -193,7 +197,7 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#f1f5f9; }
 
 @media(max-width:768px){
   #sidebar { display:none; }
-  #main { margin-left:0; }
+  #main { margin-left:0; padding:1rem; }
 }
 </style>
 </head>
@@ -205,7 +209,7 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#f1f5f9; }
   <div class="login-card">
     <div class="login-logo"><i class="bi bi-scissors"></i></div>
     <h4 class="text-center fw-bold mb-1" style="color:var(--azul);">BarberApp</h4>
-    <p class="text-center text-muted mb-4" style="font-size:.82rem;">Sistema de Gestión de Barbería v1.1</p>
+    <p class="text-center text-muted mb-4" style="font-size:.82rem;">Panel de Administración</p>
 
     <div class="mb-3">
       <label class="form-label small fw-semibold">Usuario</label>
@@ -239,12 +243,12 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#f1f5f9; }
   <nav id="sidebar">
     <div class="sb-brand">
       <div class="d-flex align-items-center gap-2">
-        <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:.3rem .45rem;">
-          <i class="bi bi-scissors fs-5"></i>
+        <div style="background:#2563eb;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-scissors text-white" style="font-size:.95rem;"></i>
         </div>
         <div>
-          <h5>BarberApp</h5>
-          <small>v1.1 · Barbería El Filo</small>
+          <h5 style="color:#fff;">BarberApp</h5>
+          <small>Panel de Administración</small>
         </div>
       </div>
     </div>
@@ -282,12 +286,14 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#f1f5f9; }
       </a>
     </div>
     <div class="sb-user">
-      <i class="bi bi-person-circle fs-5" style="color:#fff;"></i>
-      <div>
-        <div style="color:#fff;font-size:.8rem;">Administrador</div>
-        <div style="font-size:.7rem;">admin</div>
+      <div style="width:32px;height:32px;background:rgba(37,99,235,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-person" style="color:#60a5fa;font-size:.9rem;"></i>
       </div>
-      <a href="#" class="ms-auto" onclick="doLogout()" title="Cerrar sesión" style="color:rgba(255,255,255,.45);">
+      <div style="flex:1;min-width:0;">
+        <div style="color:#fff;font-size:.8rem;font-weight:600;">Administrador</div>
+        <div style="font-size:.7rem;color:#71717a;">admin</div>
+      </div>
+      <a href="#" onclick="doLogout()" title="Cerrar sesión" style="color:#52525b;text-decoration:none;">
         <i class="bi bi-box-arrow-right"></i>
       </a>
     </div>

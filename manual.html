@@ -125,8 +125,8 @@
         <p class="opacity-75 mb-0">Sistema Web para la Gestión Inteligente de Barberías</p>
       </div>
       <div class="text-end opacity-75" style="font-size:.83rem;">
-        <div>Versión 1.1 · Junio 2026</div>
-        <div class="mt-1">2 usuarios · 8 módulos · Simulación de un día completo · Fase 6</div>
+        <div>Versión 1.2 · Junio 2026</div>
+        <div class="mt-1">2 usuarios · 8 módulos · Demo GitHub Pages sincronizado · Fase 6</div>
         <button onclick="window.print()" class="btn btn-sm mt-2" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);">
           <i class="bi bi-printer me-1"></i>Imprimir manual
         </button>
@@ -146,6 +146,8 @@
     <a class="nav-link" href="#intro">¿Qué es BarberApp?</a>
     <a class="nav-link" href="#usuarios">Los 2 usuarios</a>
     <a class="nav-link" href="#acceso">Cómo ingresar</a>
+    <a class="nav-link" href="#demo">Demo GitHub Pages</a>
+    <a class="nav-link" href="#demo">Demo GitHub Pages</a>
 
     <div class="nav-section mt-2">Guía del Barbero</div>
     <a class="nav-link" href="#dashboard">Dashboard</a>
@@ -360,6 +362,39 @@
     <div class="warn-box mt-2">
       <strong>Si el sistema no carga:</strong> Verifica que Laragon esté corriendo. En la bandeja del sistema (esquina inferior derecha) debe aparecer el ícono de Laragon con Apache y MySQL en verde. Si no, clic derecho → Start All.
     </div>
+  </div>
+</div>
+
+<!-- Demo GitHub Pages -->
+<div class="card seccion mb-4" id="demo">
+  <div class="card-header d-flex align-items-center gap-2">
+    <i class="bi bi-github" style="color:var(--azul2);"></i>Demo público en GitHub Pages
+  </div>
+  <div class="card-body p-4">
+    <div class="info-box">
+      <strong>Ver el sistema sin instalar nada</strong><br>
+      Demo interactivo en GitHub Pages. Refleja la interfaz real con datos de ejemplo, sin Laragon ni base de datos.
+    </div>
+    <div class="row g-4 mt-1">
+      <div class="col-md-6">
+        <div class="fw-semibold mb-2" style="font-size:.88rem;"><i class="bi bi-link-45deg me-1" style="color:var(--azul2);"></i>URL del demo</div>
+        <a href="https://danihnd.github.io/BarberApp" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:#eff6ff;padding:.4rem .85rem;border-radius:8px;font-size:.83rem;border:1px solid #bfdbfe;color:#1d4ed8;text-decoration:none;font-weight:600;">
+          <i class="bi bi-box-arrow-up-right"></i>danihnd.github.io/BarberApp
+        </a>
+        <p class="mt-2" style="font-size:.82rem;color:#64748b;">Credenciales: <code>admin</code> / <code>Admin123</code></p>
+      </div>
+      <div class="col-md-6">
+        <div class="fw-semibold mb-2" style="font-size:.88rem;"><i class="bi bi-check2-circle me-1 text-success"></i>Incluye</div>
+        <ul style="font-size:.82rem;color:#64748b;padding-left:1.2rem;margin:0;">
+          <li>Login + todos los módulos del panel admin</li>
+          <li>Agenda con lista y botones de acción</li>
+          <li>Página pública de reservas (4 pasos)</li>
+          <li>Navegación móvil: hamburger + bottom nav</li>
+          <li>Gráficas Chart.js con datos de ejemplo</li>
+        </ul>
+      </div>
+    </div>
+    <div class="warn-box mt-3"><strong>Limitación:</strong> Los datos son fijos y las acciones no se guardan. Para el sistema funcional con base de datos, usar la instalación local con Laragon.</div>
   </div>
 </div>
 

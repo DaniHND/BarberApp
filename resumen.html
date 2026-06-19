@@ -328,7 +328,7 @@
                 <a href="https://github.com/DaniHND/BarberApp" target="_blank" class="repo-link">
                     <i class="bi bi-github me-2"></i>DaniHND/BarberApp
                 </a>
-                <small style="opacity:.45;">Última actualización: 19 jun 2026 — Sistema completo · Modo móvil verificado</small>
+                <small style="opacity:.45;">Última actualización: 19 jun 2026 — Sistema completo · Demo GitHub Pages sincronizado</small>
             </div>
         </div>
 
@@ -849,7 +849,8 @@
                             <div><span class="archivo">├── .htaccess</span> <span class="text-muted" style="font-size:.75rem;">← URLs limpias sin .php</span></div>
                             <div><span class="archivo">├── resumen.html</span> <span class="text-muted" style="font-size:.75rem;">← Este archivo</span></div>
                             <div><span class="archivo">├── manual.html</span> <span class="text-muted" style="font-size:.75rem;">← Manual de usuario (8 módulos)</span></div>
-                            <div><span class="archivo">├── prototipo.html</span> <span class="text-muted" style="font-size:.75rem;">← Landing pública + demo reserva para GitHub Pages</span></div>
+                            <div><span class="archivo">├── prototipo.html</span> <span class="text-muted" style="font-size:.75rem;">← Landing pública original</span></div>
+                            <div><span class="f4">├── docs/index.html</span> <span class="text-muted" style="font-size:.75rem;">← Demo interactivo completo para GitHub Pages (sin backend)</span></div>
 
                             <div class="mt-1"><span class="carpeta">├── config/</span></div>
                             <div class="ms-3">
@@ -1095,11 +1096,17 @@
                             <div class="text-muted" style="font-size:.78rem;">18 jun 2026</div>
                             <div class="text-muted" style="font-size:.78rem;">prototipo.html — landing de la barbería + demo interactivo de reserva en 4 pasos con Alpine.js. Archivo estático sin backend, desplegable en GitHub Pages para mostrar al cliente final cómo reservaría su cita.</div>
                         </div>
-                        <div class="tl-item" style="padding-bottom:0;">
+                        <div class="tl-item">
                             <div class="tl-dot"></div>
                             <div class="fw-semibold" style="font-size:.88rem;">Verificación del sistema completado</div>
                             <div class="text-muted" style="font-size:.78rem;">19 jun 2026</div>
                             <div class="text-muted" style="font-size:.78rem;">Verificación Playwright en viewport móvil (390×844 px): hamburger, sidebar deslizante, overlay de cierre y bottom nav funcionando correctamente en todas las páginas incluyendo el nuevo módulo de Barberos. Sistema 100% operativo en móvil, tablet y desktop.</div>
+                        </div>
+                        <div class="tl-item" style="padding-bottom:0;">
+                            <div class="tl-dot"></div>
+                            <div class="fw-semibold" style="font-size:.88rem;">Demo GitHub Pages — sincronizado pixel a pixel</div>
+                            <div class="text-muted" style="font-size:.78rem;">19 jun 2026</div>
+                            <div class="text-muted" style="font-size:.78rem;">docs/index.html reescrito completamente para que el demo estático en GitHub Pages refleje el sistema real: Citas con lista (hora + dot + acciones Llegó/No vino/Atendido), Clientes con tarjetas mobile + tabla desktop, Servicios con shadow-sm y precio alineado, Reportes sin columna Barbero y con ícono calendar-check-2, Reservar con cards rounded-2xl y resumen azul en paso 4, Bottom nav con indicador activo y sombra superior. Demo disponible en <strong>danihnd.github.io/BarberApp</strong>.</div>
                         </div>
                     </div>
                 </div>
@@ -1112,6 +1119,14 @@
                     Acceso al sistema
                 </div>
                 <div class="card-body p-4">
+                    <div class="mb-3">
+                        <div class="section-title">Demo público (GitHub Pages)</div>
+                        <a href="https://danihnd.github.io/BarberApp" target="_blank"
+                           style="display:inline-flex;align-items:center;gap:.4rem;background:#eff6ff;padding:.3rem .75rem;border-radius:6px;font-size:.83rem;border:1px solid #bfdbfe;color:#1d4ed8;text-decoration:none;">
+                            <i class="bi bi-github"></i> danihnd.github.io/BarberApp
+                        </a>
+                        <div class="text-muted mt-1" style="font-size:.75rem;"><i class="bi bi-info-circle me-1"></i>Sincronizado con el sistema real · No requiere instalación</div>
+                    </div>
                     <div class="mb-3">
                         <div class="section-title">URL local (desarrollo)</div>
                         <code style="background:#f5f5f4;padding:.3rem .6rem;border-radius:6px;font-size:.83rem;border:1px solid #e7e5e4;">

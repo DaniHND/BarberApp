@@ -19,17 +19,14 @@ tailwind.config = {
   .nav-link.active { background:#3b82f6; color:#fff; }
   .nav-link { color:#a1a1aa; }
   .nav-link:hover { background:#27272a; color:#fff; }
-  .badge-atendido  { background:#dcfce7; color:#166534; }
-  .badge-confirmado{ background:#dbeafe; color:#1e40af; }
-  .badge-pendiente { background:#fef9c3; color:#854d0e; }
-  .badge-cancelado { background:#fee2e2; color:#991b1b; }
-  .badge-encamino  { background:#f3e8ff; color:#6b21a8; }
-  .badge-vip   { background:#fef3c7; color:#92400e; }
-  .badge-frecuente { background:#dbeafe; color:#1e40af; }
-  .badge-regular   { background:#f4f4f5; color:#52525b; }
-  .step-active { background:#3b82f6; color:#fff; }
-  .step-done   { background:#22c55e; color:#fff; }
-  .step-next   { background:#e4e4e7; color:#71717a; }
+  .badge-atendido   { background:#dcfce7; color:#166534; }
+  .badge-confirmado { background:#dbeafe; color:#1e40af; }
+  .badge-pendiente  { background:#fef9c3; color:#854d0e; }
+  .badge-cancelado  { background:#fee2e2; color:#991b1b; }
+  .badge-encamino   { background:#f3e8ff; color:#6b21a8; }
+  .badge-vip        { background:#fef3c7; color:#92400e; }
+  .badge-frecuente  { background:#dbeafe; color:#1e40af; }
+  .badge-regular    { background:#f4f4f5; color:#52525b; }
   .srv-card { border:2px solid transparent; cursor:pointer; transition:.15s; }
   .srv-card:hover { border-color:#93c5fd; }
   .srv-card.selected { border-color:#3b82f6; background:#eff6ff; }
@@ -39,15 +36,21 @@ tailwind.config = {
   .slot-btn { cursor:pointer; transition:.15s; }
   .slot-btn:hover { background:#dbeafe; border-color:#93c5fd; }
   .slot-btn.selected { background:#3b82f6; color:#fff; border-color:#2563eb; }
+  /* sidebar transition */
+  #sidebar { transition: transform .3s ease-in-out; }
+  #overlay { display:none; }
+  #overlay.open { display:block; }
+  /* Mobile bottom nav spacing */
+  @media (max-width:767px) {
+    #page-main-content { padding-bottom:6rem; }
+  }
 </style>
 </head>
 <body class="h-full bg-stone-100">
 
-<!-- ══════════════════════════════════════════════════════
-     LOGIN
-═══════════════════════════════════════════════════════ -->
+<!-- ══════════════════ LOGIN ══════════════════ -->
 <div id="login-screen" class="min-h-screen flex items-center justify-center bg-stone-100">
-  <div class="bg-white rounded-2xl shadow-sm border border-stone-200 w-full max-w-sm p-8">
+  <div class="bg-white rounded-2xl shadow-sm border border-stone-200 w-full max-w-sm mx-4 p-8">
     <div class="flex flex-col items-center mb-8">
       <div class="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center mb-4">
         <i data-lucide="scissors" class="w-6 h-6 text-white"></i>
@@ -58,16 +61,16 @@ tailwind.config = {
     <div class="space-y-4">
       <div>
         <label class="block text-sm font-medium text-zinc-700 mb-1.5">Usuario</label>
-        <input id="inp-user" type="text" value="admin" placeholder="Usuario"
-          class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <input id="inp-user" type="text" value="admin"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
       </div>
       <div>
         <label class="block text-sm font-medium text-zinc-700 mb-1.5">Contraseña</label>
-        <input id="inp-pass" type="password" value="Admin123" placeholder="Contraseña"
-          class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <input id="inp-pass" type="password" value="Admin123"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
       </div>
       <button onclick="doLogin()"
-        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg py-2.5 text-sm transition-colors mt-2">
+        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg py-2.5 text-sm transition-colors">
         Iniciar sesión
       </button>
     </div>
@@ -75,13 +78,17 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════
-     APP SHELL
-═══════════════════════════════════════════════════════ -->
-<div id="app-shell" style="display:none" class="h-full">
+<!-- ══════════════════ APP SHELL ══════════════════ -->
+<div id="app-shell" style="display:none">
+
+  <!-- Overlay móvil -->
+  <div id="overlay" onclick="closeSidebar()"
+    class="fixed inset-0 z-20 bg-black/50 md:hidden"></div>
 
   <!-- Sidebar -->
-  <aside class="fixed inset-y-0 left-0 z-30 w-64 bg-zinc-900 flex flex-col">
+  <aside id="sidebar"
+    class="fixed inset-y-0 left-0 z-30 w-64 bg-zinc-900 flex flex-col
+           -translate-x-full md:translate-x-0">
     <div class="flex items-center gap-3 px-5 py-4 border-b border-zinc-800 flex-shrink-0">
       <div class="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
         <i data-lucide="scissors" class="w-5 h-5 text-white"></i>
@@ -92,44 +99,44 @@ tailwind.config = {
       </div>
     </div>
     <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-      <a href="#" onclick="return goto('dashboard')" id="nav-dashboard"
+      <a href="#" onclick="return gotoPage('dashboard')" id="nav-dashboard"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>Dashboard
       </a>
       <div class="pt-4 pb-1 px-3">
         <span class="text-zinc-600 text-xs font-semibold uppercase tracking-wider">Atención</span>
       </div>
-      <a href="#" onclick="return goto('citas')" id="nav-citas"
+      <a href="#" onclick="return gotoPage('citas')" id="nav-citas"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="calendar-days" class="w-4 h-4 flex-shrink-0"></i>Agenda de Citas
       </a>
-      <a href="#" onclick="return goto('espera')" id="nav-espera"
+      <a href="#" onclick="return gotoPage('espera')" id="nav-espera"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="users" class="w-4 h-4 flex-shrink-0"></i>Lista de Espera
       </a>
-      <a href="#" onclick="return goto('reservar')" id="nav-reservar"
+      <a href="#" onclick="return gotoPage('reservar')" id="nav-reservar"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="external-link" class="w-4 h-4 flex-shrink-0"></i>Página de Reservas
       </a>
       <div class="pt-4 pb-1 px-3">
         <span class="text-zinc-600 text-xs font-semibold uppercase tracking-wider">Gestión</span>
       </div>
-      <a href="#" onclick="return goto('barberos')" id="nav-barberos"
+      <a href="#" onclick="return gotoPage('barberos')" id="nav-barberos"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="user-check" class="w-4 h-4 flex-shrink-0"></i>Barberos
       </a>
-      <a href="#" onclick="return goto('servicios')" id="nav-servicios"
+      <a href="#" onclick="return gotoPage('servicios')" id="nav-servicios"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="scissors" class="w-4 h-4 flex-shrink-0"></i>Servicios
       </a>
-      <a href="#" onclick="return goto('clientes')" id="nav-clientes"
+      <a href="#" onclick="return gotoPage('clientes')" id="nav-clientes"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="heart-handshake" class="w-4 h-4 flex-shrink-0"></i>Clientes Frecuentes
       </a>
       <div class="pt-4 pb-1 px-3">
         <span class="text-zinc-600 text-xs font-semibold uppercase tracking-wider">Análisis</span>
       </div>
-      <a href="#" onclick="return goto('reportes')" id="nav-reportes"
+      <a href="#" onclick="return gotoPage('reportes')" id="nav-reportes"
          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
         <i data-lucide="bar-chart-3" class="w-4 h-4 flex-shrink-0"></i>Reportes
       </a>
@@ -151,44 +158,55 @@ tailwind.config = {
     </div>
   </aside>
 
-  <!-- Main -->
-  <div class="ml-64 flex flex-col min-h-screen">
+  <!-- Main wrapper -->
+  <div class="md:ml-64 flex flex-col min-h-screen">
+
+    <!-- Topbar -->
     <header class="sticky top-0 z-10 bg-white border-b border-stone-200 px-4 py-3 flex items-center gap-4 shadow-sm">
+      <!-- Hamburger (mobile only) -->
+      <button onclick="toggleSidebar()"
+        class="md:hidden p-1.5 rounded-lg text-zinc-500 hover:bg-stone-100 -ml-1">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
       <h1 id="page-title" class="text-sm font-semibold text-zinc-800 flex-1">Dashboard</h1>
-      <span class="text-xs text-zinc-400">Viernes, 19 de Junio de 2026</span>
+      <span class="hidden sm:block text-xs text-zinc-400">Viernes, 19 de Junio de 2026</span>
     </header>
-    <main class="flex-1 p-6">
+
+    <!-- Pages -->
+    <main id="page-main-content" class="flex-1 px-4 pt-4 pb-24 md:p-6">
 
       <!-- ─── DASHBOARD ─── -->
       <section id="page-dashboard" class="page">
-        <div class="grid grid-cols-4 gap-4 mb-6">
+        <!-- KPI: 2 cols mobile, 4 desktop -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
           <div class="bg-white rounded-xl border border-stone-200 p-4">
             <div class="flex items-start justify-between">
-              <div><p class="text-xs text-zinc-500 mb-1">Citas hoy</p><p class="text-3xl font-bold text-zinc-900">7</p><p class="text-xs text-zinc-400 mt-1">citas para hoy</p></div>
-              <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center"><i data-lucide="calendar-check" class="w-5 h-5 text-blue-400"></i></div>
+              <div><p class="text-xs text-zinc-500 mb-1">Citas hoy</p><p class="text-2xl md:text-3xl font-bold text-zinc-900">7</p><p class="text-xs text-zinc-400 mt-1">citas para hoy</p></div>
+              <div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="calendar-check" class="w-4 h-4 text-blue-400"></i></div>
             </div>
           </div>
           <div class="bg-white rounded-xl border border-stone-200 p-4">
             <div class="flex items-start justify-between">
-              <div><p class="text-xs text-zinc-500 mb-1">En espera</p><p class="text-3xl font-bold text-zinc-900">2</p><p class="text-xs text-zinc-400 mt-1">en cola ahora</p></div>
-              <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center"><i data-lucide="clock" class="w-5 h-5 text-purple-400"></i></div>
+              <div><p class="text-xs text-zinc-500 mb-1">En espera</p><p class="text-2xl md:text-3xl font-bold text-zinc-900">2</p><p class="text-xs text-zinc-400 mt-1">en cola ahora</p></div>
+              <div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="clock" class="w-4 h-4 text-purple-400"></i></div>
             </div>
           </div>
           <div class="bg-white rounded-xl border border-stone-200 p-4">
             <div class="flex items-start justify-between">
-              <div><p class="text-xs text-zinc-500 mb-1">Servicios activos</p><p class="text-3xl font-bold text-zinc-900">5</p><p class="text-xs text-zinc-400 mt-1">disponibles para reserva</p></div>
-              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center"><i data-lucide="scissors" class="w-5 h-5 text-green-400"></i></div>
+              <div><p class="text-xs text-zinc-500 mb-1">Servicios activos</p><p class="text-2xl md:text-3xl font-bold text-zinc-900">5</p><p class="text-xs text-zinc-400 mt-1">disponibles</p></div>
+              <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="scissors" class="w-4 h-4 text-green-400"></i></div>
             </div>
           </div>
           <div class="bg-white rounded-xl border border-stone-200 p-4">
             <div class="flex items-start justify-between">
-              <div><p class="text-xs text-zinc-500 mb-1">Ingresos hoy</p><p class="text-3xl font-bold text-zinc-900">L. 510</p><p class="text-xs text-zinc-400 mt-1">19/06/2026</p></div>
-              <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center"><i data-lucide="banknote" class="w-5 h-5 text-emerald-400"></i></div>
+              <div><p class="text-xs text-zinc-500 mb-1">Ingresos hoy</p><p class="text-xl md:text-3xl font-bold text-zinc-900">L. 510</p><p class="text-xs text-zinc-400 mt-1">19/06/2026</p></div>
+              <div class="w-9 h-9 bg-emerald-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="banknote" class="w-4 h-4 text-emerald-400"></i></div>
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-4 mb-4">
-          <div class="col-span-2 bg-white rounded-xl border border-stone-200 p-5">
+        <!-- Charts: 1 col mobile, 3 desktop -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div class="md:col-span-2 bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Citas — últimos 7 días</span></div>
               <span class="text-xs text-zinc-400">Total: 18</span>
@@ -198,7 +216,7 @@ tailwind.config = {
           <div class="bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2"><i data-lucide="star" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Top servicios</span></div>
-              <a href="#" onclick="return goto('servicios')" class="text-xs text-blue-500 hover:underline">Ver todos</a>
+              <a href="#" onclick="return gotoPage('servicios')" class="text-xs text-blue-500 hover:underline">Ver todos</a>
             </div>
             <div class="space-y-3">
               <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Arreglo de Barba</span><span class="text-zinc-500">18 citas</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-blue-500 rounded-full" style="width:100%"></div></div></div>
@@ -209,7 +227,8 @@ tailwind.config = {
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Agenda + Espera: 1 col mobile, 2 desktop -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Agenda de hoy</span></div>
@@ -228,8 +247,8 @@ tailwind.config = {
               <span class="text-xs bg-stone-100 text-zinc-600 px-2 py-0.5 rounded-full">2</span>
             </div>
             <div class="space-y-2">
-              <div class="flex items-center gap-3 p-3 rounded-lg bg-stone-50"><div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 flex-shrink-0">JM</div><div class="flex-1"><p class="text-sm font-medium text-zinc-800">Julio Matute</p><p class="text-xs text-zinc-500">Ingresó: 10:15 AM</p></div><button class="text-xs bg-blue-500 text-white px-2.5 py-1 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button></div>
-              <div class="flex items-center gap-3 p-3 rounded-lg bg-stone-50"><div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-xs font-bold text-purple-600 flex-shrink-0">AR</div><div class="flex-1"><p class="text-sm font-medium text-zinc-800">Ana Rodríguez</p><p class="text-xs text-zinc-500">Ingresó: 10:42 AM</p></div><button class="text-xs bg-blue-500 text-white px-2.5 py-1 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button></div>
+              <div class="flex items-center gap-3 p-3 rounded-lg bg-stone-50"><div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600 flex-shrink-0">JM</div><div class="flex-1 min-w-0"><p class="text-sm font-medium text-zinc-800">Julio Matute</p><p class="text-xs text-zinc-500">Ingresó: 10:15 AM</p></div><button class="text-xs bg-blue-500 text-white px-2.5 py-1 rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0">+ Citar</button></div>
+              <div class="flex items-center gap-3 p-3 rounded-lg bg-stone-50"><div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-xs font-bold text-purple-600 flex-shrink-0">AR</div><div class="flex-1 min-w-0"><p class="text-sm font-medium text-zinc-800">Ana Rodríguez</p><p class="text-xs text-zinc-500">Ingresó: 10:42 AM</p></div><button class="text-xs bg-blue-500 text-white px-2.5 py-1 rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0">+ Citar</button></div>
             </div>
           </div>
         </div>
@@ -237,35 +256,36 @@ tailwind.config = {
 
       <!-- ─── AGENDA DE CITAS ─── -->
       <section id="page-citas" class="page">
-        <div class="flex items-center justify-between mb-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
           <div class="flex items-center gap-3">
             <button class="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-zinc-600"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-            <div><p class="font-semibold text-zinc-900">Viernes, 19 de Junio de 2026</p><p class="text-xs text-blue-500">Hoy · 11:02</p></div>
+            <div><p class="font-semibold text-zinc-900 text-sm">Viernes, 19 de Junio de 2026</p><p class="text-xs text-blue-500">Hoy · 11:02</p></div>
             <button class="p-1.5 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-zinc-600"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
           </div>
           <input type="date" value="2026-06-19" class="border border-stone-200 bg-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-        <div class="grid grid-cols-5 gap-3 mb-5">
+        <!-- Status chips: 3 cols mobile, 5 desktop -->
+        <div class="grid grid-cols-3 md:grid-cols-5 gap-3 mb-5">
           <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Total</span><i data-lucide="calendar" class="w-3.5 h-3.5 text-zinc-300"></i></div><p class="text-2xl font-bold text-zinc-900">7</p></div>
           <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Reservados</span><i data-lucide="clock" class="w-3.5 h-3.5 text-blue-300"></i></div><p class="text-2xl font-bold text-blue-600">2</p></div>
           <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Confirmados</span><i data-lucide="user-check" class="w-3.5 h-3.5 text-green-300"></i></div><p class="text-2xl font-bold text-green-600">2</p></div>
           <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">Atendidos</span><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-300"></i></div><p class="text-2xl font-bold text-emerald-600">2</p></div>
-          <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500">No presentados</span><i data-lucide="user-x" class="w-3.5 h-3.5 text-red-300"></i></div><p class="text-2xl font-bold text-red-500">1</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-3"><div class="flex items-center justify-between mb-1"><span class="text-xs text-zinc-500 leading-tight">No present.</span><i data-lucide="user-x" class="w-3.5 h-3.5 text-red-300"></i></div><p class="text-2xl font-bold text-red-500">1</p></div>
         </div>
         <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
           <div class="px-5 py-3 border-b border-stone-100 flex items-center gap-2">
             <i data-lucide="calendar" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Vista de agenda</span>
           </div>
           <div class="divide-y divide-stone-50">
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">8</span><div class="flex-1 py-3 pr-4"></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">9</span><div class="flex-1 py-2 pr-4 space-y-1"><div class="bg-green-100 border-l-4 border-green-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-green-800">Carlos Mejía — Atendido</p><p class="text-xs text-green-600">8:30 AM · Degradado · Marco Rodríguez</p></div><div class="bg-green-100 border-l-4 border-green-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-green-800">Andrés García — Atendido</p><p class="text-xs text-green-600">9:30 AM · Corte Clásico · Luis Méndez</p></div></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">10</span><div class="flex-1 py-2 pr-4"><div class="bg-purple-100 border-l-4 border-purple-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-purple-800">Roberto Flores — En camino</p><p class="text-xs text-purple-600">10:30 AM · Corte + Barba · Marco Rodríguez</p></div></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">11</span><div class="flex-1 py-2 pr-4"><div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-yellow-800">Miguel Torres — Pendiente</p><p class="text-xs text-yellow-600">11:00 AM · Barba · Sin preferencia</p></div></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">12</span><div class="flex-1 py-3 pr-4"></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">13</span><div class="flex-1 py-3 pr-4"></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">14</span><div class="flex-1 py-2 pr-4"><div class="bg-blue-50 border-l-4 border-blue-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-blue-800">José Pineda — Confirmado</p><p class="text-xs text-blue-600">2:00 PM · Corte de Niño · Luis Méndez</p></div></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">15</span><div class="flex-1 py-2 pr-4"><div class="bg-blue-50 border-l-4 border-blue-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-blue-800">Pedro Alvarado — Confirmado</p><p class="text-xs text-blue-600">3:00 PM · Corte + Barba · Marco Rodríguez</p></div></div></div>
-            <div class="flex"><span class="w-16 text-xs text-zinc-400 px-4 py-3 flex-shrink-0">16</span><div class="flex-1 py-2 pr-4"><div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-yellow-800">Luis Aguilera — Pendiente</p><p class="text-xs text-yellow-600">4:30 PM · Degradado · Marco Rodríguez</p></div></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">8</span><div class="flex-1 py-3 pr-3"></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">9</span><div class="flex-1 py-2 pr-3 space-y-1"><div class="bg-green-100 border-l-4 border-green-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-green-800">Carlos Mejía — Atendido</p><p class="text-xs text-green-600">8:30 AM · Degradado · Marco Rodríguez</p></div><div class="bg-green-100 border-l-4 border-green-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-green-800">Andrés García — Atendido</p><p class="text-xs text-green-600">9:30 AM · Corte Clásico · Luis Méndez</p></div></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">10</span><div class="flex-1 py-2 pr-3"><div class="bg-purple-100 border-l-4 border-purple-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-purple-800">Roberto Flores — En camino</p><p class="text-xs text-purple-600">10:30 AM · Corte + Barba · Marco Rodríguez</p></div></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">11</span><div class="flex-1 py-2 pr-3"><div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-yellow-800">Miguel Torres — Pendiente</p><p class="text-xs text-yellow-600">11:00 AM · Barba · Sin preferencia</p></div></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">12</span><div class="flex-1 py-3"></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">13</span><div class="flex-1 py-3"></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">14</span><div class="flex-1 py-2 pr-3"><div class="bg-blue-50 border-l-4 border-blue-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-blue-800">José Pineda — Confirmado</p><p class="text-xs text-blue-600">2:00 PM · Corte de Niño · Luis Méndez</p></div></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">15</span><div class="flex-1 py-2 pr-3"><div class="bg-blue-50 border-l-4 border-blue-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-blue-800">Pedro Alvarado — Confirmado</p><p class="text-xs text-blue-600">3:00 PM · Corte + Barba · Marco Rodríguez</p></div></div></div>
+            <div class="flex"><span class="w-12 md:w-16 text-xs text-zinc-400 px-3 md:px-4 py-3 flex-shrink-0">16</span><div class="flex-1 py-2 pr-3"><div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-r px-3 py-2"><p class="text-xs font-semibold text-yellow-800">Luis Aguilera — Pendiente</p><p class="text-xs text-yellow-600">4:30 PM · Degradado · Marco Rodríguez</p></div></div></div>
           </div>
         </div>
       </section>
@@ -273,19 +293,19 @@ tailwind.config = {
       <!-- ─── LISTA DE ESPERA ─── -->
       <section id="page-espera" class="page">
         <div class="flex items-center justify-between mb-5">
-          <div><h2 class="text-lg font-bold text-zinc-900">Lista de Espera</h2><p class="text-sm text-zinc-500">Clientes esperando turno en la barbería</p></div>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i>Agregar a espera</button>
+          <div><h2 class="text-lg font-bold text-zinc-900">Lista de Espera</h2><p class="text-sm text-zinc-500">Clientes esperando turno</p></div>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i><span class="hidden sm:inline">Agregar a espera</span></button>
         </div>
-        <div class="grid grid-cols-3 gap-4 mb-5">
-          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">2</p><p class="text-xs text-zinc-500 mt-1">en espera ahora</p></div>
-          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">~18 min</p><p class="text-xs text-zinc-500 mt-1">tiempo promedio</p></div>
+        <div class="grid grid-cols-3 gap-3 md:gap-4 mb-5">
+          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">2</p><p class="text-xs text-zinc-500 mt-1">en espera</p></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-2xl font-bold text-zinc-900">~18m</p><p class="text-xs text-zinc-500 mt-1">tiempo prom.</p></div>
           <div class="bg-white rounded-xl border border-stone-200 p-4 text-center"><p class="text-3xl font-bold text-zinc-900">5</p><p class="text-xs text-zinc-500 mt-1">atendidos hoy</p></div>
         </div>
         <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
           <div class="px-5 py-3 border-b border-stone-100"><span class="text-sm font-semibold text-zinc-800">Cola actual</span></div>
           <div class="divide-y divide-stone-100">
-            <div class="flex items-center gap-4 px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-6">1</span><div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600 flex-shrink-0">JM</div><div class="flex-1"><p class="text-sm font-medium text-zinc-900">Julio Matute</p><p class="text-xs text-zinc-500">Ingresó: 10:15 AM · Espera: 47 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors">Retirar</button></div>
-            <div class="flex items-center gap-4 px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-6">2</span><div class="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600 flex-shrink-0">AR</div><div class="flex-1"><p class="text-sm font-medium text-zinc-900">Ana Rodríguez</p><p class="text-xs text-zinc-500">Ingresó: 10:42 AM · Espera: 20 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors">Retirar</button></div>
+            <div class="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-5">1</span><div class="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold text-blue-600 flex-shrink-0">JM</div><div class="flex-1 min-w-0"><p class="text-sm font-medium text-zinc-900">Julio Matute</p><p class="text-xs text-zinc-500">10:15 AM · 47 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors flex-shrink-0 hidden sm:block">Retirar</button></div>
+            <div class="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-4"><span class="text-sm font-bold text-zinc-400 w-5">2</span><div class="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center text-sm font-bold text-purple-600 flex-shrink-0">AR</div><div class="flex-1 min-w-0"><p class="text-sm font-medium text-zinc-900">Ana Rodríguez</p><p class="text-xs text-zinc-500">10:42 AM · 20 min</p></div><button class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0">+ Citar</button><button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors flex-shrink-0 hidden sm:block">Retirar</button></div>
           </div>
         </div>
       </section>
@@ -293,10 +313,11 @@ tailwind.config = {
       <!-- ─── BARBEROS ─── -->
       <section id="page-barberos" class="page">
         <div class="flex items-center justify-between mb-5">
-          <div><h2 class="text-lg font-bold text-zinc-900">Barberos</h2><p class="text-sm text-zinc-500">Gestiona tu equipo de barberos y sus horarios</p></div>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i>Agregar barbero</button>
+          <div><h2 class="text-lg font-bold text-zinc-900">Barberos</h2><p class="text-sm text-zinc-500">Gestiona el equipo y sus horarios</p></div>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i><span class="hidden sm:inline">Agregar barbero</span></button>
         </div>
-        <div class="grid grid-cols-2 gap-5 mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+          <!-- Marco -->
           <div class="bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3"><div class="w-11 h-11 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">M</div><div><p class="font-semibold text-zinc-900">Marco Rodríguez</p><p class="text-xs text-zinc-500">Especialista en degradados y fade</p></div></div>
@@ -304,19 +325,20 @@ tailwind.config = {
             </div>
             <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horario semanal</p>
             <div class="overflow-x-auto">
-              <table class="w-full text-xs text-center">
-                <thead><tr class="text-zinc-500"><td class="pb-2 text-left text-zinc-400 text-xs w-12"></td><td class="pb-2">Lun</td><td class="pb-2">Mar</td><td class="pb-2">Mié</td><td class="pb-2">Jue</td><td class="pb-2">Vie</td><td class="pb-2">Sáb</td><td class="pb-2">Dom</td></tr></thead>
+              <table class="w-full text-xs text-center min-w-[300px]">
+                <thead><tr><td class="pb-2 text-left text-zinc-400 w-14"></td><td class="pb-2 text-zinc-500">Lun</td><td class="pb-2 text-zinc-500">Mar</td><td class="pb-2 text-zinc-500">Mié</td><td class="pb-2 text-zinc-500">Jue</td><td class="pb-2 text-zinc-500">Vie</td><td class="pb-2 text-zinc-500">Sáb</td><td class="pb-2 text-zinc-500">Dom</td></tr></thead>
                 <tbody>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td class="text-zinc-300 text-base">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td class="text-zinc-300 text-base">—</td></tr>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td class="text-zinc-300 text-base">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">1:00<br>PM</span></td><td class="text-zinc-300 text-base">—</td></tr>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td class="text-zinc-300">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">8:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td class="text-zinc-300">—</td></tr>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td class="text-zinc-300">—</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">5:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">1:00<br>PM</span></td><td class="text-zinc-300">—</td></tr>
                 </tbody>
               </table>
             </div>
-            <div class="flex gap-2 mt-4">
+            <div class="flex flex-wrap gap-2 mt-4">
               <button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 flex items-center gap-1.5 transition-colors"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Editar horario</button>
               <button class="text-xs border border-amber-200 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-50 flex items-center gap-1.5 transition-colors"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>Bloquear fecha</button>
             </div>
           </div>
+          <!-- Luis -->
           <div class="bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3"><div class="w-11 h-11 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">L</div><div><p class="font-semibold text-zinc-900">Luis Méndez</p><p class="text-xs text-zinc-500">Experto en cortes clásicos y niños</p></div></div>
@@ -324,23 +346,24 @@ tailwind.config = {
             </div>
             <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horario semanal</p>
             <div class="overflow-x-auto">
-              <table class="w-full text-xs text-center">
-                <thead><tr class="text-zinc-500"><td class="pb-2 text-left text-zinc-400 text-xs w-12"></td><td class="pb-2">Lun</td><td class="pb-2">Mar</td><td class="pb-2">Mié</td><td class="pb-2">Jue</td><td class="pb-2">Vie</td><td class="pb-2">Sáb</td><td class="pb-2">Dom</td></tr></thead>
+              <table class="w-full text-xs text-center min-w-[300px]">
+                <thead><tr><td class="pb-2 text-left text-zinc-400 w-14"></td><td class="pb-2 text-zinc-500">Lun</td><td class="pb-2 text-zinc-500">Mar</td><td class="pb-2 text-zinc-500">Mié</td><td class="pb-2 text-zinc-500">Jue</td><td class="pb-2 text-zinc-500">Vie</td><td class="pb-2 text-zinc-500">Sáb</td><td class="pb-2 text-zinc-500">Dom</td></tr></thead>
                 <tbody>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">9:00<br>AM</span></td><td class="text-zinc-300 text-base">—</td></tr>
-                  <tr><td class="text-left text-zinc-400 pr-2 py-1 text-xs">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded text-xs block">2:00<br>PM</span></td><td class="text-zinc-300 text-base">—</td></tr>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Entrada</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">9:00<br>AM</span></td><td class="text-zinc-300">—</td></tr>
+                  <tr><td class="text-left text-zinc-400 pr-2 py-1">Salida</td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">4:00<br>PM</span></td><td><span class="bg-blue-50 text-blue-700 px-1 py-0.5 rounded block">2:00<br>PM</span></td><td class="text-zinc-300">—</td></tr>
                 </tbody>
               </table>
             </div>
-            <div class="flex gap-2 mt-4">
+            <div class="flex flex-wrap gap-2 mt-4">
               <button class="text-xs border border-stone-200 text-zinc-600 px-3 py-1.5 rounded-lg hover:bg-stone-50 flex items-center gap-1.5 transition-colors"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Editar horario</button>
               <button class="text-xs border border-amber-200 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-50 flex items-center gap-1.5 transition-colors"><i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>Bloquear fecha</button>
             </div>
           </div>
         </div>
+        <!-- Fechas bloqueadas -->
         <div class="bg-white rounded-xl border border-stone-200 p-5">
           <div class="flex items-center gap-2 mb-4"><i data-lucide="calendar-x" class="w-4 h-4 text-red-400"></i><span class="text-sm font-semibold text-zinc-800">Fechas bloqueadas</span></div>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-4 py-3"><div><p class="text-sm font-medium text-zinc-800">Marco Rodríguez</p><p class="text-xs text-red-500 flex items-center gap-1 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>25 jun 2026 — Vacaciones</p></div><button class="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
             <div class="flex items-center justify-between bg-red-50 border border-red-100 rounded-lg px-4 py-3"><div><p class="text-sm font-medium text-zinc-800">Luis Méndez</p><p class="text-xs text-red-500 flex items-center gap-1 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>30 jun 2026 — Cita médica</p></div><button class="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
           </div>
@@ -351,25 +374,27 @@ tailwind.config = {
       <section id="page-servicios" class="page">
         <div class="flex items-start justify-between mb-5">
           <div><h2 class="text-lg font-bold text-zinc-900">Servicios de la barbería</h2><p class="text-sm text-zinc-500">Gestiona los cortes y servicios que ofreces</p></div>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i>Nuevo servicio</button>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-colors flex-shrink-0"><i data-lucide="plus" class="w-4 h-4"></i><span class="hidden sm:inline">Nuevo servicio</span></button>
         </div>
         <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
-          <table class="w-full">
-            <thead><tr class="border-b border-stone-100">
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Servicio</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Precio</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Duración</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Estado</th>
-              <th class="text-right px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Acciones</th>
-            </tr></thead>
-            <tbody class="divide-y divide-stone-100">
-              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Arreglo de Barba</p><p class="text-xs text-zinc-400">Perfilado, hidratación y arreglo de barba</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 100.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
-              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte + Barba</p><p class="text-xs text-zinc-400">Corte completo más arreglo y perfilado de barba</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 220.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>1 h</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
-              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte Clásico</p><p class="text-xs text-zinc-400">Corte tradicional con tijera y máquina</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 150.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
-              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte Niño</p><p class="text-xs text-zinc-400">Corte para niños menores de 12 años</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 100.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
-              <tr class="hover:bg-stone-50 transition-colors"><td class="px-5 py-4"><p class="text-sm font-medium text-zinc-900">Degradado</p><p class="text-xs text-zinc-400">Fade degradado en los costados con blend</p></td><td class="px-5 py-4 text-sm font-semibold text-zinc-900">L. 180.00</td><td class="px-5 py-4 text-sm text-zinc-600"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>45 min</span></td><td class="px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-5 py-4 text-right"><div class="flex items-center justify-end gap-2"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
-            </tbody>
-          </table>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[500px]">
+              <thead><tr class="border-b border-stone-100">
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Servicio</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden sm:table-cell">Precio</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden md:table-cell">Duración</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Estado</th>
+                <th class="text-right px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Acciones</th>
+              </tr></thead>
+              <tbody class="divide-y divide-stone-100">
+                <tr class="hover:bg-stone-50 transition-colors"><td class="px-4 md:px-5 py-4"><p class="text-sm font-medium text-zinc-900">Arreglo de Barba</p><p class="text-xs text-zinc-400 hidden sm:block">Perfilado, hidratación y arreglo de barba</p><p class="text-xs text-blue-600 font-semibold sm:hidden">L. 100.00 · 30 min</p></td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900 hidden sm:table-cell">L. 100.00</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-4 md:px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-4 md:px-5 py-4 text-right"><div class="flex items-center justify-end gap-1.5"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors hidden sm:block"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+                <tr class="hover:bg-stone-50 transition-colors"><td class="px-4 md:px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte + Barba</p><p class="text-xs text-zinc-400 hidden sm:block">Corte completo más arreglo y perfilado de barba</p><p class="text-xs text-blue-600 font-semibold sm:hidden">L. 220.00 · 1 h</p></td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900 hidden sm:table-cell">L. 220.00</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>1 h</span></td><td class="px-4 md:px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-4 md:px-5 py-4 text-right"><div class="flex items-center justify-end gap-1.5"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors hidden sm:block"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+                <tr class="hover:bg-stone-50 transition-colors"><td class="px-4 md:px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte Clásico</p><p class="text-xs text-zinc-400 hidden sm:block">Corte tradicional con tijera y máquina</p><p class="text-xs text-blue-600 font-semibold sm:hidden">L. 150.00 · 30 min</p></td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900 hidden sm:table-cell">L. 150.00</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-4 md:px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-4 md:px-5 py-4 text-right"><div class="flex items-center justify-end gap-1.5"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors hidden sm:block"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+                <tr class="hover:bg-stone-50 transition-colors"><td class="px-4 md:px-5 py-4"><p class="text-sm font-medium text-zinc-900">Corte Niño</p><p class="text-xs text-zinc-400 hidden sm:block">Corte para niños menores de 12 años</p><p class="text-xs text-blue-600 font-semibold sm:hidden">L. 100.00 · 30 min</p></td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900 hidden sm:table-cell">L. 100.00</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>30 min</span></td><td class="px-4 md:px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-4 md:px-5 py-4 text-right"><div class="flex items-center justify-end gap-1.5"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors hidden sm:block"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+                <tr class="hover:bg-stone-50 transition-colors"><td class="px-4 md:px-5 py-4"><p class="text-sm font-medium text-zinc-900">Degradado</p><p class="text-xs text-zinc-400 hidden sm:block">Fade degradado en los costados con blend</p><p class="text-xs text-blue-600 font-semibold sm:hidden">L. 180.00 · 45 min</p></td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900 hidden sm:table-cell">L. 180.00</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell"><span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-zinc-400"></i>45 min</span></td><td class="px-4 md:px-5 py-4"><span class="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Activo</span></td><td class="px-4 md:px-5 py-4 text-right"><div class="flex items-center justify-end gap-1.5"><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-stone-100 text-zinc-400 hover:text-zinc-600 transition-colors hidden sm:block"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button><button class="p-1.5 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
           <div class="px-5 py-3 border-t border-stone-100 text-xs text-zinc-400">5 servicios registrados · 5 activos</div>
         </div>
       </section>
@@ -378,58 +403,33 @@ tailwind.config = {
       <section id="page-clientes" class="page">
         <div class="flex items-start justify-between mb-5">
           <div><h2 class="text-lg font-bold text-zinc-900">Clientes Frecuentes</h2><p class="text-sm text-zinc-500">Registrados automáticamente al atender citas</p></div>
-          <span class="flex items-center gap-1.5 bg-stone-100 text-zinc-600 text-sm px-3 py-2 rounded-lg border border-stone-200"><i data-lucide="users" class="w-4 h-4"></i>8 clientes</span>
+          <span class="flex items-center gap-1.5 bg-stone-100 text-zinc-600 text-sm px-3 py-2 rounded-lg border border-stone-200 flex-shrink-0"><i data-lucide="users" class="w-4 h-4"></i><span class="hidden sm:inline">8 clientes</span><span class="sm:hidden">8</span></span>
         </div>
-        <div class="flex items-center gap-5 mb-4 text-xs text-zinc-500">
+        <div class="flex items-center gap-4 md:gap-5 mb-4 text-xs text-zinc-500 flex-wrap">
           <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400"></span>VIP — 10+ visitas</span>
-          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span>Frecuente — 5-9 visitas</span>
-          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-zinc-300"></span>Regular — 1-4 visitas</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span>Frecuente — 5-9</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-zinc-300"></span>Regular — 1-4</span>
         </div>
         <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
-          <table class="w-full">
-            <thead><tr class="border-b border-stone-100">
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider w-8">#</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Cliente</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Teléfono</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Visitas</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Primera visita</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Última visita</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Servicio favorito</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Historial</th>
-            </tr></thead>
-            <tbody class="divide-y divide-stone-100">
-              <tr class="hover:bg-stone-50 transition-colors">
-                <td class="px-5 py-4 text-sm text-zinc-500">1</td>
-                <td class="px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">C</div><div><p class="text-sm font-medium text-zinc-900">Carlos Mejía</p><span class="text-xs badge-vip px-1.5 py-0.5 rounded-full">VIP</span></div></div></td>
-                <td class="px-5 py-4 text-sm text-zinc-600">9876-1234</td>
-                <td class="px-5 py-4 text-sm font-semibold text-zinc-900">12</td>
-                <td class="px-5 py-4 text-sm text-zinc-600">Lunes, 2 Mar 2026</td>
-                <td class="px-5 py-4 text-sm text-zinc-600">Viernes, 19 Jun 2026</td>
-                <td class="px-5 py-4"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Degradado</span></td>
-                <td class="px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1 transition-colors"><i data-lucide="clock" class="w-3 h-3"></i>Ver historial</button></td>
-              </tr>
-              <tr class="hover:bg-stone-50 transition-colors">
-                <td class="px-5 py-4 text-sm text-zinc-500">2</td>
-                <td class="px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">R</div><div><p class="text-sm font-medium text-zinc-900">Roberto Flores</p><span class="text-xs badge-frecuente px-1.5 py-0.5 rounded-full">Frecuente</span></div></div></td>
-                <td class="px-5 py-4 text-sm text-zinc-600">9711-5566</td>
-                <td class="px-5 py-4 text-sm font-semibold text-zinc-900">7</td>
-                <td class="px-5 py-4 text-sm text-zinc-600">Martes, 10 Feb 2026</td>
-                <td class="px-5 py-4 text-sm text-zinc-600">Viernes, 19 Jun 2026</td>
-                <td class="px-5 py-4"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Corte + Barba</span></td>
-                <td class="px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1 transition-colors"><i data-lucide="clock" class="w-3 h-3"></i>Ver historial</button></td>
-              </tr>
-              <tr class="hover:bg-stone-50 transition-colors">
-                <td class="px-5 py-4 text-sm text-zinc-500">3</td>
-                <td class="px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">A</div><div><p class="text-sm font-medium text-zinc-900">Andrés García</p><span class="text-xs badge-regular px-1.5 py-0.5 rounded-full">Regular</span></div></div></td>
-                <td class="px-5 py-4 text-sm text-zinc-600">—</td>
-                <td class="px-5 py-4 text-sm font-semibold text-zinc-900">3</td>
-                <td class="px-5 py-4 text-sm text-zinc-600">Jueves, 18 Jun 2026</td>
-                <td class="px-5 py-4 text-sm text-zinc-600">Jueves, 18 Jun 2026</td>
-                <td class="px-5 py-4"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Corte Clásico</span></td>
-                <td class="px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1 transition-colors"><i data-lucide="clock" class="w-3 h-3"></i>Ver historial</button></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[500px]">
+              <thead><tr class="border-b border-stone-100">
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider w-8">#</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Cliente</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden md:table-cell">Teléfono</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Visitas</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden lg:table-cell">Primera visita</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden md:table-cell">Última visita</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden sm:table-cell">Servicio favorito</th>
+                <th class="text-left px-4 md:px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Historial</th>
+              </tr></thead>
+              <tbody class="divide-y divide-stone-100">
+                <tr class="hover:bg-stone-50"><td class="px-4 md:px-5 py-4 text-sm text-zinc-500">1</td><td class="px-4 md:px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">C</div><div><p class="text-sm font-medium text-zinc-900">Carlos Mejía</p><span class="text-xs badge-vip px-1.5 py-0.5 rounded-full">VIP</span></div></div></td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell">9876-1234</td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900">12</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden lg:table-cell">2 Mar 2026</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell">19 Jun 2026</td><td class="px-4 md:px-5 py-4 hidden sm:table-cell"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Degradado</span></td><td class="px-4 md:px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i><span class="hidden sm:inline">Ver historial</span></button></td></tr>
+                <tr class="hover:bg-stone-50"><td class="px-4 md:px-5 py-4 text-sm text-zinc-500">2</td><td class="px-4 md:px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">R</div><div><p class="text-sm font-medium text-zinc-900">Roberto Flores</p><span class="text-xs badge-frecuente px-1.5 py-0.5 rounded-full">Frecuente</span></div></div></td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell">9711-5566</td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900">7</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden lg:table-cell">10 Feb 2026</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell">19 Jun 2026</td><td class="px-4 md:px-5 py-4 hidden sm:table-cell"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Corte + Barba</span></td><td class="px-4 md:px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i><span class="hidden sm:inline">Ver historial</span></button></td></tr>
+                <tr class="hover:bg-stone-50"><td class="px-4 md:px-5 py-4 text-sm text-zinc-500">3</td><td class="px-4 md:px-5 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-sm font-bold text-zinc-600 flex-shrink-0">A</div><div><p class="text-sm font-medium text-zinc-900">Andrés García</p><span class="text-xs badge-regular px-1.5 py-0.5 rounded-full">Regular</span></div></div></td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell">—</td><td class="px-4 md:px-5 py-4 text-sm font-semibold text-zinc-900">3</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden lg:table-cell">18 Jun 2026</td><td class="px-4 md:px-5 py-4 text-sm text-zinc-600 hidden md:table-cell">18 Jun 2026</td><td class="px-4 md:px-5 py-4 hidden sm:table-cell"><span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-lg flex items-center gap-1 w-fit"><i data-lucide="scissors" class="w-3 h-3"></i>Corte Clásico</span></td><td class="px-4 md:px-5 py-4"><button class="text-xs border border-stone-200 text-zinc-600 px-2.5 py-1 rounded-lg hover:bg-stone-50 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i><span class="hidden sm:inline">Ver historial</span></button></td></tr>
+              </tbody>
+            </table>
+          </div>
           <div class="px-5 py-3 border-t border-stone-100 text-xs text-zinc-400">Ordenados por número de visitas · Se actualiza automáticamente al atender citas</div>
         </div>
       </section>
@@ -444,40 +444,39 @@ tailwind.config = {
             <button class="p-2 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 text-zinc-600"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
           </div>
         </div>
-        <div class="grid grid-cols-4 gap-4 mb-5">
-          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Ingresos hoy</p><p class="text-2xl font-bold text-green-600">L. 510.00</p><p class="text-xs text-zinc-400 mt-1">4 citas atendidas</p></div><div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center"><i data-lucide="banknote" class="w-4 h-4 text-green-400"></i></div></div></div>
-          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Ingresos del mes</p><p class="text-2xl font-bold text-blue-600">L. 2,570</p><p class="text-xs text-zinc-400 mt-1">Junio 2026</p></div><div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center"><i data-lucide="trending-up" class="w-4 h-4 text-blue-400"></i></div></div></div>
-          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Citas atendidas</p><p class="text-2xl font-bold text-zinc-900">18</p><p class="text-xs text-zinc-400 mt-1">en Junio</p></div><div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center"><i data-lucide="calendar-check" class="w-4 h-4 text-purple-400"></i></div></div></div>
-          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Promedio por cita</p><p class="text-2xl font-bold text-purple-600">L. 142.8</p><p class="text-xs text-zinc-400 mt-1">ticket promedio</p></div><div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center"><i data-lucide="calculator" class="w-4 h-4 text-purple-400"></i></div></div></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-5">
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Ingresos hoy</p><p class="text-xl md:text-2xl font-bold text-green-600">L. 510</p><p class="text-xs text-zinc-400 mt-1">4 citas</p></div><div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="banknote" class="w-4 h-4 text-green-400"></i></div></div></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Ingresos mes</p><p class="text-xl md:text-2xl font-bold text-blue-600">L. 2,570</p><p class="text-xs text-zinc-400 mt-1">Junio 2026</p></div><div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="trending-up" class="w-4 h-4 text-blue-400"></i></div></div></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Citas atendidas</p><p class="text-xl md:text-2xl font-bold text-zinc-900">18</p><p class="text-xs text-zinc-400 mt-1">en Junio</p></div><div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="calendar-check" class="w-4 h-4 text-purple-400"></i></div></div></div>
+          <div class="bg-white rounded-xl border border-stone-200 p-4"><div class="flex items-start justify-between"><div><p class="text-xs text-zinc-500 mb-1">Promedio/cita</p><p class="text-xl md:text-2xl font-bold text-purple-600">L. 142</p><p class="text-xs text-zinc-400 mt-1">ticket prom.</p></div><div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="calculator" class="w-4 h-4 text-purple-400"></i></div></div></div>
         </div>
-        <div class="grid grid-cols-3 gap-4 mb-4">
-          <div class="col-span-2 bg-white rounded-xl border border-stone-200 p-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div class="md:col-span-2 bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center gap-2 mb-4"><i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Ingresos diarios — Junio 2026</span></div>
             <canvas id="chart-ingresos" height="120"></canvas>
           </div>
           <div class="bg-white rounded-xl border border-stone-200 p-5">
             <div class="flex items-center gap-2 mb-4"><i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i><span class="text-sm font-semibold text-zinc-800">Top servicios del mes</span></div>
             <div class="space-y-3">
-              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Arreglo de Barba</span><span class="text-zinc-500">18 citas · L. 1,800</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-blue-500 rounded-full" style="width:100%"></div></div></div>
-              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Degradado</span><span class="text-zinc-500">11 citas · L. 1,980</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-red-400 rounded-full" style="width:80%"></div></div></div>
-              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Corte Clásico</span><span class="text-zinc-500">14 citas · L. 2,100</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-green-400 rounded-full" style="width:60%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Arreglo de Barba</span><span class="text-zinc-500">18 · L. 1,800</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-blue-500 rounded-full" style="width:100%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Corte Clásico</span><span class="text-zinc-500">14 · L. 2,100</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-red-400 rounded-full" style="width:78%"></div></div></div>
+              <div><div class="flex justify-between text-xs mb-1"><span class="text-zinc-700">Degradado</span><span class="text-zinc-500">11 · L. 1,980</span></div><div class="h-1.5 bg-stone-100 rounded-full"><div class="h-1.5 bg-green-400 rounded-full" style="width:61%"></div></div></div>
             </div>
           </div>
         </div>
         <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
-          <div class="flex items-center justify-between px-5 py-3 border-b border-stone-100">
-            <div class="flex items-center gap-2"><i data-lucide="list" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Últimas citas cobradas</span></div>
-            <span class="text-xs text-zinc-400">Últimas 15</span>
+          <div class="flex items-center justify-between px-5 py-3 border-b border-stone-100"><div class="flex items-center gap-2"><i data-lucide="list" class="w-4 h-4 text-blue-400"></i><span class="text-sm font-semibold text-zinc-800">Últimas citas cobradas</span></div><span class="text-xs text-zinc-400">Últimas 15</span></div>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[400px]">
+              <thead><tr class="border-b border-stone-100"><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Cliente</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden sm:table-cell">Servicio</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden md:table-cell">Barbero</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider hidden sm:table-cell">Fecha</th><th class="text-right px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Monto</th></tr></thead>
+              <tbody class="divide-y divide-stone-100">
+                <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Carlos Mejía</td><td class="px-5 py-3 text-sm text-zinc-600 hidden sm:table-cell">Degradado</td><td class="px-5 py-3 text-sm text-zinc-600 hidden md:table-cell">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500 hidden sm:table-cell">19/06 · 8:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 180.00</td></tr>
+                <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Andrés García</td><td class="px-5 py-3 text-sm text-zinc-600 hidden sm:table-cell">Corte Clásico</td><td class="px-5 py-3 text-sm text-zinc-600 hidden md:table-cell">Luis Méndez</td><td class="px-5 py-3 text-sm text-zinc-500 hidden sm:table-cell">18/06 · 9:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 150.00</td></tr>
+                <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Pedro Alvarado</td><td class="px-5 py-3 text-sm text-zinc-600 hidden sm:table-cell">Corte + Barba</td><td class="px-5 py-3 text-sm text-zinc-600 hidden md:table-cell">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500 hidden sm:table-cell">18/06 · 3:00 PM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 220.00</td></tr>
+                <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Roberto Flores</td><td class="px-5 py-3 text-sm text-zinc-600 hidden sm:table-cell">Corte + Barba</td><td class="px-5 py-3 text-sm text-zinc-600 hidden md:table-cell">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500 hidden sm:table-cell">17/06 · 10:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 220.00</td></tr>
+              </tbody>
+            </table>
           </div>
-          <table class="w-full">
-            <thead><tr class="border-b border-stone-100"><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Cliente</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Servicio</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Barbero</th><th class="text-left px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Fecha</th><th class="text-right px-5 py-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Monto</th></tr></thead>
-            <tbody class="divide-y divide-stone-100">
-              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Carlos Mejía</td><td class="px-5 py-3 text-sm text-zinc-600">Degradado</td><td class="px-5 py-3 text-sm text-zinc-600">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500">19/06/2026 · 8:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 180.00</td></tr>
-              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Andrés García</td><td class="px-5 py-3 text-sm text-zinc-600">Corte Clásico</td><td class="px-5 py-3 text-sm text-zinc-600">Luis Méndez</td><td class="px-5 py-3 text-sm text-zinc-500">18/06/2026 · 9:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 150.00</td></tr>
-              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Pedro Alvarado</td><td class="px-5 py-3 text-sm text-zinc-600">Corte + Barba</td><td class="px-5 py-3 text-sm text-zinc-600">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500">18/06/2026 · 3:00 PM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 220.00</td></tr>
-              <tr class="hover:bg-stone-50"><td class="px-5 py-3 text-sm text-zinc-800">Roberto Flores</td><td class="px-5 py-3 text-sm text-zinc-600">Corte + Barba</td><td class="px-5 py-3 text-sm text-zinc-600">Marco Rodríguez</td><td class="px-5 py-3 text-sm text-zinc-500">17/06/2026 · 10:30 AM</td><td class="px-5 py-3 text-sm font-semibold text-green-600 text-right">L. 220.00</td></tr>
-            </tbody>
-          </table>
         </div>
       </section>
 
@@ -488,29 +487,45 @@ tailwind.config = {
             <div class="flex items-center gap-2"><div class="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center"><i data-lucide="scissors" class="w-4 h-4 text-white"></i></div><span class="text-white font-bold text-sm">BarberApp</span></div>
             <button class="text-zinc-400 text-xs flex items-center gap-1.5 hover:text-white transition-colors"><i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i>Nueva cita</button>
           </div>
-          <div id="reserva-wrap" class="bg-white rounded-b-2xl border border-stone-200 border-t-0 overflow-hidden">
+          <div class="bg-white rounded-b-2xl border border-stone-200 border-t-0 overflow-hidden">
 
             <!-- Step 1 -->
             <div id="rv-step1">
-              <div class="p-8 text-center border-b border-stone-100"><h1 class="text-2xl font-bold text-zinc-900 mb-1">Reserva tu cita</h1><p class="text-sm text-zinc-500">Sin registro — solo tu nombre y ya</p></div>
-              <div class="flex items-center justify-center gap-3 py-5 px-8 border-b border-stone-100">
-                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-active flex items-center justify-center text-xs font-bold">1</div><span class="text-xs font-semibold text-blue-600">Servicio</span></div>
-                <div class="h-px w-8 bg-stone-200"></div>
-                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-next flex items-center justify-center text-xs font-bold">2</div><span class="text-xs text-zinc-400">Barbero</span></div>
-                <div class="h-px w-8 bg-stone-200"></div>
-                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-next flex items-center justify-center text-xs font-bold">3</div><span class="text-xs text-zinc-400">Hora</span></div>
-                <div class="h-px w-8 bg-stone-200"></div>
-                <div class="flex items-center gap-1.5"><div class="w-7 h-7 rounded-full step-next flex items-center justify-center text-xs font-bold">4</div><span class="text-xs text-zinc-400">Confirmar</span></div>
+              <div class="px-6 pt-8 pb-4 text-center border-b border-stone-100">
+                <h1 class="text-2xl font-bold text-zinc-900 mb-1">Reserva tu cita</h1>
+                <p class="text-sm text-zinc-500">Sin registro — solo tu nombre y ya</p>
+              </div>
+              <!-- Progress bar (same style as real system) -->
+              <div class="flex items-start justify-center gap-0 py-6 px-4 border-b border-stone-100">
+                <div class="flex flex-col items-center gap-1 w-16">
+                  <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">1</div>
+                  <span class="text-xs font-semibold text-blue-600">Servicio</span>
+                </div>
+                <div class="h-px w-12 bg-stone-200 mt-4 flex-shrink-0"></div>
+                <div class="flex flex-col items-center gap-1 w-16">
+                  <div class="w-8 h-8 rounded-full bg-stone-200 text-zinc-500 flex items-center justify-center text-sm font-bold">2</div>
+                  <span class="text-xs text-zinc-400">Barbero</span>
+                </div>
+                <div class="h-px w-12 bg-stone-200 mt-4 flex-shrink-0"></div>
+                <div class="flex flex-col items-center gap-1 w-16">
+                  <div class="w-8 h-8 rounded-full bg-stone-200 text-zinc-500 flex items-center justify-center text-sm font-bold">3</div>
+                  <span class="text-xs text-zinc-400">Hora</span>
+                </div>
+                <div class="h-px w-12 bg-stone-200 mt-4 flex-shrink-0"></div>
+                <div class="flex flex-col items-center gap-1 w-16">
+                  <div class="w-8 h-8 rounded-full bg-stone-200 text-zinc-500 flex items-center justify-center text-sm font-bold">4</div>
+                  <span class="text-xs text-zinc-400">Confirmar</span>
+                </div>
               </div>
               <div class="p-6">
                 <h2 class="text-base font-semibold text-zinc-900 mb-1">¿Qué servicio necesitas?</h2>
                 <p class="text-xs text-zinc-500 mb-4">Elige un servicio para continuar</p>
                 <div class="space-y-2">
-                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Arreglo de Barba','L. 100.00','30 min')"><div><p class="text-sm font-semibold text-zinc-900">Arreglo de Barba</p><p class="text-xs text-zinc-500">Perfilado, hidratación y arreglo de barba</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 100.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
-                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte + Barba','L. 220.00','1 h')"><div><p class="text-sm font-semibold text-zinc-900">Corte + Barba</p><p class="text-xs text-zinc-500">Corte completo más arreglo y perfilado de barba</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 220.00</p><p class="text-xs text-zinc-400">1 h</p></div></div>
-                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte Clásico','L. 150.00','30 min')"><div><p class="text-sm font-semibold text-zinc-900">Corte Clásico</p><p class="text-xs text-zinc-500">Corte tradicional con tijera y máquina</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 150.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
-                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte Niño','L. 100.00','30 min')"><div><p class="text-sm font-semibold text-zinc-900">Corte Niño</p><p class="text-xs text-zinc-500">Corte para niños menores de 12 años</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 100.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
-                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Degradado','L. 180.00','45 min')"><div><p class="text-sm font-semibold text-zinc-900">Degradado</p><p class="text-xs text-zinc-500">Fade degradado en los costados con blend</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 180.00</p><p class="text-xs text-zinc-400">45 min</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Arreglo de Barba','L. 100.00')"><div><p class="text-sm font-semibold text-zinc-900">Arreglo de Barba</p><p class="text-xs text-zinc-500">Perfilado, hidratación y arreglo de barba</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 100.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte + Barba','L. 220.00')"><div><p class="text-sm font-semibold text-zinc-900">Corte + Barba</p><p class="text-xs text-zinc-500">Corte completo más arreglo y perfilado de barba</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 220.00</p><p class="text-xs text-zinc-400">1 h</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte Clásico','L. 150.00')"><div><p class="text-sm font-semibold text-zinc-900">Corte Clásico</p><p class="text-xs text-zinc-500">Corte tradicional con tijera y máquina</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 150.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Corte Niño','L. 100.00')"><div><p class="text-sm font-semibold text-zinc-900">Corte Niño</p><p class="text-xs text-zinc-500">Corte para niños menores de 12 años</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 100.00</p><p class="text-xs text-zinc-400">30 min</p></div></div>
+                  <div class="srv-card rounded-xl border border-stone-200 px-4 py-3 flex justify-between items-center" onclick="selSrv(this,'Degradado','L. 180.00')"><div><p class="text-sm font-semibold text-zinc-900">Degradado</p><p class="text-xs text-zinc-500">Fade degradado en los costados con blend</p></div><div class="text-right flex-shrink-0 ml-4"><p class="text-sm font-bold text-blue-600">L. 180.00</p><p class="text-xs text-zinc-400">45 min</p></div></div>
                 </div>
                 <div class="flex justify-end mt-5">
                   <button id="btn-s1" onclick="rvStep(2)" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors opacity-40 pointer-events-none">Continuar</button>
@@ -524,8 +539,8 @@ tailwind.config = {
               <h2 class="text-base font-semibold text-zinc-900 mb-1">Elige tu barbero</h2>
               <p class="text-xs text-zinc-500 mb-4">O elige <span class="text-blue-500 cursor-pointer" onclick="selBarb(null,'Sin preferencia')">sin preferencia</span></p>
               <div class="space-y-3">
-                <div class="barb-card rounded-xl border border-stone-200 p-4 flex items-center gap-4" onclick="selBarb(this,'Marco Rodríguez')"><div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">M</div><div class="flex-1"><p class="text-sm font-semibold text-zinc-900">Marco Rodríguez</p><p class="text-xs text-zinc-500">Especialista en degradados y fade</p><p class="text-xs text-zinc-400 mt-1">Lun–Mar, Jue–Vie 8 AM–5 PM · Sáb 9 AM–1 PM</p></div></div>
-                <div class="barb-card rounded-xl border border-stone-200 p-4 flex items-center gap-4" onclick="selBarb(this,'Luis Méndez')"><div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">L</div><div class="flex-1"><p class="text-sm font-semibold text-zinc-900">Luis Méndez</p><p class="text-xs text-zinc-500">Experto en cortes clásicos y niños</p><p class="text-xs text-zinc-400 mt-1">Lun–Sáb 9 AM–4 PM</p></div></div>
+                <div class="barb-card rounded-xl border border-stone-200 p-4 flex items-center gap-4" onclick="selBarb(this,'Marco Rodríguez')"><div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">M</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold text-zinc-900">Marco Rodríguez</p><p class="text-xs text-zinc-500">Especialista en degradados y fade</p><p class="text-xs text-zinc-400 mt-1">Lun–Mar, Jue–Vie 8 AM–5 PM · Sáb 9–1 PM</p></div></div>
+                <div class="barb-card rounded-xl border border-stone-200 p-4 flex items-center gap-4" onclick="selBarb(this,'Luis Méndez')"><div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">L</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold text-zinc-900">Luis Méndez</p><p class="text-xs text-zinc-500">Experto en cortes clásicos y niños</p><p class="text-xs text-zinc-400 mt-1">Lun–Sáb 9 AM–4 PM</p></div></div>
               </div>
               <div class="flex justify-end mt-5">
                 <button id="btn-s2" onclick="rvStep(3)" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors opacity-40 pointer-events-none">Continuar</button>
@@ -540,25 +555,25 @@ tailwind.config = {
               <input type="date" value="2026-06-19" class="w-full border border-stone-200 rounded-lg px-3 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horarios AM</p>
               <div class="grid grid-cols-4 gap-2 mb-4">
-                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">8:00 AM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'8:30 AM')">8:30 AM</div>
-                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">9:00 AM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'9:30 AM')">9:30 AM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'10:00 AM')">10:00 AM</div>
-                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">10:30 AM</div>
-                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">11:00 AM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'11:30 AM')">11:30 AM</div>
+                <div class="border border-stone-200 rounded-lg px-2 py-2 text-center text-xs text-zinc-400 bg-stone-50 cursor-not-allowed">8:00 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'8:30 AM')">8:30 AM</div>
+                <div class="border border-stone-200 rounded-lg px-2 py-2 text-center text-xs text-zinc-400 bg-stone-50 cursor-not-allowed">9:00 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'9:30 AM')">9:30 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'10:00 AM')">10:00 AM</div>
+                <div class="border border-stone-200 rounded-lg px-2 py-2 text-center text-xs text-zinc-400 bg-stone-50 cursor-not-allowed">10:30 AM</div>
+                <div class="border border-stone-200 rounded-lg px-2 py-2 text-center text-xs text-zinc-400 bg-stone-50 cursor-not-allowed">11:00 AM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'11:30 AM')">11:30 AM</div>
               </div>
               <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Horarios PM</p>
               <div class="grid grid-cols-4 gap-2">
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'12:00 PM')">12:00 PM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'12:30 PM')">12:30 PM</div>
-                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">2:00 PM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'2:30 PM')">2:30 PM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'3:00 PM')">3:00 PM</div>
-                <div class="border border-stone-200 rounded-lg px-3 py-2 text-center text-sm text-zinc-400 bg-stone-50 cursor-not-allowed">3:30 PM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'4:00 PM')">4:00 PM</div>
-                <div class="slot-btn border border-stone-200 rounded-lg px-3 py-2 text-center text-sm" onclick="selSlot(this,'4:30 PM')">4:30 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'12:00 PM')">12:00 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'12:30 PM')">12:30 PM</div>
+                <div class="border border-stone-200 rounded-lg px-2 py-2 text-center text-xs text-zinc-400 bg-stone-50 cursor-not-allowed">2:00 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'2:30 PM')">2:30 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'3:00 PM')">3:00 PM</div>
+                <div class="border border-stone-200 rounded-lg px-2 py-2 text-center text-xs text-zinc-400 bg-stone-50 cursor-not-allowed">3:30 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'4:00 PM')">4:00 PM</div>
+                <div class="slot-btn border border-stone-200 rounded-lg px-2 py-2 text-center text-xs" onclick="selSlot(this,'4:30 PM')">4:30 PM</div>
               </div>
               <p class="text-xs text-zinc-400 mt-3"><span class="bg-stone-100 px-1.5 rounded">Gris</span> = ocupado o pasado</p>
               <div class="flex justify-end mt-5">
@@ -584,7 +599,7 @@ tailwind.config = {
               <button onclick="rvConfirm()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl text-sm transition-colors">Confirmar reserva</button>
             </div>
 
-            <!-- Step 5: success -->
+            <!-- Step 5 success -->
             <div id="rv-step5" style="display:none" class="p-8 text-center">
               <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="check" class="w-8 h-8 text-green-600"></i></div>
               <h2 class="text-xl font-bold text-zinc-900 mb-2">¡Cita confirmada!</h2>
@@ -595,20 +610,55 @@ tailwind.config = {
         </div>
       </section>
 
-    </main>
-    <footer class="text-center py-4 text-xs text-zinc-400 border-t border-stone-200">BarberApp 1.0 · 2026</footer>
-  </div>
-</div>
+    </main><!-- /page-main-content -->
+
+    <footer class="text-center py-4 text-xs text-zinc-400 border-t border-stone-200 hidden md:block">BarberApp 1.0 · 2026</footer>
+  </div><!-- /main wrapper -->
+
+  <!-- ══ BOTTOM NAV (mobile only) ══ -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-stone-200 flex md:hidden">
+    <button onclick="gotoPage('dashboard')" id="bnav-dashboard"
+      class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-zinc-400 hover:text-blue-500 transition-colors">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-xs">Inicio</span>
+    </button>
+    <button onclick="gotoPage('citas')" id="bnav-citas"
+      class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-zinc-400 hover:text-blue-500 transition-colors">
+      <i data-lucide="calendar-days" class="w-5 h-5"></i>
+      <span class="text-xs">Citas</span>
+    </button>
+    <button onclick="gotoPage('espera')" id="bnav-espera"
+      class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-zinc-400 hover:text-blue-500 transition-colors">
+      <i data-lucide="users" class="w-5 h-5"></i>
+      <span class="text-xs">Espera</span>
+    </button>
+    <button onclick="gotoPage('clientes')" id="bnav-clientes"
+      class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-zinc-400 hover:text-blue-500 transition-colors">
+      <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+      <span class="text-xs">Clientes</span>
+    </button>
+    <button onclick="gotoPage('reportes')" id="bnav-reportes"
+      class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-zinc-400 hover:text-blue-500 transition-colors">
+      <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+      <span class="text-xs">Reportes</span>
+    </button>
+  </nav>
+
+</div><!-- /app-shell -->
 
 <script>
 var rvSrv='', rvBarb='', rvSlot='', rvPrice='';
-var pages=['dashboard','citas','espera','barberos','servicios','clientes','reportes','reservar'];
-var titles={dashboard:'Dashboard',citas:'Agenda de Citas',espera:'Lista de Espera',barberos:'Barberos',servicios:'Servicios',clientes:'Clientes Frecuentes',reportes:'Reportes',reservar:'Página de Reservas'};
+var PAGES=['dashboard','citas','espera','barberos','servicios','clientes','reportes','reservar'];
+var BNAV=['dashboard','citas','espera','clientes','reportes'];
+var TITLES={dashboard:'Dashboard',citas:'Agenda de Citas',espera:'Lista de Espera',
+  barberos:'Barberos',servicios:'Servicios',clientes:'Clientes Frecuentes',
+  reportes:'Reportes',reservar:'Página de Reservas'};
 
+// ── Auth ──────────────────────────────────────────
 function doLogin(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app-shell').style.display='';
-  goto('dashboard');
+  gotoPage('dashboard');
   lucide.createIcons();
   initCharts();
 }
@@ -616,51 +666,94 @@ function doLogout(){
   document.getElementById('app-shell').style.display='none';
   document.getElementById('login-screen').style.display='';
 }
-function goto(page){
-  pages.forEach(function(p){
+
+// ── Sidebar (mobile) ──────────────────────────────
+function toggleSidebar(){
+  var sb=document.getElementById('sidebar');
+  var ov=document.getElementById('overlay');
+  var open=sb.classList.contains('translate-x-0');
+  if(open){ closeSidebar(); }
+  else {
+    sb.classList.remove('-translate-x-full');
+    sb.classList.add('translate-x-0');
+    ov.classList.add('open');
+  }
+}
+function closeSidebar(){
+  var sb=document.getElementById('sidebar');
+  var ov=document.getElementById('overlay');
+  sb.classList.add('-translate-x-full');
+  sb.classList.remove('translate-x-0');
+  ov.classList.remove('open');
+}
+
+// ── Navigation ────────────────────────────────────
+function gotoPage(page){
+  PAGES.forEach(function(p){
     var pg=document.getElementById('page-'+p);
-    if(pg){ if(p===page){pg.classList.add('active');}else{pg.classList.remove('active');} }
+    if(pg){ pg.classList[p===page?'add':'remove']('active'); }
     var nav=document.getElementById('nav-'+p);
-    if(nav){ if(p===page){nav.classList.add('active');}else{nav.classList.remove('active');} }
+    if(nav){ nav.classList[p===page?'add':'remove']('active'); }
+  });
+  BNAV.forEach(function(p){
+    var bn=document.getElementById('bnav-'+p);
+    if(!bn) return;
+    if(p===page){
+      bn.classList.add('text-blue-500'); bn.classList.remove('text-zinc-400');
+    } else {
+      bn.classList.remove('text-blue-500'); bn.classList.add('text-zinc-400');
+    }
   });
   var t=document.getElementById('page-title');
-  if(t) t.textContent=titles[page]||page;
+  if(t) t.textContent=TITLES[page]||page;
+  closeSidebar();
   return false;
 }
+
+// ── Charts ────────────────────────────────────────
 function initCharts(){
   var ctxC=document.getElementById('chart-citas');
   if(ctxC&&!ctxC._done){
     ctxC._done=true;
-    new Chart(ctxC,{type:'line',data:{labels:['13/06','14/06','15/06','16/06','17/06','18/06','19/06'],datasets:[{label:'Citas',data:[0,1,0,1,5,6,2],borderColor:'#f97316',backgroundColor:'rgba(249,115,22,.12)',tension:.4,fill:true,pointBackgroundColor:'#f97316',pointRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
+    new Chart(ctxC,{type:'line',
+      data:{labels:['13/06','14/06','15/06','16/06','17/06','18/06','19/06'],
+        datasets:[{data:[0,1,0,1,5,6,2],borderColor:'#f97316',
+          backgroundColor:'rgba(249,115,22,.12)',tension:.4,fill:true,
+          pointBackgroundColor:'#f97316',pointRadius:4}]},
+      options:{responsive:true,plugins:{legend:{display:false}},
+        scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}});
   }
   var ctxI=document.getElementById('chart-ingresos');
   if(ctxI&&!ctxI._done){
     ctxI._done=true;
     var days=[],data=[];
-    for(var i=1;i<=19;i++){days.push(i);data.push(i===18?300:i===19?180:i===17?90:i===16?220:i===15?150:0);}
-    new Chart(ctxI,{type:'bar',data:{labels:days,datasets:[{data:data,backgroundColor:'#f97316',borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return'L.'+v;}}},x:{grid:{display:false}}}}});
+    for(var i=1;i<=19;i++){days.push(i);data.push(i===15?150:i===16?220:i===17?90:i===18?300:i===19?180:0);}
+    new Chart(ctxI,{type:'bar',
+      data:{labels:days,datasets:[{data:data,backgroundColor:'#f97316',borderRadius:4}]},
+      options:{responsive:true,plugins:{legend:{display:false}},
+        scales:{y:{beginAtZero:true,ticks:{callback:function(v){return'L.'+v;}}},x:{grid:{display:false}}}}});
   }
 }
-function selSrv(el,name,price,dur){
+
+// ── Reserva flow ──────────────────────────────────
+function selSrv(el,name,price){
   document.querySelectorAll('.srv-card').forEach(function(c){c.classList.remove('selected');});
-  el.classList.add('selected');
-  rvSrv=name; rvPrice=price;
-  var b=document.getElementById('btn-s1');
-  b.classList.remove('opacity-40','pointer-events-none');
+  el.classList.add('selected'); rvSrv=name; rvPrice=price;
+  enableBtn('btn-s1');
 }
 function selBarb(el,name){
   document.querySelectorAll('.barb-card').forEach(function(c){c.classList.remove('selected');});
-  if(el) el.classList.add('selected');
-  rvBarb=name;
-  var b=document.getElementById('btn-s2');
-  b.classList.remove('opacity-40','pointer-events-none');
+  if(el) el.classList.add('selected'); rvBarb=name;
+  enableBtn('btn-s2');
 }
 function selSlot(el,time){
   document.querySelectorAll('.slot-btn.selected').forEach(function(c){c.classList.remove('selected');});
-  el.classList.add('selected');
-  rvSlot=time;
-  var b=document.getElementById('btn-s3');
-  b.classList.remove('opacity-40','pointer-events-none');
+  el.classList.add('selected'); rvSlot=time;
+  enableBtn('btn-s3');
+}
+function enableBtn(id){
+  var b=document.getElementById(id);
+  if(b){b.classList.remove('opacity-40','pointer-events-none');}
 }
 function rvStep(n){
   [1,2,3,4,5].forEach(function(i){
@@ -677,15 +770,14 @@ function rvStep(n){
 function rvConfirm(){ rvStep(5); }
 function rvReset(){
   rvSrv=''; rvBarb=''; rvSlot=''; rvPrice='';
-  document.querySelectorAll('.srv-card').forEach(function(c){c.classList.remove('selected');});
-  document.querySelectorAll('.barb-card').forEach(function(c){c.classList.remove('selected');});
-  document.querySelectorAll('.slot-btn').forEach(function(c){c.classList.remove('selected');});
+  document.querySelectorAll('.srv-card,.barb-card,.slot-btn').forEach(function(c){c.classList.remove('selected');});
   ['btn-s1','btn-s2','btn-s3'].forEach(function(id){
     var b=document.getElementById(id);
     if(b){b.classList.add('opacity-40','pointer-events-none');}
   });
   rvStep(1);
 }
+
 document.addEventListener('DOMContentLoaded',function(){ lucide.createIcons(); });
 </script>
 </body>
